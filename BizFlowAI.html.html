@@ -17,8 +17,10 @@
 <body>
   <div id="root"></div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./supabase.js"></script>
   <script type="text/babel">
-    const { useState, useMemo } = React;
+    const { useState, useMemo, useEffect } = React;
 
     // ==========================================
     // TIỆN ÍCH & CẤU HÌNH GÓI DỊCH VỤ
@@ -107,116 +109,135 @@
     // COMPONENT CHÍNH: QUẢN LÝ AUTH + BILLING + APP
     // ==========================================
     function App() {
-      // Danh sách user lưu cục bộ (mô phỏng Supabase users table)
-      const [accounts, setAccounts] = useState([
-        {
-          id: 'u-demo',
-          email: 'demo@bizflowai.vn',
-          password: '123',
-          shop_name: 'Tiệm Trà & Cà Phê Demo',
-          subscription_status: 'active', // 'trial' | 'active' | 'expired'
-          days_left: 30
-        }
-      ]);
-
       const [currentUser, setCurrentUser] = useState(null);
+      const [loading, setLoading] = useState(true);
       const [showCheckoutModal, setShowCheckoutModal] = useState(false);
+      const [products, setProducts] = useState([]);
+      const [orders, setOrders] = useState([]);
+      const [expenses, setExpenses] = useState([]);
 
-      // Dữ liệu kinh doanh theo từng phiên đăng nhập
-      const [products, setProducts] = useState(SAMPLE_PRODUCTS);
-      const [orders, setOrders] = useState(SAMPLE_ORDERS);
-      const [expenses, setExpenses] = useState(SAMPLE_EXPENSES);
+      // ---------- SUPABASE: đọc dữ liệu ----------
+      const loadProfile = async (authUser) => {
+        const { data: prof } = await sb.from('profiles').select('*').eq('id', authUser.id).single();
+        if (!prof) return null;
+        const endsAt = new Date(prof.subscription_status === 'active' ? prof.subscription_ends_at : prof.trial_ends_at);
+        const daysLeft = Math.max(0, Math.ceil((endsAt - new Date()) / 86400000));
+        let status = prof.subscription_status;
+        if ((status === 'trial' || status === 'active') && daysLeft === 0) status = 'expired';
+        return { id: authUser.id, email: authUser.email, shop_name: prof.shop_name, subscription_status: status, days_left: daysLeft };
+      };
 
-      // Đăng ký tài khoản mới
-      const handleRegister = ({ email, password, shop_name, buyNow }) => {
-        if (accounts.some(a => a.email.toLowerCase() === email.toLowerCase())) {
-          return { error: 'Email này đã tồn tại. Vui lòng đăng nhập!' };
-        }
-        const newUser = {
-          id: 'u-' + Date.now(),
-          email,
-          password,
-          shop_name,
-          subscription_status: buyNow ? 'pending_payment' : 'trial',
-          days_left: buyNow ? 0 : PLAN_INFO.trialDays
-        };
-        setAccounts(prev => [...prev, newUser]);
-        setCurrentUser(newUser);
-        // Khách mới tạo cho bắt đầu từ dữ liệu sạch (hoặc có nút nạp dữ liệu mẫu ngay trong app)
-        setProducts([]);
-        setOrders([]);
-        setExpenses([]);
+      const loadData = async () => {
+        const [p, o, t] = await Promise.all([
+          sb.from('products').select('*').order('name'),
+          sb.from('orders').select('*, order_items(*)').order('order_date', { ascending: false }).order('created_at', { ascending: false }),
+          sb.from('transactions').select('*').order('transaction_date', { ascending: false }),
+        ]);
+        setProducts((p.data || []).map(x => ({ ...x, selling_price: Number(x.selling_price), cost_price: Number(x.cost_price) })));
+        setOrders((o.data || []).map(x => ({
+          ...x,
+          items: (x.order_items || []).map(i => ({ ...i, quantity: Number(i.quantity), unit_price: Number(i.unit_price), unit_cost: Number(i.unit_cost) }))
+        })));
+        setExpenses((t.data || []).map(x => ({ ...x, amount: Number(x.amount), expense_date: x.transaction_date })));
+      };
 
-        if (buyNow) {
-          setShowCheckoutModal(true);
-        }
+      const finishLogin = async (authUser) => {
+        const u = await loadProfile(authUser);
+        setCurrentUser(u);
+        if (u) await loadData();
+        return u;
+      };
+
+      // Khôi phục phiên đăng nhập khi tải lại trang
+      useEffect(() => {
+        sb.auth.getSession().then(async ({ data }) => {
+          if (data.session) await finishLogin(data.session.user);
+          setLoading(false);
+        });
+        const { data: sub } = sb.auth.onAuthStateChange((event) => {
+          if (event === 'SIGNED_OUT') setCurrentUser(null);
+        });
+        return () => sub.subscription.unsubscribe();
+      }, []);
+
+      // ---------- SUPABASE: đăng ký / đăng nhập ----------
+      const handleRegister = async ({ email, password, shop_name, buyNow }) => {
+        const { data, error } = await sb.auth.signUp({ email, password, options: { data: { shop_name } } });
+        if (error) return { error: error.message };
+        if (!data.session) return { error: 'Đã tạo tài khoản. Hãy mở email để xác nhận, sau đó đăng nhập.' };
+        await finishLogin(data.session.user);
+        if (buyNow) setShowCheckoutModal(true);
         return { ok: true };
       };
 
-      // Đăng nhập
-      const handleLogin = ({ email, password }) => {
-        const found = accounts.find(a => a.email.toLowerCase() === email.toLowerCase() && a.password === password);
-        if (!found) return { error: 'Sai email hoặc mật khẩu!' };
-        setCurrentUser(found);
-        if (found.id === 'u-demo') {
-          setProducts(SAMPLE_PRODUCTS);
-          setOrders(SAMPLE_ORDERS);
-          setExpenses(SAMPLE_EXPENSES);
-        }
-        if (found.subscription_status === 'pending_payment' || found.subscription_status === 'expired') {
-          setShowCheckoutModal(true);
-        }
+      const handleLogin = async ({ email, password }) => {
+        const { data, error } = await sb.auth.signInWithPassword({ email, password });
+        if (error) return { error: 'Sai email hoặc mật khẩu!' };
+        await finishLogin(data.user);
         return { ok: true };
       };
 
-      // Vào nhanh Demo BGK
-      const handleQuickDemo = () => {
-        const demoAcc = accounts.find(a => a.id === 'u-demo');
-        setCurrentUser(demoAcc);
-        setProducts(SAMPLE_PRODUCTS);
-        setOrders(SAMPLE_ORDERS);
-        setExpenses(SAMPLE_EXPENSES);
+      const handleLogout = async () => {
+        await sb.auth.signOut();
+        setCurrentUser(null); setProducts([]); setOrders([]); setExpenses([]);
       };
 
-      // Kích hoạt gói sau khi thanh toán QR
-      const handlePaymentSuccess = () => {
-        const updatedUser = { ...currentUser, subscription_status: 'active', days_left: 30 };
-        setCurrentUser(updatedUser);
-        setAccounts(prev => prev.map(a => a.id === updatedUser.id ? updatedUser : a));
+      // ---------- Dữ liệu mẫu (ghi thật vào Supabase) ----------
+      const handleLoadSampleData = async () => {
+        const { data: ps, error } = await sb.from('products')
+          .insert(SAMPLE_PRODUCTS.map(({ id, ...p }) => p)).select();
+        if (error) return alert('Lỗi: ' + error.message);
+        const idMap = {};
+        SAMPLE_PRODUCTS.forEach(sp => { idMap[sp.id] = ps.find(x => x.name === sp.name).id; });
+        for (const o of SAMPLE_ORDERS) {
+          const { data: ord, error: e2 } = await sb.from('orders')
+            .insert({ customer_name: o.customer_name, order_date: o.order_date, status: o.status }).select().single();
+          if (e2) return alert('Lỗi: ' + e2.message);
+          await sb.from('order_items').insert(o.items.map(i => ({
+            order_id: ord.id, product_id: idMap[i.product_id], name: i.name,
+            quantity: i.quantity, unit_price: i.unit_price, unit_cost: i.unit_cost
+          })));
+        }
+        await sb.from('transactions').insert(SAMPLE_EXPENSES.map(e => ({
+          type: e.type, category: e.category, amount: e.amount, transaction_date: e.expense_date, note: e.note
+        })));
+        await loadData();
+      };
+
+      // Vào nhanh tài khoản demo (tự tạo nếu chưa có)
+      const handleQuickDemo = async () => {
+        const email = 'demo@bizflowai.vn', password = 'demo123456';
+        let { data, error } = await sb.auth.signInWithPassword({ email, password });
+        if (error) {
+          const r = await sb.auth.signUp({ email, password, options: { data: { shop_name: 'Tiệm Trà & Cà Phê Demo' } } });
+          if (r.error || !r.data.session) return alert('Không tạo được tài khoản demo. Hãy tắt "Confirm email" trong Supabase rồi thử lại.');
+          data = r.data;
+        }
+        const { data: existing } = await sb.from('products').select('id').limit(1);
+        await finishLogin(data.session ? data.session.user : data.user);
+        if (!existing || existing.length === 0) await handleLoadSampleData();
+      };
+
+      // Kích hoạt gói (MÔ PHỎNG webhook thanh toán - chỉ để demo)
+      const handlePaymentSuccess = async () => {
+        const { error } = await sb.rpc('demo_activate_subscription');
+        if (error) return alert('Lỗi: ' + error.message);
+        await finishLogin({ id: currentUser.id, email: currentUser.email });
         setShowCheckoutModal(false);
       };
 
-      const handleLoadSampleData = () => {
-        setProducts(SAMPLE_PRODUCTS);
-        setOrders(SAMPLE_ORDERS);
-        setExpenses(SAMPLE_EXPENSES);
-      };
-
-      // Nếu chưa đăng nhập -> Hiển thị Landing + Đăng ký / Đăng nhập + Bảng giá 1 gói
-      if (!currentUser) {
-        return (
-          <AuthAndPricingPage
-            onRegister={handleRegister}
-            onLogin={handleLogin}
-            onQuickDemo={handleQuickDemo}
-          />
-        );
+      if (loading) {
+        return <div className="min-h-screen flex items-center justify-center text-slate-500 text-sm">Đang tải BizFlowAI...</div>;
       }
 
-      // Nếu đang chờ thanh toán bắt buộc (chưa dùng thử / hết hạn)
+      if (!currentUser) {
+        return <AuthAndPricingPage onRegister={handleRegister} onLogin={handleLogin} onQuickDemo={handleQuickDemo} />;
+      }
+
       if (currentUser.subscription_status === 'pending_payment' || currentUser.subscription_status === 'expired') {
         return (
           <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
-            <CheckoutModal
-              user={currentUser}
-              onConfirmPaid={handlePaymentSuccess}
-              onSwitchToTrial={() => {
-                const updated = { ...currentUser, subscription_status: 'trial', days_left: 7 };
-                setCurrentUser(updated);
-                setAccounts(prev => prev.map(a => a.id === updated.id ? updated : a));
-              }}
-              onLogout={() => setCurrentUser(null)}
-            />
+            <CheckoutModal user={currentUser} onConfirmPaid={handlePaymentSuccess} onLogout={handleLogout} />
           </div>
         );
       }
@@ -225,21 +246,17 @@
         <>
           <WorkspaceApp
             user={currentUser}
-            onLogout={() => setCurrentUser(null)}
+            onLogout={handleLogout}
             onOpenUpgrade={() => setShowCheckoutModal(true)}
             products={products} setProducts={setProducts}
             orders={orders} setOrders={setOrders}
             expenses={expenses} setExpenses={setExpenses}
             onLoadSampleData={handleLoadSampleData}
+            onReload={loadData}
           />
-
           {showCheckoutModal && (
             <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-              <CheckoutModal
-                user={currentUser}
-                onConfirmPaid={handlePaymentSuccess}
-                onClose={() => setShowCheckoutModal(false)}
-              />
+              <CheckoutModal user={currentUser} onConfirmPaid={handlePaymentSuccess} onClose={() => setShowCheckoutModal(false)} />
             </div>
           )}
         </>
@@ -257,15 +274,15 @@
       const [buyOption, setBuyOption] = useState('trial'); // 'trial' | 'buy_now'
       const [error, setError] = useState('');
 
-      const submitForm = (e) => {
+      const submitForm = async (e) => {
         e.preventDefault();
         setError('');
         if (mode === 'register') {
           if (!shopName.trim()) return setError('Vui lòng nhập tên cửa hàng của bạn.');
-          const res = onRegister({ email, password, shop_name: shopName, buyNow: buyOption === 'buy_now' });
+          const res = await onRegister({ email, password, shop_name: shopName, buyNow: buyOption === 'buy_now' });
           if (res.error) setError(res.error);
         } else {
-          const res = onLogin({ email, password });
+          const res = await onLogin({ email, password });
           if (res.error) setError(res.error);
         }
       };
@@ -432,7 +449,7 @@
 
               {mode === 'login' && (
                 <div className="mt-4 p-3 rounded-lg bg-slate-50 text-xs text-slate-500 text-center">
-                  Tài khoản mẫu: <strong>demo@bizflowai.vn</strong> | Mật khẩu: <strong>123</strong>
+                  Tài khoản mẫu: <strong>demo@bizflowai.vn</strong> | Mật khẩu: <strong>demo123456</strong>
                 </div>
               )}
             </div>
@@ -524,7 +541,7 @@
     function WorkspaceApp({
       user, onLogout, onOpenUpgrade,
       products, setProducts, orders, setOrders, expenses, setExpenses,
-      onLoadSampleData
+      onLoadSampleData, onReload
     }) {
       const [activeTab, setActiveTab] = useState('dashboard');
       const [geminiKey, setGeminiKey] = useState('');
@@ -590,41 +607,22 @@
         };
       }, [products, orders, expenses]);
 
-      const handleAddProduct = (newProd) => setProducts(prev => [...prev, { ...newProd, id: 'p' + Date.now() }]);
-      const handleUpdateProduct = (updated) => setProducts(prev => prev.map(p => p.id === updated.id ? updated : p));
-
-      const handleCreateOrder = ({ customer_name, order_date, status, selectedItems }) => {
-        const itemsWithSnapshot = selectedItems.map(si => {
-          const prod = products.find(p => p.id === si.product_id);
-          return { product_id: prod.id, name: prod.name, quantity: Number(si.quantity), unit_price: prod.selling_price, unit_cost: prod.cost_price };
-        });
-        if (status === 'completed') {
-          setProducts(prev => prev.map(p => {
-            const found = itemsWithSnapshot.find(i => i.product_id === p.id);
-            return found ? { ...p, stock: Math.max(0, p.stock - found.quantity) } : p;
-          }));
-        }
-        setOrders(prev => [{ id: 'ORD-' + Math.floor(300 + Math.random() * 699), customer_name: customer_name || 'Khách lẻ', order_date, status, items: itemsWithSnapshot }, ...prev]);
+      const run = async (fn) => {
+        const { error } = await fn();
+        if (error) alert('Lỗi: ' + error.message);
+        await onReload();
       };
-
-      const handleChangeOrderStatus = (orderId, newStatus) => {
-        const target = orders.find(o => o.id === orderId);
-        if (!target || target.status === newStatus) return;
-        if (target.status !== 'completed' && newStatus === 'completed') {
-          setProducts(prev => prev.map(p => {
-            const found = target.items.find(i => i.product_id === p.id);
-            return found ? { ...p, stock: Math.max(0, p.stock - found.quantity) } : p;
-          }));
-        } else if (target.status === 'completed' && newStatus !== 'completed') {
-          setProducts(prev => prev.map(p => {
-            const found = target.items.find(i => i.product_id === p.id);
-            return found ? { ...p, stock: p.stock + found.quantity } : p;
-          }));
-        }
-        setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
-      };
-
-      const handleAddExpense = (exp) => setExpenses(prev => [{ ...exp, id: 'e' + Date.now() }, ...prev]);
+      const handleAddProduct = (p) => run(() => sb.from('products').insert(p));
+      const handleUpdateProduct = ({ id, ...rest }) => run(() => sb.from('products').update(rest).eq('id', id));
+      // Giá bán/giá vốn được chốt ngay trong database (hàm create_order) để không thể bị sửa từ trình duyệt
+      const handleCreateOrder = ({ customer_name, order_date, status, selectedItems }) => run(() => sb.rpc('create_order', {
+        p_customer: customer_name, p_date: order_date, p_status: status,
+        p_items: selectedItems.map(i => ({ product_id: i.product_id, quantity: Number(i.quantity) }))
+      }));
+      const handleChangeOrderStatus = (orderId, newStatus) => run(() => sb.rpc('set_order_status', { p_order_id: orderId, p_status: newStatus }));
+      const handleAddExpense = (e) => run(() => sb.from('transactions').insert({
+        type: e.type, category: e.category, amount: e.amount, transaction_date: e.expense_date, note: e.note
+      }));
 
       const navItems = [
         { id: 'dashboard', label: 'Dashboard', icon: '📊' },
@@ -916,7 +914,7 @@
                   const totalRev = o.items.reduce((s, i) => s + i.quantity * i.unit_price, 0);
                   return (
                     <tr key={o.id}>
-                      <td className="py-2.5 px-3"><div className="font-bold">{o.id}</div><div className="text-slate-500">{o.order_date}</div></td>
+                      <td className="py-2.5 px-3"><div className="font-bold">{String(o.id).slice(0, 8).toUpperCase()}</div><div className="text-slate-500">{o.order_date}</div></td>
                       <td className="py-2.5 px-3">{o.items.map((it, i) => <div key={i}>{it.name} × {it.quantity} <span className="text-slate-400">(Vốn lưu: {formatVND(it.unit_cost)})</span></div>)}</td>
                       <td className="py-2.5 px-3 text-right font-semibold">{o.status === 'completed' ? formatVND(totalRev) : <span className="line-through text-slate-400">{formatVND(totalRev)}</span>}</td>
                       <td className="py-2.5 px-3">
@@ -1105,10 +1103,5 @@
 
     ReactDOM.createRoot(document.getElementById('root')).render(<App />);
   </script>
-  <!-- Supabase JS CDN -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<!-- BizFlow Supabase Configuration -->
-<script src="./supabase.js"></script>
 </body>
 </html>
