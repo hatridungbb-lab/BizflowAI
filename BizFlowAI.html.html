@@ -18,7 +18,12 @@
   <div id="root"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="./supabase.js"></script>
+  <script>
+    // ===== ĐIỀN 2 DÒNG NÀY (Supabase > Connect hoặc Settings > API Keys) =====
+    const SUPABASE_URL = "https://xofriivockwiycdnnfvx.supabase.co";      // dạng https://xxxx.supabase.co
+    const SUPABASE_KEY = "sb_publishable_Q6ogosVTXKRpzbZwJcyZmw_yKzEwKYO";  // dạng sb_publishable_... (KHÔNG dùng secret key)
+    window.sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  </script>
   <script type="text/babel">
     const { useState, useMemo, useEffect } = React;
 
