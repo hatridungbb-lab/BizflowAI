@@ -1042,7 +1042,7 @@
 
       const generateLocalAnswer = (q) => {
         const lower = q.toLowerCase();
-        if (lower.includes('lợi nhuận') && (lower.includes('thay đổi') || lower.includes('vì sao') || lower.includes('tại sao'))) {
+        if (lower.includes('lợi nhuận') && !lower.includes('dòng tiền') && (lower.includes('thay đổi') || lower.includes('vì sao') || lower.includes('tại sao'))) {
           return `📊 PHÂN TÍCH LỢI NHUẬN (${thisM.monthKey} vs ${lastM.monthKey}):\n• Doanh thu: ${formatVND(thisM.revenue)} (${revChangePct.toFixed(1)}%)\n• Lợi nhuận ròng: ${formatVND(thisM.netProfit)} (${profitChangePct.toFixed(1)}%)\n• Chi phí nguyên liệu biến động: ${materialDiff >= 0 ? '+' : ''}${formatVND(materialDiff)}\n• Chi phí vận chuyển biến động: ${shippingDiff >= 0 ? '+' : ''}${formatVND(shippingDiff)}\n• SP biên lợi nhuận thấp (<20%): ${lowMarginProducts.map(p => `${p.name} (${p.margin.toFixed(1)}%)`).join(', ') || 'Không có'}.`;
         }
         if (lower.includes('tồn kho') || lower.includes('hết hàng')) {
