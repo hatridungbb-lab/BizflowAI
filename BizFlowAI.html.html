@@ -1337,13 +1337,18 @@
               }
             });
             console.log('AI result:', { data, error });
-            if (!error && data?.reply) {
+                        if (!error && data?.reply) {
               setMessages(prev => [...prev, { role: 'ai', text: data.reply }]);
               setThinking(false);
               return;
             }
-          } catch {
-            // Chuyển sang trả lời nội bộ
+            let detail = error?.message || JSON.stringify(data);
+            try { const body = await error?.context?.json(); if (body) detail = JSON.stringify(body); } catch {}
+            console.error('AI lỗi:', error, data);
+            setMessages(prev => [...prev, { role: 'ai', text: '⚠️ LỖI AI: ' + detail }]);
+          } catch (err) {
+            console.error('AI lỗi:', err);
+            setMessages(prev => [...prev, { role: 'ai', text: '⚠️ LỖI AI: ' + String(err) }]);
           }
           setThinking(false);
         }
