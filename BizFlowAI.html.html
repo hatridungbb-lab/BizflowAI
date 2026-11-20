@@ -177,23 +177,11 @@
       };
 
       // Nạp dữ liệu mẫu idempotent qua RPC (hoặc reset nếu p_reset = true)
-      const handleLoadSampleData = async (reset = false) => {
-        if (seeding) return;
-        setSeeding(true);
-        try {
-          const { data, error } = await sb.rpc('seed_sample_data', { p_reset: reset });
-          if (error) {
-            alert('Lỗi nạp dữ liệu mẫu: ' + error.message);
-            return;
-          }
-          if (data?.status === 'already_exists') {
-            alert('Cửa hàng đã có dữ liệu. Nếu muốn làm mới lại từ đầu, hãy dùng nút "Reset dữ liệu mẫu".');
-          }
-          await loadData();
-        } finally {
-          setSeeding(false);
-        }
-      };
+      const handleLoadSampleData = async () => {
+  const { error } = await sb.rpc('seed_sample_data', { p_reset: false });
+  if (error) return alert('Lỗi: ' + error.message);
+  await loadData();
+};
 
       // Phiên Demo cô lập riêng cho từng giám khảo (không dùng chung 1 tài khoản)
       const handleQuickDemo = async () => {
