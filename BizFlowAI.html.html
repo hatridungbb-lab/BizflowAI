@@ -1336,6 +1336,7 @@
                 }
               }
             });
+            console.log('AI result:', { data, error });
             if (!error && data?.reply) {
               setMessages(prev => [...prev, { role: 'ai', text: data.reply }]);
               setThinking(false);
