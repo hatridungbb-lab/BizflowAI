@@ -3,18 +3,42 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BizFlowAI - Nền tảng Tài chính AI cho Doanh nghiệp nhỏ</title>
+  <title>BizFlow AI - Quản lý Bán hàng & Lợi nhuận cho Cửa hàng</title>
+  <!-- Favicon SVG giúp không bị lỗi 404 favicon.ico khi bấm F12 -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231d4ed8'/%3E%3Cpath d='M18 46V18h14c7 0 11 4 11 9.5 0 3.6-2 6.2-5 7.2 4 1 6.5 4 6.5 8.3 0 6-4.8 9-12 9H18z' fill='white'/%3E%3C/svg%3E" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <style>
-    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #f8fafc; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: #f8fbff;
+      color: #0f172a;
+    }
+    /* Họa tiết lưới chấm bi phong cách không gian doanh nghiệp hiện đại */
+    .bg-business-grid {
+      background-color: #f8fbff;
+      background-image:
+        radial-gradient(#cbd5e1 1px, transparent 1px),
+        radial-gradient(circle at 85% 10%, rgba(37, 99, 235, 0.08), transparent 40%),
+        radial-gradient(circle at 10% 90%, rgba(14, 165, 233, 0.08), transparent 40%);
+      background-size: 24px 24px, 100% 100%, 100% 100%;
+    }
+    .bg-business-hero {
+      background-color: #ffffff;
+      background-image:
+        linear-gradient(to right, rgba(37, 99, 235, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(37, 99, 235, 0.05) 1px, transparent 1px),
+        radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.14), transparent 50%),
+        radial-gradient(circle at 15% 80%, rgba(14, 165, 233, 0.12), transparent 45%);
+      background-size: 36px 36px, 36px 36px, 100% 100%, 100% 100%;
+    }
     .scrollbar-thin::-webkit-scrollbar { width: 6px; }
-    .scrollbar-thin::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    .scrollbar-thin::-webkit-scrollbar-thumb { background: #bfdbfe; border-radius: 3px; }
   </style>
 </head>
-<body>
+<body class="bg-business-grid">
   <div id="root"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -24,35 +48,69 @@
     const SUPABASE_KEY = "sb_publishable_Q6ogosVTXKRpzbZwJcyZmw_yKzEwKYO";
     window.sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // ===== CẤU HÌNH TÀI KHOẢN NHẬN THANH TOÁN VIETQR THẬT =====
-    // Tra mã ngân hàng tại https://api.vietqr.io/v2/banks (VD: MB, VCB, TCB, ACB, BIDV...)
-    window.VIETQR_CONFIG = {
-      BANK_ID: "MB",
-      BANK_NAME: "MB Bank (Ngân hàng Quân Đội)",
-      ACCOUNT_NO: "0123456789",          // <-- Điền số tài khoản thật của bạn
-      ACCOUNT_NAME: "CONG TY BIZFLOWAI"  // <-- Điền tên chủ tài khoản viết hoa không dấu
-    };
+    // Đặt true nếu bạn đã deploy Edge Function "ai-advisor" kèm GEMINI_API_KEY
+    // Mặc định false để không phát sinh lỗi mạng 404 khi bấm F12
+    window.ENABLE_AI_EDGE_FUNCTION = false;
   </script>
 
   <script type="text/babel">
-    const { useState, useMemo, useEffect, useRef } = React;
+    const { useState, useMemo, useEffect } = React;
 
     // ==========================================
-    // TIỆN ÍCH & CẤU HÌNH GÓI DỊCH VỤ
+    // LOGO CHÍNH THỨC BIZFLOW AI (SVG SẮC NÉT)
     // ==========================================
-    const PLAN_INFO = {
-      name: 'BizFlowAI SME Pro',
-      monthlyPrice: 199000,
-      trialDays: 7,
-      features: [
-        'Quản lý không giới hạn Đơn hàng, Sản phẩm & Tồn kho',
-        'Tự động lưu giá vốn lịch sử tại thời điểm bán',
-        'Phân biệt chính xác Doanh thu, Lợi nhuận & Dòng tiền',
-        'AI Financial Intelligence phân tích & cảnh báo 24/7',
-        'Trợ lý kinh doanh hỏi đáp theo số liệu thực tế'
-      ]
-    };
+    function BizFlowLogo({ size = 'md', showTagline = false }) {
+      const iconSizes = { sm: 'w-9 h-9', md: 'w-11 h-11', lg: 'w-16 h-16' };
+      const textSizes = { sm: 'text-lg', md: 'text-xl', lg: 'text-3xl' };
 
+      return (
+        <div className="flex items-center gap-3 select-none">
+          <svg viewBox="0 0 120 110" className={`${iconSizes[size]} shrink-0 drop-shadow-sm`} fill="none">
+            <defs>
+              <linearGradient id="bfBlueGrad" x1="15" y1="10" x2="105" y2="100" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stopColor="#0ea5e9" />
+                <stop offset="50%" stopColor="#2563eb" />
+                <stop offset="100%" stopColor="#4338ca" />
+              </linearGradient>
+              <linearGradient id="bfArrowGrad" x1="15" y1="85" x2="112" y2="18" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stopColor="#38bdf8" />
+                <stop offset="100%" stopColor="#1d4ed8" />
+              </linearGradient>
+            </defs>
+            {/* Khối chữ B cách điệu */}
+            <path
+              d="M28 14 H66 C85 14 96 24 96 38 C96 47 90 54 81 58 C93 61 100 71 100 83 C100 98 87 104 68 104 H22 L28 14 Z M47 31 L45 48 H64 C71 48 76 44 76 39 C76 34 71 31 64 31 H47 Z"
+              fill="url(#bfBlueGrad)"
+            />
+            {/* Khoét sáng bên trong tạo đường cong tăng trưởng */}
+            <path d="M16 86 C34 62 58 50 86 42 C60 56 38 72 22 96 Z" fill="#ffffff" />
+            {/* 3 cột biểu đồ tăng trưởng */}
+            <rect x="40" y="76" width="9" height="18" rx="2" fill="#ffffff" />
+            <rect x="54" y="68" width="9" height="26" rx="2" fill="#ffffff" />
+            <rect x="68" y="59" width="9" height="35" rx="2" fill="#ffffff" />
+            {/* Mũi tên đi lên */}
+            <path d="M56 54 C74 47 90 36 104 23" stroke="url(#bfArrowGrad)" strokeWidth="7" strokeLinecap="round" />
+            <path d="M92 20 L111 16 L107 35 Z" fill="#2563eb" />
+          </svg>
+
+          <div>
+            <div className={`font-extrabold tracking-tight leading-none ${textSizes[size]}`}>
+              <span className="text-slate-900">BizFlow</span>{' '}
+              <span className="bg-gradient-to-r from-sky-500 via-blue-600 to-indigo-600 bg-clip-text text-transparent">AI</span>
+            </div>
+            {showTagline && (
+              <div className="text-[11px] font-medium text-slate-500 mt-1 tracking-wide">
+                Biến dữ liệu bán hàng thành quyết định thông minh
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    // ==========================================
+    // TIỆN ÍCH ĐỊNH DẠNG TIỀN & NGÀY THÁNG
+    // ==========================================
     const formatVND = (num) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Math.round(num || 0));
     const todayStr = () => new Date().toISOString().split('T')[0];
     const getMonthKey = (dateStr) => (dateStr || '').slice(0, 7);
@@ -62,57 +120,52 @@
     const prevDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
     const LAST_MONTH = `${prevDate.getFullYear()}-${String(prevDate.getMonth() + 1).padStart(2, '0')}`;
 
+    const ORDER_STATUS_LABEL = {
+      completed: 'Đã hoàn thành',
+      pending: 'Chờ xử lý',
+      cancelled: 'Đã hủy'
+    };
+
     // ==========================================
-    // COMPONENT CHÍNH: AUTH + BILLING + WORKSPACE
+    // ỨNG DỤNG CHÍNH (ĐĂNG NHẬP & QUẢN LÝ)
     // ==========================================
     function App() {
       const [currentUser, setCurrentUser] = useState(null);
       const [loading, setLoading] = useState(true);
-      const [seeding, setSeeding] = useState(false);
-      const [showCheckoutModal, setShowCheckoutModal] = useState(false);
+      const [busy, setBusy] = useState(false);
       const [products, setProducts] = useState([]);
       const [orders, setOrders] = useState([]);
       const [expenses, setExpenses] = useState([]);
 
-      // Đọc hồ sơ từ profiles; tự động gọi ensure_profile nếu thiếu
+      // Đọc hồ sơ cửa hàng an toàn (dùng maybeSingle để không lỗi 406)
       const loadProfile = async (authUser) => {
-        let { data: prof, error } = await sb
-          .from('profiles')
-          .select('*')
-          .eq('id', authUser.id)
-          .maybeSingle();
+        try {
+          let { data: prof, error } = await sb
+            .from('profiles')
+            .select('*')
+            .eq('id', authUser.id)
+            .maybeSingle();
 
-        if (!prof || error) {
-          const fallbackName = authUser.user_metadata?.shop_name || 'Cửa hàng BizFlowAI';
-          const isDemo = Boolean(authUser.user_metadata?.is_demo || authUser.is_anonymous);
-          const { data: ensured, error: ensureErr } = await sb.rpc('ensure_profile', {
-            p_shop_name: fallbackName,
-            p_is_demo: isDemo
-          });
-          if (ensureErr || !ensured) {
-            console.error('Không thể tải hoặc khởi tạo profile:', ensureErr);
-            return null;
+          if (!prof || error) {
+            const shopName = authUser.user_metadata?.shop_name || 'Cửa hàng của tôi';
+            const isDemo = Boolean(authUser.user_metadata?.is_demo || authUser.is_anonymous);
+            const { data: ensured, error: ensureErr } = await sb.rpc('ensure_profile', {
+              p_shop_name: shopName,
+              p_is_demo: isDemo
+            });
+            if (ensureErr || !ensured) return null;
+            prof = ensured;
           }
-          prof = ensured;
+
+          return {
+            id: authUser.id,
+            email: authUser.email || 'Tài khoản dùng thử riêng',
+            shop_name: prof.shop_name,
+            is_demo: Boolean(prof.is_demo || authUser.is_anonymous)
+          };
+        } catch {
+          return null;
         }
-
-        const endsAt = new Date(
-          prof.subscription_status === 'active' && prof.subscription_ends_at
-            ? prof.subscription_ends_at
-            : prof.trial_ends_at
-        );
-        const daysLeft = Math.max(0, Math.ceil((endsAt - new Date()) / 86400000));
-        let status = prof.subscription_status;
-        if ((status === 'trial' || status === 'active') && daysLeft === 0) status = 'expired';
-
-        return {
-          id: authUser.id,
-          email: authUser.email || 'Phiên Demo Ẩn Danh',
-          shop_name: prof.shop_name,
-          is_demo: prof.is_demo || authUser.is_anonymous,
-          subscription_status: status,
-          days_left: daysLeft
-        };
       };
 
       const loadData = async () => {
@@ -121,12 +174,26 @@
           sb.from('orders').select('*, order_items(*)').order('order_date', { ascending: false }).order('created_at', { ascending: false }),
           sb.from('transactions').select('*').order('transaction_date', { ascending: false }),
         ]);
-        setProducts((p.data || []).map(x => ({ ...x, selling_price: Number(x.selling_price), cost_price: Number(x.cost_price) })));
+
+        setProducts((p.data || []).map(x => ({
+          ...x,
+          selling_price: Number(x.selling_price),
+          cost_price: Number(x.cost_price)
+        })));
         setOrders((o.data || []).map(x => ({
           ...x,
-          items: (x.order_items || []).map(i => ({ ...i, quantity: Number(i.quantity), unit_price: Number(i.unit_price), unit_cost: Number(i.unit_cost) }))
+          items: (x.order_items || []).map(i => ({
+            ...i,
+            quantity: Number(i.quantity),
+            unit_price: Number(i.unit_price),
+            unit_cost: Number(i.unit_cost)
+          }))
         })));
-        setExpenses((t.data || []).map(x => ({ ...x, amount: Number(x.amount), expense_date: x.transaction_date })));
+        setExpenses((t.data || []).map(x => ({
+          ...x,
+          amount: Number(x.amount),
+          expense_date: x.transaction_date
+        })));
       };
 
       const finishLogin = async (authUser) => {
@@ -138,9 +205,10 @@
 
       useEffect(() => {
         sb.auth.getSession().then(async ({ data }) => {
-          if (data.session) await finishLogin(data.session.user);
+          if (data?.session?.user) await finishLogin(data.session.user);
           setLoading(false);
-        });
+        }).catch(() => setLoading(false));
+
         const { data: sub } = sb.auth.onAuthStateChange((event) => {
           if (event === 'SIGNED_OUT') {
             setCurrentUser(null);
@@ -152,22 +220,22 @@
         return () => sub.subscription.unsubscribe();
       }, []);
 
-      const handleRegister = async ({ email, password, shop_name, buyNow }) => {
+      // Đăng ký tài khoản mới -> Bắt đầu với dữ liệu TRẮNG hoàn toàn (tự thêm sản phẩm & đơn hàng)
+      const handleRegister = async ({ email, password, shop_name }) => {
         const { data, error } = await sb.auth.signUp({
           email,
           password,
           options: { data: { shop_name, is_demo: false } }
         });
         if (error) return { error: error.message };
-        if (!data.session) return { error: 'Đã tạo tài khoản. Vui lòng xác nhận email rồi đăng nhập.' };
+        if (!data.session) return { error: 'Đã tạo tài khoản. Vui lòng kiểm tra email để xác nhận trước khi đăng nhập.' };
         await finishLogin(data.session.user);
-        if (buyNow) setShowCheckoutModal(true);
         return { ok: true };
       };
 
       const handleLogin = async ({ email, password }) => {
         const { data, error } = await sb.auth.signInWithPassword({ email, password });
-        if (error) return { error: 'Sai email hoặc mật khẩu!' };
+        if (error) return { error: 'Email hoặc mật khẩu chưa chính xác!' };
         await finishLogin(data.user);
         return { ok: true };
       };
@@ -176,39 +244,27 @@
         await sb.auth.signOut();
       };
 
-      // Nạp dữ liệu mẫu idempotent qua RPC (hoặc reset nếu p_reset = true)
-      const handleLoadSampleData = async () => {
-  const { error } = await sb.rpc('seed_sample_data', { p_reset: false });
-  if (error) return alert('Lỗi: ' + error.message);
-  await loadData();
-};
-
-      // Phiên Demo cô lập riêng cho từng giám khảo (không dùng chung 1 tài khoản)
+      // Chỉ dùng cho nút "Xem thử bản mẫu" (tạo phiên riêng biệt không trùng ai)
       const handleQuickDemo = async () => {
-        if (seeding) return;
-        setSeeding(true);
+        if (busy) return;
+        setBusy(true);
         try {
           let authData = null;
-
-          // Ưu tiên Anonymous Sign-In (cô lập hoàn toàn từng trình duyệt)
           const anonRes = await sb.auth.signInAnonymously({
-            options: { data: { shop_name: 'Tiệm Trà & Cà Phê Demo (Riêng tư)', is_demo: true } }
+            options: { data: { shop_name: 'Cửa hàng Trà & Cà Phê Mẫu', is_demo: true } }
           });
 
           if (!anonRes.error && anonRes.data?.session) {
             authData = anonRes.data;
           } else {
-            // Dự phòng nếu chưa bật Anonymous Sign-Ins: tạo tài khoản demo ngẫu nhiên riêng
-            const randId = Math.random().toString(36).slice(2, 10);
-            const demoEmail = `demo.${randId}@demo.bizflowai.vn`;
-            const demoPass = `Demo#${randId}99`;
+            const randId = Math.random().toString(36).slice(2, 9);
             const signUpRes = await sb.auth.signUp({
-              email: demoEmail,
-              password: demoPass,
-              options: { data: { shop_name: `Tiệm Demo #${randId.toUpperCase()}`, is_demo: true } }
+              email: `demo.${randId}@demo.bizflowai.vn`,
+              password: `Demo#${randId}88`,
+              options: { data: { shop_name: `Cửa hàng Mẫu #${randId.toUpperCase()}`, is_demo: true } }
             });
             if (signUpRes.error || !signUpRes.data?.session) {
-              alert('Hãy bật "Anonymous Sign-Ins" hoặc tắt "Confirm email" trong Supabase Authentication để dùng Demo nhanh.');
+              alert('Vui lòng bật "Anonymous Sign-Ins" trong Supabase Authentication để dùng chế độ xem thử nhanh.');
               return;
             }
             authData = signUpRes.data;
@@ -218,80 +274,64 @@
           await sb.rpc('seed_sample_data', { p_reset: false });
           await loadData();
         } finally {
-          setSeeding(false);
+          setBusy(false);
         }
       };
 
-      // Làm mới profile sau khi thanh toán thành công từ backend webhook
-      const handlePaymentVerified = async () => {
-        const { data: { user } } = await sb.auth.getUser();
-        if (user) await finishLogin(user);
-        setShowCheckoutModal(false);
+      const handleResetSampleData = async () => {
+        if (busy) return;
+        setBusy(true);
+        try {
+          const { error } = await sb.rpc('seed_sample_data', { p_reset: true });
+          if (error) alert('Không thể làm mới dữ liệu: ' + error.message);
+          else await loadData();
+        } finally {
+          setBusy(false);
+        }
       };
 
       if (loading) {
-        return <div className="min-h-screen flex items-center justify-center text-slate-500 text-sm">Đang tải BizFlowAI...</div>;
-      }
-
-      if (!currentUser) {
         return (
-          <AuthAndPricingPage
-            onRegister={handleRegister}
-            onLogin={handleLogin}
-            onQuickDemo={handleQuickDemo}
-            demoLoading={seeding}
-          />
-        );
-      }
-
-      if (currentUser.subscription_status === 'pending_payment' || currentUser.subscription_status === 'expired') {
-        return (
-          <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
-            <CheckoutModal
-              user={currentUser}
-              onPaymentVerified={handlePaymentVerified}
-              onLogout={handleLogout}
-            />
+          <div className="min-h-screen flex flex-col items-center justify-center gap-3 bg-business-grid">
+            <BizFlowLogo size="md" />
+            <div className="text-sm text-blue-700 font-medium">Đang tải dữ liệu cửa hàng...</div>
           </div>
         );
       }
 
-      return (
-        <>
-          <WorkspaceApp
-            user={currentUser}
-            onLogout={handleLogout}
-            onOpenUpgrade={() => setShowCheckoutModal(true)}
-            products={products}
-            orders={orders}
-            expenses={expenses}
-            seeding={seeding}
-            onLoadSampleData={() => handleLoadSampleData(false)}
-            onResetSampleData={() => handleLoadSampleData(true)}
-            onReload={loadData}
+      if (!currentUser) {
+        return (
+          <AuthPage
+            onRegister={handleRegister}
+            onLogin={handleLogin}
+            onQuickDemo={handleQuickDemo}
+            demoLoading={busy}
           />
-          {showCheckoutModal && (
-            <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-              <CheckoutModal
-                user={currentUser}
-                onPaymentVerified={handlePaymentVerified}
-                onClose={() => setShowCheckoutModal(false)}
-              />
-            </div>
-          )}
-        </>
+        );
+      }
+
+      return (
+        <WorkspaceApp
+          user={currentUser}
+          onLogout={handleLogout}
+          products={products}
+          orders={orders}
+          expenses={expenses}
+          busy={busy}
+          onResetSampleData={handleResetSampleData}
+          onReload={loadData}
+        />
       );
     }
 
     // ==========================================
-    // MÀN HÌNH 1: LANDING + BẢNG GIÁ + AUTH
+    // MÀN HÌNH ĐĂNG NHẬP & ĐĂNG KÝ (BLUE & WHITE BUSINESS SPACE)
     // ==========================================
-    function AuthAndPricingPage({ onRegister, onLogin, onQuickDemo, demoLoading }) {
-      const [mode, setMode] = useState('register');
+    function AuthPage({ onRegister, onLogin, onQuickDemo, demoLoading }) {
+      const [mode, setMode] = useState('login');
       const [shopName, setShopName] = useState('');
       const [email, setEmail] = useState('');
       const [password, setPassword] = useState('');
-      const [buyOption, setBuyOption] = useState('trial');
       const [error, setError] = useState('');
       const [submitting, setSubmitting] = useState(false);
 
@@ -302,7 +342,7 @@
         try {
           if (mode === 'register') {
             if (!shopName.trim()) return setError('Vui lòng nhập tên cửa hàng của bạn.');
-            const res = await onRegister({ email, password, shop_name: shopName, buyNow: buyOption === 'buy_now' });
+            const res = await onRegister({ email, password, shop_name: shopName });
             if (res.error) setError(res.error);
           } else {
             const res = await onLogin({ email, password });
@@ -314,79 +354,76 @@
       };
 
       return (
-        <div className="min-h-screen bg-slate-950 text-white flex flex-col">
-          <header className="max-w-6xl w-full mx-auto px-6 py-5 flex items-center justify-between border-b border-slate-800">
-            <div className="flex items-center gap-2">
-              <span className="text-2xl">⚡</span>
-              <span className="font-bold text-xl bg-gradient-to-r from-indigo-400 to-emerald-400 bg-clip-text text-transparent">
-                BizFlowAI
-              </span>
-            </div>
+        <div className="min-h-screen bg-business-hero flex flex-col relative overflow-hidden">
+          {/* Họa tiết trang trí góc trên/dưới */}
+          <div className="pointer-events-none absolute -top-24 -right-24 w-96 h-96 rounded-full bg-blue-100/70 blur-3xl"></div>
+          <div className="pointer-events-none absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-sky-100/70 blur-3xl"></div>
+
+          <header className="relative z-10 max-w-6xl w-full mx-auto px-6 py-5 flex flex-wrap items-center justify-between gap-4 border-b border-blue-100 bg-white/80 backdrop-blur-md">
+            <BizFlowLogo size="md" showTagline={true} />
             <button
               onClick={onQuickDemo}
               disabled={demoLoading}
-              className="px-4 py-2 rounded-lg bg-emerald-500/15 text-emerald-300 border border-emerald-500/40 text-xs font-semibold hover:bg-emerald-500/25 transition disabled:opacity-50"
+              className="px-4 py-2.5 rounded-xl bg-blue-50 text-blue-700 border border-blue-200 text-xs font-bold hover:bg-blue-100 transition shadow-sm disabled:opacity-50"
             >
-              {demoLoading ? '⏳ Đang tạo phiên Demo riêng...' : '🎯 Vào nhanh Demo Riêng Biệt (Ban Giám Khảo)'}
+              {demoLoading ? '⏳ Đang mở bản mẫu riêng...' : '👀 Xem thử với dữ liệu mẫu (Tách biệt)'}
             </button>
           </header>
 
-          <main className="flex-1 max-w-6xl w-full mx-auto px-6 py-10 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+          <main className="relative z-10 flex-1 max-w-6xl w-full mx-auto px-6 py-10 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+            {/* CỘT TRÁI: GIỚI THIỆU DỄ HIỂU */}
             <div className="lg:col-span-7 space-y-6">
-              <div className="inline-block px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-xs font-semibold">
-                Dành riêng cho Doanh nghiệp nhỏ & Chủ Shop
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 text-xs font-bold">
+                <span className="w-2 h-2 rounded-full bg-blue-600"></span>
+                Sổ quản lý kinh doanh thông minh cho chủ cửa hàng
               </div>
-              <h1 className="text-3xl sm:text-4xl font-extrabold leading-tight">
-                Biết chính xác <span className="text-emerald-400">Lợi nhuận thật</span>, không nhầm lẫn với Doanh thu.
+
+              <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 leading-tight">
+                Nắm rõ <span className="text-blue-600">Tiền lãi thực tế</span> và <span className="text-sky-600">Hàng tồn kho</span> chỉ trong vài phút mỗi ngày.
               </h1>
-              <p className="text-slate-400 text-sm sm:text-base leading-relaxed">
-                BizFlowAI giúp bạn quản lý đơn hàng, tồn kho, sổ thu chi và tích hợp trợ lý AI phân tích nguyên nhân biến động lợi nhuận theo thời gian thực.
+
+              <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+                Không cần biết kế toán phức tạp. BizFlow AI giúp bạn ghi đơn bán hàng, theo dõi hàng sắp hết, ghi chép thu chi hằng ngày và tự động giải thích lý do tăng giảm tiền lãi.
               </p>
 
-              <div className="bg-gradient-to-br from-slate-900 to-slate-800 border-2 border-indigo-500 rounded-2xl p-6 shadow-2xl shadow-indigo-950/50">
-                <div className="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-slate-700">
-                  <div>
-                    <span className="text-xs font-bold uppercase tracking-wider text-indigo-400">Gói duy nhất - Đầy đủ tính năng</span>
-                    <h2 className="text-xl font-bold text-white mt-0.5">{PLAN_INFO.name}</h2>
-                  </div>
-                  <div className="text-right">
-                    <span className="text-3xl font-extrabold text-emerald-400">{formatVND(PLAN_INFO.monthlyPrice)}</span>
-                    <span className="text-xs text-slate-400"> / tháng</span>
-                  </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+                <div className="bg-white/90 p-4 rounded-2xl border border-blue-100 shadow-sm">
+                  <div className="w-9 h-9 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center text-lg mb-2">🧾</div>
+                  <div className="font-bold text-sm text-slate-800">Ghi đơn nhanh</div>
+                  <div className="text-xs text-slate-500 mt-1">Tự trừ tồn kho và nhớ sẵn giá nhập lúc bán.</div>
                 </div>
-                <ul className="mt-4 space-y-2.5 text-sm text-slate-300">
-                  {PLAN_INFO.features.map((f, idx) => (
-                    <li key={idx} className="flex items-start gap-2.5">
-                      <span className="text-emerald-400 font-bold">✓</span>
-                      <span>{f}</span>
-                    </li>
-                  ))}
-                </ul>
-                <div className="mt-5 pt-4 border-t border-slate-700/80 flex items-center justify-between text-xs text-slate-400">
-                  <span>🎁 Tặng <strong>7 ngày dùng thử miễn phí</strong></span>
-                  <span>💳 Thanh toán qua VietQR tự động xác nhận</span>
+                <div className="bg-white/90 p-4 rounded-2xl border border-blue-100 shadow-sm">
+                  <div className="w-9 h-9 rounded-lg bg-sky-100 text-sky-700 flex items-center justify-center text-lg mb-2">💰</div>
+                  <div className="font-bold text-sm text-slate-800">Rõ tiền lời, tiền mặt</div>
+                  <div className="text-xs text-slate-500 mt-1">Phân biệt rạch ròi tiền bán được và tiền còn trong túi.</div>
+                </div>
+                <div className="bg-white/90 p-4 rounded-2xl border border-blue-100 shadow-sm">
+                  <div className="w-9 h-9 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center text-lg mb-2">🤖</div>
+                  <div className="font-bold text-sm text-slate-800">Hỏi đáp dễ hiểu</div>
+                  <div className="text-xs text-slate-500 mt-1">Trợ lý AI giải thích bằng tiếng Việt đơn giản.</div>
                 </div>
               </div>
             </div>
 
-            <div className="lg:col-span-5 bg-white text-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl">
-              <div className="flex border-b border-slate-200 mb-6">
-                <button
-                  onClick={() => { setMode('register'); setError(''); }}
-                  className={`flex-1 pb-3 text-sm font-bold border-b-2 transition ${mode === 'register' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-400'}`}
-                >
-                  Tạo tài khoản mới
-                </button>
+            {/* CỘT PHẢI: FORM ĐĂNG NHẬP / ĐĂNG KÝ */}
+            <div className="lg:col-span-5 bg-white rounded-2xl p-6 sm:p-8 shadow-xl shadow-blue-900/5 border border-blue-100">
+              <div className="flex bg-blue-50/70 p-1 rounded-xl mb-6">
                 <button
                   onClick={() => { setMode('login'); setError(''); }}
-                  className={`flex-1 pb-3 text-sm font-bold border-b-2 transition ${mode === 'login' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-400'}`}
+                  className={`flex-1 py-2.5 text-sm font-bold rounded-lg transition ${mode === 'login' ? 'bg-white text-blue-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                 >
                   Đăng nhập
+                </button>
+                <button
+                  onClick={() => { setMode('register'); setError(''); }}
+                  className={`flex-1 py-2.5 text-sm font-bold rounded-lg transition ${mode === 'register' ? 'bg-white text-blue-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                >
+                  Tạo cửa hàng mới
                 </button>
               </div>
 
               {error && (
-                <div className="mb-4 p-3 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium">
+                <div className="mb-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium">
                   {error}
                 </div>
               )}
@@ -394,64 +431,54 @@
               <form onSubmit={submitForm} className="space-y-4 text-sm">
                 {mode === 'register' && (
                   <div>
-                    <label className="block text-xs font-semibold text-slate-600 mb-1">Tên Cửa hàng / Doanh nghiệp</label>
+                    <label className="block text-xs font-semibold text-slate-700 mb-1.5">Tên cửa hàng của bạn</label>
                     <input
                       required
                       value={shopName}
                       onChange={e => setShopName(e.target.value)}
-                      placeholder="VD: Tiệm Bánh Mì An Nhiên"
-                      className="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                      placeholder="VD: Tiệm Trà Sữa Minh Anh"
+                      className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600"
                     />
                   </div>
                 )}
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-600 mb-1">Email</label>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">Địa chỉ Email</label>
                   <input
                     required
                     type="email"
                     value={email}
                     onChange={e => setEmail(e.target.value)}
-                    placeholder="chushop@gmail.com"
-                    className="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                    placeholder="tenban@gmail.com"
+                    className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-600 mb-1">Mật khẩu</label>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">Mật khẩu</label>
                   <input
                     required
                     minLength={6}
                     type="password"
                     value={password}
                     onChange={e => setPassword(e.target.value)}
-                    placeholder="Tối thiểu 6 ký tự"
-                    className="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                    placeholder="Ít nhất 6 ký tự"
+                    className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600"
                   />
                 </div>
 
                 {mode === 'register' && (
-                  <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2">
-                    <div className="text-xs font-bold text-slate-700">Chọn hình thức bắt đầu:</div>
-                    <label className="flex items-center gap-2 text-xs cursor-pointer">
-                      <input type="radio" name="buyOpt" checked={buyOption === 'trial'} onChange={() => setBuyOption('trial')} className="accent-indigo-600" />
-                      <span>Dùng thử miễn phí <strong>7 ngày</strong></span>
-                    </label>
-                    <label className="flex items-center gap-2 text-xs cursor-pointer">
-                      <input type="radio" name="buyOpt" checked={buyOption === 'buy_now'} onChange={() => setBuyOption('buy_now')} className="accent-indigo-600" />
-                      <span>Mua gói <strong>SME Pro (199.000đ/tháng)</strong> ngay qua VietQR</span>
-                    </label>
+                  <div className="p-3 rounded-xl bg-blue-50/80 border border-blue-100 text-xs text-blue-800">
+                    🔒 Dữ liệu cửa hàng của bạn được tách biệt hoàn toàn. Sau khi tạo tài khoản, bạn sẽ tự thêm sản phẩm và đơn hàng của riêng mình.
                   </div>
                 )}
 
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-200 transition disabled:opacity-50"
+                  className="w-full py-3 bg-gradient-to-r from-blue-600 to-sky-600 hover:from-blue-700 hover:to-sky-700 text-white font-bold rounded-xl shadow-md shadow-blue-200 transition disabled:opacity-50"
                 >
-                  {submitting ? 'Đang xử lý...' : mode === 'register'
-                    ? (buyOption === 'buy_now' ? 'Đăng ký & Mở mã VietQR →' : 'Tạo tài khoản & Dùng thử ngay →')
-                    : 'Đăng nhập vào BizFlowAI'}
+                  {submitting ? 'Đang xử lý...' : mode === 'register' ? 'Tạo cửa hàng & Bắt đầu →' : 'Đăng nhập vào cửa hàng'}
                 </button>
               </form>
             </div>
@@ -461,146 +488,14 @@
     }
 
     // ==========================================
-    // MÀN HÌNH 2: MODAL THANH TOÁN VIETQR THẬT + XÁC MINH BACKEND
-    // ==========================================
-    function CheckoutModal({ user, onPaymentVerified, onClose, onLogout }) {
-      const [paymentOrder, setPaymentOrder] = useState(null);
-      const [statusMsg, setStatusMsg] = useState('Đang tạo mã thanh toán VietQR...');
-      const [checking, setChecking] = useState(false);
-
-      useEffect(() => {
-        let channel = null;
-
-        const initPayment = async () => {
-          const { data, error } = await sb.rpc('create_payment_order');
-          if (error || !data) {
-            setStatusMsg('❌ Lỗi tạo đơn thanh toán: ' + (error?.message || 'Không xác định'));
-            return;
-          }
-          setPaymentOrder(data);
-          setStatusMsg('⏳ Đang chờ xác nhận chuyển khoản tự động từ ngân hàng...');
-
-          // Lắng nghe Realtime khi Edge Function vietqr-webhook cập nhật paid
-          channel = sb
-            .channel(`payment-${data.order_code}`)
-            .on(
-              'postgres_changes',
-              {
-                event: 'UPDATE',
-                schema: 'public',
-                table: 'payment_orders',
-                filter: `order_code=eq.${data.order_code}`
-              },
-              (payload) => {
-                if (payload.new?.status === 'paid') {
-                  setStatusMsg('✅ Đã nhận thanh toán! Đang kích hoạt gói...');
-                  onPaymentVerified();
-                }
-              }
-            )
-            .subscribe();
-        };
-
-        initPayment();
-        return () => {
-          if (channel) sb.removeChannel(channel);
-        };
-      }, []);
-
-      const checkPaymentStatus = async () => {
-        if (!paymentOrder) return;
-        setChecking(true);
-        try {
-          const { data } = await sb
-            .from('payment_orders')
-            .select('status')
-            .eq('id', paymentOrder.id)
-            .single();
-
-          if (data?.status === 'paid') {
-            setStatusMsg('✅ Đã nhận thanh toán! Đang kích hoạt gói...');
-            await onPaymentVerified();
-          } else {
-            setStatusMsg('⏳ Giao dịch chưa ghi nhận trên hệ thống. Vui lòng đợi vài giây sau khi chuyển khoản.');
-          }
-        } finally {
-          setChecking(false);
-        }
-      };
-
-      const qrUrl = paymentOrder
-        ? `https://img.vietqr.io/image/${VIETQR_CONFIG.BANK_ID}-${VIETQR_CONFIG.ACCOUNT_NO}-compact2.png?amount=${paymentOrder.amount}&addInfo=${encodeURIComponent(paymentOrder.order_code)}&accountName=${encodeURIComponent(VIETQR_CONFIG.ACCOUNT_NAME)}`
-        : null;
-
-      return (
-        <div className="bg-white text-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 relative">
-          {onClose && (
-            <button onClick={onClose} className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 text-lg">✕</button>
-          )}
-
-          <div className="text-center">
-            <span className="px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold">
-              Thanh toán {PLAN_INFO.name}
-            </span>
-            <h2 className="text-xl font-bold mt-2">Quét mã VietQR để kích hoạt</h2>
-            <p className="text-xs text-slate-500 mt-1">Cửa hàng: <strong>{user.shop_name}</strong></p>
-          </div>
-
-          <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center space-y-3">
-            {qrUrl ? (
-              <img
-                src={qrUrl}
-                alt="Mã VietQR thanh toán"
-                className="w-52 h-52 object-contain rounded-xl border border-slate-200 bg-white p-2 shadow-sm"
-              />
-            ) : (
-              <div className="w-52 h-52 flex items-center justify-center text-xs text-slate-400 bg-white rounded-xl border">
-                Đang tải mã QR...
-              </div>
-            )}
-
-            <div className="w-full text-xs space-y-1.5 bg-white p-3 rounded-lg border border-slate-200">
-              <div className="flex justify-between"><span className="text-slate-500">Ngân hàng:</span><span className="font-bold">{VIETQR_CONFIG.BANK_NAME}</span></div>
-              <div className="flex justify-between"><span className="text-slate-500">Số tài khoản:</span><span className="font-bold">{VIETQR_CONFIG.ACCOUNT_NO}</span></div>
-              <div className="flex justify-between"><span className="text-slate-500">Chủ tài khoản:</span><span className="font-bold">{VIETQR_CONFIG.ACCOUNT_NAME}</span></div>
-              <div className="flex justify-between"><span className="text-slate-500">Số tiền:</span><span className="font-bold text-emerald-600">{formatVND(paymentOrder?.amount || PLAN_INFO.monthlyPrice)}</span></div>
-              <div className="flex justify-between"><span className="text-slate-500">Nội dung CK (bắt buộc):</span><span className="font-bold text-indigo-600">{paymentOrder?.order_code || '...'}</span></div>
-            </div>
-
-            <div className="text-[11px] text-center text-slate-600 font-medium bg-indigo-50 border border-indigo-100 rounded-lg px-3 py-2 w-full">
-              {statusMsg}
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <button
-              onClick={checkPaymentStatus}
-              disabled={checking || !paymentOrder}
-              className="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-lg shadow-indigo-200 transition disabled:opacity-50"
-            >
-              {checking ? 'Đang kiểm tra với máy chủ...' : '🔄 Kiểm tra trạng thái thanh toán'}
-            </button>
-
-            {onLogout && (
-              <button onClick={onLogout} className="w-full py-1 text-xs text-slate-400 hover:text-slate-600">
-                ← Quay lại trang đăng nhập
-              </button>
-            )}
-          </div>
-        </div>
-      );
-    }
-
-    // ==========================================
-    // MÀN HÌNH 3: WORKSPACE CHÍNH
+    // KHÔNG GIAN LÀM VIỆC CHÍNH (BLUE & WHITE)
     // ==========================================
     function WorkspaceApp({
-      user, onLogout, onOpenUpgrade,
-      products, orders, expenses, seeding,
-      onLoadSampleData, onResetSampleData, onReload
+      user, onLogout, products, orders, expenses,
+      busy, onResetSampleData, onReload
     }) {
       const [activeTab, setActiveTab] = useState('dashboard');
-      const [showPipeline, setShowPipeline] = useState(true);
+      const [showHowItWorks, setShowHowItWorks] = useState(true);
 
       const analytics = useMemo(() => {
         const calcPeriod = (monthKey) => {
@@ -619,8 +514,8 @@
           const pendingValue = pendingOrders.reduce((sum, o) => sum + o.items.reduce((s, i) => s + i.quantity * i.unit_price, 0), 0);
           const monthExp = expenses.filter(e => getMonthKey(e.expense_date) === monthKey);
           const opex = monthExp.filter(e => e.type === 'expense').reduce((s, e) => s + e.amount, 0);
-          const materialCost = monthExp.filter(e => e.type === 'expense' && e.category === 'Nguyên liệu').reduce((s, e) => s + e.amount, 0);
-          const shippingCost = monthExp.filter(e => e.type === 'expense' && e.category === 'Vận chuyển').reduce((s, e) => s + e.amount, 0);
+          const materialCost = monthExp.filter(e => e.type === 'expense' && e.category.includes('Nguyên liệu')).reduce((s, e) => s + e.amount, 0);
+          const shippingCost = monthExp.filter(e => e.type === 'expense' && (e.category.includes('giao') || e.category.includes('chuyển'))).reduce((s, e) => s + e.amount, 0);
           const otherIncome = monthExp.filter(e => e.type === 'income').reduce((s, e) => s + e.amount, 0);
           const inventoryCashOut = monthExp.filter(e => e.type === 'inventory_purchase').reduce((s, e) => s + e.amount, 0);
 
@@ -662,11 +557,13 @@
 
       const run = async (fn) => {
         const { error } = await fn();
-        if (error) alert('Lỗi: ' + error.message);
+        if (error) alert('Có lỗi xảy ra: ' + error.message);
         await onReload();
       };
+
       const handleAddProduct = (p) => run(() => sb.from('products').insert(p));
       const handleUpdateProduct = ({ id, ...rest }) => run(() => sb.from('products').update(rest).eq('id', id));
+      const handleDeleteProduct = (id) => run(() => sb.from('products').delete().eq('id', id));
       const handleCreateOrder = ({ customer_name, order_date, status, selectedItems }) => run(() => sb.rpc('create_order', {
         p_customer: customer_name, p_date: order_date, p_status: status,
         p_items: selectedItems.map(i => ({ product_id: i.product_id, quantity: Number(i.quantity) }))
@@ -675,108 +572,143 @@
       const handleAddExpense = (e) => run(() => sb.from('transactions').insert({
         type: e.type, category: e.category, amount: e.amount, transaction_date: e.expense_date, note: e.note
       }));
+      const handleDeleteExpense = (id) => run(() => sb.from('transactions').delete().eq('id', id));
 
       const navItems = [
-        { id: 'dashboard', label: 'Dashboard', icon: '📊' },
-        { id: 'orders', label: 'Orders', icon: '🧾', badge: analytics.thisM.pendingCount },
-        { id: 'products', label: 'Products', icon: '📦', badge: analytics.lowStockProducts.length, badgeColor: 'bg-rose-500' },
-        { id: 'finance', label: 'Finance', icon: '💳' },
-        { id: 'ai', label: 'AI Intelligence', icon: '🤖', highlight: true },
+        { id: 'dashboard', label: 'Tổng quan', icon: '📊' },
+        { id: 'orders', label: 'Đơn hàng', icon: '🧾', badge: analytics.thisM.pendingCount },
+        { id: 'products', label: 'Sản phẩm & Kho', icon: '📦', badge: analytics.lowStockProducts.length, badgeColor: 'bg-rose-500' },
+        { id: 'finance', label: 'Sổ Thu & Chi', icon: '💳' },
+        { id: 'ai', label: 'Trợ lý AI', icon: '🤖', highlight: true },
       ];
 
       return (
-        <div className="min-h-screen flex flex-col md:flex-row text-slate-800">
-          <aside className="w-full md:w-64 bg-slate-900 text-white flex flex-col shrink-0">
-            <div className="p-5 border-b border-slate-800">
-              <div className="flex items-center gap-2">
-                <span className="text-2xl">⚡</span>
-                <span className="font-bold text-xl bg-gradient-to-r from-indigo-400 to-emerald-400 bg-clip-text text-transparent">BizFlowAI</span>
+        <div className="min-h-screen flex flex-col md:flex-row">
+          {/* THANH ĐIỀU HƯỚNG TRÁI (WHITE + BLUE BUSINESS ACCENTS) */}
+          <aside className="w-full md:w-64 bg-white border-r border-blue-100 flex flex-col shrink-0 shadow-sm">
+            <div className="p-5 border-b border-blue-100 bg-gradient-to-br from-white to-blue-50/60">
+              <BizFlowLogo size="sm" />
+              <div className="mt-4 p-3 rounded-xl bg-blue-50 border border-blue-100">
+                <div className="text-[11px] font-semibold text-blue-600 uppercase tracking-wider">Cửa hàng đang quản lý</div>
+                <div className="text-sm font-bold text-slate-900 truncate mt-0.5">🏪 {user.shop_name}</div>
+                <div className="text-[11px] text-slate-500 truncate mt-0.5">{user.email}</div>
               </div>
-              <div className="mt-2 text-xs font-semibold text-slate-200 truncate">🏪 {user.shop_name}</div>
-              <div className="text-[11px] text-slate-400 truncate">{user.email}</div>
             </div>
 
-            <nav className="flex-1 p-3 space-y-1">
-              {navItems.map(item => (
-                <button
-                  key={item.id}
-                  onClick={() => setActiveTab(item.id)}
-                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-lg text-sm font-medium transition ${
-                    activeTab === item.id ? 'bg-indigo-600 text-white shadow-md' :
-                    item.highlight ? 'text-emerald-300 hover:bg-slate-800' : 'text-slate-300 hover:bg-slate-800'
-                  }`}
-                >
-                  <span className="flex items-center gap-2.5"><span>{item.icon}</span><span>{item.label}</span></span>
-                  {item.badge > 0 && <span className={`px-2 py-0.5 text-xs rounded-full text-white ${item.badgeColor || 'bg-amber-500'}`}>{item.badge}</span>}
-                </button>
-              ))}
+            <nav className="flex-1 p-3 space-y-1.5">
+              {navItems.map(item => {
+                const isActive = activeTab === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => setActiveTab(item.id)}
+                    className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition ${
+                      isActive
+                        ? 'bg-gradient-to-r from-blue-600 to-sky-600 text-white shadow-md shadow-blue-200'
+                        : item.highlight
+                        ? 'text-blue-700 bg-blue-50/70 hover:bg-blue-100/70'
+                        : 'text-slate-600 hover:bg-blue-50/60 hover:text-blue-700'
+                    }`}
+                  >
+                    <span className="flex items-center gap-2.5"><span>{item.icon}</span><span>{item.label}</span></span>
+                    {item.badge > 0 && (
+                      <span className={`px-2 py-0.5 text-xs rounded-full text-white ${isActive ? 'bg-white/25' : (item.badgeColor || 'bg-amber-500')}`}>
+                        {item.badge}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
             </nav>
 
-            <div className="p-4 m-3 rounded-xl bg-slate-800 border border-slate-700 text-xs space-y-2.5">
-              <div className="flex items-center justify-between">
-                <span className="font-bold text-slate-200">Gói SME Pro</span>
-                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                  user.subscription_status === 'active' ? 'bg-emerald-500/20 text-emerald-300' : 'bg-amber-500/20 text-amber-300'
-                }`}>
-                  {user.subscription_status === 'active' ? 'ĐANG HOẠT ĐỘNG' : 'DÙNG THỬ'}
-                </span>
+            <div className="p-4 m-3 rounded-2xl bg-gradient-to-br from-blue-50 to-white border border-blue-100 text-xs space-y-2.5">
+              <div className="text-slate-600 leading-relaxed">
+                {user.is_demo
+                  ? '👀 Bạn đang xem bản mẫu riêng. Mọi thao tác không ảnh hưởng người khác.'
+                  : '🔒 Dữ liệu được lưu riêng cho tài khoản của bạn.'}
               </div>
-              <div className="text-slate-400">
-                Thời hạn còn lại: <strong className="text-white">{user.days_left} ngày</strong>
-              </div>
-              {user.subscription_status !== 'active' && (
+              {user.is_demo && (
                 <button
-                  onClick={onOpenUpgrade}
-                  className="w-full py-1.5 rounded-lg bg-gradient-to-r from-indigo-500 to-emerald-500 text-white font-bold hover:opacity-90"
+                  onClick={() => { if (confirm('Khôi phục lại dữ liệu mẫu ban đầu cho phiên xem thử này?')) onResetSampleData(); }}
+                  disabled={busy}
+                  className="w-full py-2 rounded-lg bg-white border border-blue-200 text-blue-700 font-semibold hover:bg-blue-50 disabled:opacity-50"
                 >
-                  Mua gói 199.000đ/tháng
+                  🔄 Làm mới dữ liệu mẫu
                 </button>
               )}
-              <div className="pt-1 flex gap-1.5 border-t border-slate-700">
-                <button
-                  onClick={() => { if (confirm('Reset toàn bộ dữ liệu cửa hàng này về dữ liệu mẫu ban đầu?')) onResetSampleData(); }}
-                  disabled={seeding}
-                  className="flex-1 py-1 rounded border border-slate-600 text-slate-300 hover:bg-slate-700 disabled:opacity-50"
-                >
-                  🔄 Reset Mẫu
-                </button>
-                <button onClick={onLogout} className="flex-1 py-1 rounded border border-slate-600 text-rose-300 hover:bg-slate-700">Đăng xuất</button>
-              </div>
+              <button
+                onClick={onLogout}
+                className="w-full py-2 rounded-lg bg-slate-100 hover:bg-rose-50 text-slate-700 hover:text-rose-600 font-semibold transition"
+              >
+                Đăng xuất
+              </button>
             </div>
           </aside>
 
-          <main className="flex-1 flex flex-col overflow-hidden">
-            <header className="bg-white border-b border-slate-200 px-6 py-3.5 flex flex-wrap items-center justify-between gap-3">
+          {/* NỘI DUNG CHÍNH */}
+          <main className="flex-1 flex flex-col overflow-hidden bg-business-grid">
+            <header className="bg-white/90 backdrop-blur-md border-b border-blue-100 px-6 py-4 flex flex-wrap items-center justify-between gap-3">
               <div>
-                <h1 className="text-lg font-bold text-slate-800">
+                <h1 className="text-lg font-extrabold text-slate-900">
                   {navItems.find(n => n.id === activeTab)?.icon} {navItems.find(n => n.id === activeTab)?.label}
                 </h1>
-                <p className="text-xs text-slate-500">Kỳ hiện tại: <strong>{THIS_MONTH}</strong> | Kỳ trước: <strong>{LAST_MONTH}</strong></p>
+                <p className="text-xs text-slate-500">
+                  Tháng hiện tại: <strong className="text-blue-700">{THIS_MONTH}</strong> • Tháng trước: <strong>{LAST_MONTH}</strong>
+                </p>
               </div>
 
               <div className="flex items-center gap-2">
-                {products.length === 0 && (
-                  <button
-                    onClick={onLoadSampleData}
-                    disabled={seeding}
-                    className="px-3 py-1.5 bg-emerald-600 text-white rounded-lg text-xs font-semibold hover:bg-emerald-700 disabled:opacity-50"
-                  >
-                    {seeding ? '⏳ Đang nạp...' : '⚡ Nạp dữ liệu mẫu'}
-                  </button>
+                {activeTab === 'ai' && (
+                  <label className="flex items-center gap-2 text-xs font-semibold bg-blue-50 text-blue-700 px-3.5 py-1.5 rounded-full cursor-pointer border border-blue-200">
+                    <input type="checkbox" checked={showHowItWorks} onChange={e => setShowHowItWorks(e.target.checked)} className="accent-blue-600" />
+                    Hiện cách AI tính toán
+                  </label>
                 )}
-                <label className="flex items-center gap-2 text-xs font-medium bg-indigo-50 text-indigo-700 px-3 py-1.5 rounded-full cursor-pointer border border-indigo-200">
-                  <input type="checkbox" checked={showPipeline} onChange={e => setShowPipeline(e.target.checked)} className="accent-indigo-600" />
-                  X-Ray AI Pipeline
-                </label>
               </div>
             </header>
 
             <div className="flex-1 overflow-y-auto p-6 space-y-6">
-              {activeTab === 'dashboard' && <DashboardView analytics={analytics} setActiveTab={setActiveTab} productsCount={products.length} onLoadSampleData={onLoadSampleData} seeding={seeding} />}
-              {activeTab === 'orders' && <OrdersView orders={orders} products={products} onCreateOrder={handleCreateOrder} onChangeStatus={handleChangeOrderStatus} />}
-              {activeTab === 'products' && <ProductsView products={analytics.productInsights} onAddProduct={handleAddProduct} onUpdateProduct={handleUpdateProduct} />}
-              {activeTab === 'finance' && <FinanceView expenses={expenses} analytics={analytics} onAddExpense={handleAddExpense} />}
-              {activeTab === 'ai' && <AIIntelligenceView analytics={analytics} showPipeline={showPipeline} expenses={expenses} />}
+              {activeTab === 'dashboard' && (
+                <DashboardView
+                  analytics={analytics}
+                  setActiveTab={setActiveTab}
+                  productsCount={products.length}
+                  ordersCount={orders.length}
+                  user={user}
+                />
+              )}
+              {activeTab === 'orders' && (
+                <OrdersView
+                  orders={orders}
+                  products={products}
+                  onCreateOrder={handleCreateOrder}
+                  onChangeStatus={handleChangeOrderStatus}
+                  goToProducts={() => setActiveTab('products')}
+                />
+              )}
+              {activeTab === 'products' && (
+                <ProductsView
+                  products={analytics.productInsights}
+                  onAddProduct={handleAddProduct}
+                  onUpdateProduct={handleUpdateProduct}
+                  onDeleteProduct={handleDeleteProduct}
+                />
+              )}
+              {activeTab === 'finance' && (
+                <FinanceView
+                  expenses={expenses}
+                  analytics={analytics}
+                  onAddExpense={handleAddExpense}
+                  onDeleteExpense={handleDeleteExpense}
+                />
+              )}
+              {activeTab === 'ai' && (
+                <AIIntelligenceView
+                  analytics={analytics}
+                  showHowItWorks={showHowItWorks}
+                  expenses={expenses}
+                />
+              )}
             </div>
           </main>
         </div>
@@ -784,27 +716,42 @@
     }
 
     // ==========================================
-    // CÁC TRANG CON
+    // 1. TRANG TỔNG QUAN
     // ==========================================
-    function DashboardView({ analytics, setActiveTab, productsCount, onLoadSampleData, seeding }) {
+    function DashboardView({ analytics, setActiveTab, productsCount, ordersCount, user }) {
       const { thisM, lastM, revChangePct, profitChangePct, lowStockProducts, lowMarginProducts } = analytics;
       const maxVal = Math.max(thisM.revenue, lastM.revenue, 1);
 
-      if (productsCount === 0) {
+      // Hướng dẫn từng bước cho tài khoản mới đăng ký (chưa có dữ liệu)
+      if (productsCount === 0 && ordersCount === 0) {
         return (
-          <div className="bg-white border border-slate-200 rounded-2xl p-10 text-center space-y-4">
-            <div className="text-4xl">🏪</div>
-            <h2 className="text-xl font-bold text-slate-800">Chào mừng bạn đến với BizFlowAI!</h2>
-            <p className="text-sm text-slate-500 max-w-md mx-auto">
-              Cửa hàng mới tạo chưa có dữ liệu. Bạn có thể tự thêm sản phẩm ở mục <strong>Products</strong> hoặc nạp nhanh dữ liệu mẫu.
-            </p>
-            <div className="flex justify-center gap-3 pt-2">
-              <button onClick={onLoadSampleData} disabled={seeding} className="px-5 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-semibold hover:bg-indigo-700 disabled:opacity-50">
-                {seeding ? '⏳ Đang nạp...' : '⚡ Nạp dữ liệu mẫu Demo'}
-              </button>
-              <button onClick={() => setActiveTab('products')} className="px-5 py-2.5 border border-slate-300 rounded-xl text-sm font-semibold hover:bg-slate-50">
-                + Tự thêm sản phẩm đầu tiên
-              </button>
+          <div className="bg-white border border-blue-100 rounded-2xl p-8 sm:p-10 shadow-sm max-w-3xl mx-auto text-center space-y-6">
+            <div className="w-16 h-16 mx-auto rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center text-3xl">🏪</div>
+            <div>
+              <h2 className="text-xl font-extrabold text-slate-900">Chào mừng {user.shop_name} đến với BizFlow AI!</h2>
+              <p className="text-sm text-slate-600 mt-2 max-w-lg mx-auto">
+                Cửa hàng mới của bạn hiện đang trống để đảm bảo tách biệt hoàn toàn với các tài khoản khác. Hãy làm theo 2 bước đơn giản sau để bắt đầu:
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
+              <div className="p-4 rounded-xl bg-blue-50/70 border border-blue-100 space-y-2">
+                <div className="text-xs font-bold text-blue-700">BƯỚC 1</div>
+                <div className="font-bold text-slate-900 text-sm">Thêm sản phẩm bạn đang bán</div>
+                <p className="text-xs text-slate-600">Nhập tên món, giá bán ra, giá nhập vào và số lượng đang có trong kho.</p>
+                <button onClick={() => setActiveTab('products')} className="mt-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold">
+                  + Thêm sản phẩm ngay
+                </button>
+              </div>
+
+              <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                <div className="text-xs font-bold text-slate-500">BƯỚC 2</div>
+                <div className="font-bold text-slate-900 text-sm">Tạo đơn hàng đầu tiên</div>
+                <p className="text-xs text-slate-600">Khi có khách mua hàng, ghi đơn mới để hệ thống tự tính tiền lời và trừ kho.</p>
+                <button onClick={() => setActiveTab('orders')} className="mt-1 px-4 py-2 bg-white border border-blue-200 text-blue-700 hover:bg-blue-50 rounded-lg text-xs font-bold">
+                  Đi tới mục Đơn hàng →
+                </button>
+              </div>
             </div>
           </div>
         );
@@ -812,54 +759,111 @@
 
       return (
         <div className="space-y-6">
+          {/* 4 THẺ CHỈ SỐ DỄ HIỂU */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <KpiCard title="Doanh thu tháng này" sub="Chỉ tính đơn completed" value={formatVND(thisM.revenue)} trend={`${revChangePct >= 0 ? '+' : ''}${revChangePct.toFixed(1)}% so với tháng trước`} trendPositive={revChangePct >= 0} color="indigo" />
-            <KpiCard title="Giá vốn + Chi phí" sub={`COGS: ${formatVND(thisM.cogs)} | OPEX: ${formatVND(thisM.opex)}`} value={formatVND(thisM.cogs + thisM.opex)} trend={`Ship + NL: ${formatVND(thisM.shippingCost + thisM.materialCost)}`} trendPositive={false} color="amber" />
-            <KpiCard title="Lợi nhuận ròng" sub={`Biên LN: ${thisM.netMargin.toFixed(1)}%`} value={formatVND(thisM.netProfit)} trend={`${profitChangePct >= 0 ? '+' : ''}${profitChangePct.toFixed(1)}% so với tháng trước`} trendPositive={profitChangePct >= 0} color={thisM.netProfit >= 0 ? 'emerald' : 'rose'} />
-            <KpiCard title="Dòng tiền ròng" sub={`Đã trừ ${formatVND(thisM.inventoryCashOut)} nhập kho`} value={formatVND(thisM.cashFlow)} trend="Khác lợi nhuận kế toán" trendPositive={thisM.cashFlow >= 0} color="sky" />
+            <KpiCard
+              title="Tiền bán hàng tháng này"
+              sub="Chỉ tính các đơn đã hoàn thành"
+              value={formatVND(thisM.revenue)}
+              trend={`${revChangePct >= 0 ? '▲ Tăng' : '▼ Giảm'} ${Math.abs(revChangePct).toFixed(1)}% so với tháng trước`}
+              trendPositive={revChangePct >= 0}
+              accent="blue"
+            />
+            <KpiCard
+              title="Tổng vốn & chi phí"
+              sub={`Tiền hàng: ${formatVND(thisM.cogs)} | Chi phí khác: ${formatVND(thisM.opex)}`}
+              value={formatVND(thisM.cogs + thisM.opex)}
+              trend={`Giao hàng & Bao bì: ${formatVND(thisM.shippingCost + thisM.materialCost)}`}
+              trendPositive={false}
+              accent="sky"
+            />
+            <KpiCard
+              title="Tiền lãi thực tế"
+              sub={`Trung bình bán 100đ lãi ${thisM.netMargin.toFixed(0)}đ`}
+              value={formatVND(thisM.netProfit)}
+              trend={`${profitChangePct >= 0 ? '▲ Tăng' : '▼ Giảm'} ${Math.abs(profitChangePct).toFixed(1)}% so với tháng trước`}
+              trendPositive={profitChangePct >= 0}
+              accent={thisM.netProfit >= 0 ? 'emerald' : 'rose'}
+            />
+            <KpiCard
+              title="Tiền mặt thực còn"
+              sub={`Đã trừ ${formatVND(thisM.inventoryCashOut)} tiền nhập hàng dự trữ`}
+              value={formatVND(thisM.cashFlow)}
+              trend="Số tiền thực sự còn lại trong ví/két"
+              trendPositive={thisM.cashFlow >= 0}
+              accent="indigo"
+            />
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="font-bold text-slate-800">So sánh Tháng trước vs Tháng này</h2>
-                <div className="flex gap-3 text-xs">
-                  <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-indigo-500 inline-block"></span> Doanh thu</span>
-                  <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-amber-500 inline-block"></span> Chi phí</span>
-                  <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-emerald-500 inline-block"></span> Lợi nhuận</span>
+            {/* BIỂU ĐỒ SO SÁNH */}
+            <div className="lg:col-span-2 bg-white p-6 rounded-2xl border border-blue-100 shadow-sm">
+              <div className="flex flex-wrap items-center justify-between gap-2 mb-5">
+                <div>
+                  <h2 className="font-bold text-slate-900">So sánh Tháng trước và Tháng này</h2>
+                  <p className="text-xs text-slate-500">Nhìn nhanh mức bán, chi phí và tiền lãi giữa hai tháng</p>
+                </div>
+                <div className="flex gap-4 text-xs font-medium text-slate-600">
+                  <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-blue-600 inline-block"></span> Tiền bán hàng</span>
+                  <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-sky-400 inline-block"></span> Tổng chi phí</span>
+                  <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-emerald-500 inline-block"></span> Tiền lãi</span>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-8 pt-4 pb-2 px-4 border-b border-slate-100">
+              <div className="grid grid-cols-2 gap-8 pt-6 pb-2 px-4 border-b border-blue-50">
                 {[{ label: `Tháng trước (${lastM.monthKey})`, data: lastM }, { label: `Tháng này (${thisM.monthKey})`, data: thisM }].map((col, idx) => (
                   <div key={idx} className="flex flex-col items-center">
                     <div className="h-44 w-full flex items-end justify-center gap-4">
-                      <BarItem heightPct={(col.data.revenue / maxVal) * 100} color="bg-indigo-500" label={formatVND(col.data.revenue)} />
-                      <BarItem heightPct={((col.data.cogs + col.data.opex) / maxVal) * 100} color="bg-amber-500" label={formatVND(col.data.cogs + col.data.opex)} />
+                      <BarItem heightPct={(col.data.revenue / maxVal) * 100} color="bg-blue-600" label={formatVND(col.data.revenue)} />
+                      <BarItem heightPct={((col.data.cogs + col.data.opex) / maxVal) * 100} color="bg-sky-400" label={formatVND(col.data.cogs + col.data.opex)} />
                       <BarItem heightPct={(Math.max(0, col.data.netProfit) / maxVal) * 100} color="bg-emerald-500" label={formatVND(col.data.netProfit)} />
                     </div>
-                    <span className="mt-3 text-xs font-semibold text-slate-700">{col.label}</span>
+                    <span className="mt-3 text-xs font-bold text-slate-700">{col.label}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-3">
+            {/* CẢNH BÁO NHANH */}
+            <div className="bg-white p-6 rounded-2xl border border-blue-100 shadow-sm flex flex-col justify-between space-y-4">
               <div>
-                <h2 className="font-bold text-slate-800 mb-3">🚨 Cảnh báo nhanh</h2>
-                <div className="space-y-2.5 text-xs">
-                  <div className="p-3 rounded-lg bg-rose-50 border border-rose-200">
-                    <div className="font-bold text-rose-800">Tồn kho sắp hết ({lowStockProducts.length} SP)</div>
-                    {lowStockProducts.map(p => <div key={p.id} className="text-rose-700 flex justify-between mt-1"><span>{p.name}</span><strong>Còn {p.stock}</strong></div>)}
+                <h2 className="font-bold text-slate-900 mb-3">🔔 Việc cần chú ý ngay</h2>
+                <div className="space-y-3 text-xs">
+                  <div className="p-3.5 rounded-xl bg-rose-50/80 border border-rose-200">
+                    <div className="font-bold text-rose-800">Hàng sắp hết trong kho ({lowStockProducts.length} món)</div>
+                    {lowStockProducts.length === 0 ? (
+                      <div className="text-rose-700/80 mt-1">Kho hàng hiện đang đủ, chưa cần nhập thêm.</div>
+                    ) : (
+                      lowStockProducts.map(p => (
+                        <div key={p.id} className="text-rose-700 flex justify-between mt-1.5">
+                          <span className="truncate pr-2">{p.name}</span>
+                          <strong className="shrink-0">Còn {p.stock}</strong>
+                        </div>
+                      ))
+                    )}
                   </div>
-                  <div className="p-3 rounded-lg bg-amber-50 border border-amber-200">
-                    <div className="font-bold text-amber-800">Biên LN thấp &lt;20% ({lowMarginProducts.length} SP)</div>
-                    {lowMarginProducts.map(p => <div key={p.id} className="text-amber-700 flex justify-between mt-1"><span>{p.name}</span><strong>{p.margin.toFixed(1)}%</strong></div>)}
+
+                  <div className="p-3.5 rounded-xl bg-blue-50/80 border border-blue-200">
+                    <div className="font-bold text-blue-900">Món có tiền lãi mỏng dưới 20% ({lowMarginProducts.length} món)</div>
+                    {lowMarginProducts.length === 0 ? (
+                      <div className="text-blue-700/80 mt-1">Tất cả sản phẩm đều đang có mức lãi tốt.</div>
+                    ) : (
+                      lowMarginProducts.map(p => (
+                        <div key={p.id} className="text-blue-800 flex justify-between mt-1.5">
+                          <span className="truncate pr-2">{p.name}</span>
+                          <strong className="shrink-0">Lãi {p.margin.toFixed(0)}%</strong>
+                        </div>
+                      ))
+                    )}
                   </div>
                 </div>
               </div>
-              <button onClick={() => setActiveTab('ai')} className="w-full py-2.5 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700">
-                Mở AI Intelligence ✨
+
+              <button
+                onClick={() => setActiveTab('ai')}
+                className="w-full py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-sky-600 hover:from-blue-700 hover:to-sky-700 text-white text-sm font-bold shadow-sm transition"
+              >
+                Hỏi Trợ lý AI ngay ✨
               </button>
             </div>
           </div>
@@ -867,28 +871,37 @@
       );
     }
 
-    function KpiCard({ title, sub, value, trend, trendPositive, color }) {
-      const borders = { indigo: 'border-l-indigo-500', amber: 'border-l-amber-500', emerald: 'border-l-emerald-500', rose: 'border-l-rose-500', sky: 'border-l-sky-500' };
+    function KpiCard({ title, sub, value, trend, trendPositive, accent }) {
+      const accents = {
+        blue: 'border-t-blue-600',
+        sky: 'border-t-sky-500',
+        emerald: 'border-t-emerald-500',
+        rose: 'border-t-rose-500',
+        indigo: 'border-t-indigo-600'
+      };
       return (
-        <div className={`bg-white p-4 rounded-xl border border-slate-200 border-l-4 ${borders[color]} shadow-sm`}>
-          <div className="text-xs font-medium text-slate-500">{title}</div>
-          <div className="text-xl font-bold text-slate-900 mt-1">{value}</div>
+        <div className={`bg-white p-5 rounded-2xl border border-blue-100 border-t-4 ${accents[accent]} shadow-sm`}>
+          <div className="text-xs font-semibold text-slate-500">{title}</div>
+          <div className="text-xl font-extrabold text-slate-900 mt-1.5">{value}</div>
           <div className="text-[11px] text-slate-500 mt-1">{sub}</div>
-          <div className={`text-xs font-semibold mt-2 ${trendPositive ? 'text-emerald-600' : 'text-rose-600'}`}>{trend}</div>
+          <div className={`text-xs font-bold mt-2.5 ${trendPositive ? 'text-emerald-600' : 'text-blue-700'}`}>{trend}</div>
         </div>
       );
     }
 
     function BarItem({ heightPct, color, label }) {
       return (
-        <div className="flex flex-col items-center justify-end h-full w-12">
-          <div className="text-[10px] font-semibold text-slate-600 mb-1 whitespace-nowrap">{label.replace('₫', '')}</div>
-          <div className={`w-full rounded-t-md ${color}`} style={{ height: `${Math.max(4, heightPct)}%` }}></div>
+        <div className="flex flex-col items-center justify-end h-full w-14">
+          <div className="text-[10px] font-bold text-slate-600 mb-1 whitespace-nowrap">{label.replace('₫', '')}</div>
+          <div className={`w-full rounded-t-lg ${color} transition-all`} style={{ height: `${Math.max(4, heightPct)}%` }}></div>
         </div>
       );
     }
 
-    function OrdersView({ orders, products, onCreateOrder, onChangeStatus }) {
+    // ==========================================
+    // 2. TRANG ĐƠN HÀNG
+    // ==========================================
+    function OrdersView({ orders, products, onCreateOrder, onChangeStatus, goToProducts }) {
       const [customerName, setCustomerName] = useState('');
       const [orderDate, setOrderDate] = useState(todayStr());
       const [status, setStatus] = useState('completed');
@@ -905,9 +918,13 @@
         else setCart([...cart, { product_id: activeProdId, quantity: Number(qty) }]);
       };
 
+      const removeCartItem = (pid) => {
+        setCart(cart.filter(c => c.product_id !== pid));
+      };
+
       const submitOrder = (e) => {
         e.preventDefault();
-        if (cart.length === 0) return alert('Vui lòng thêm sản phẩm vào đơn!');
+        if (cart.length === 0) return alert('Bạn hãy bấm nút "+ Thêm món" vào đơn trước khi lưu!');
         onCreateOrder({ customer_name: customerName, order_date: orderDate, status, selectedItems: cart });
         setCustomerName('');
         setCart([]);
@@ -915,66 +932,156 @@
 
       return (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm h-fit">
-            <h2 className="font-bold text-slate-800 mb-3">➕ Tạo đơn hàng mới</h2>
-            <form onSubmit={submitOrder} className="space-y-3 text-sm">
-              <input value={customerName} onChange={e => setCustomerName(e.target.value)} placeholder="Tên khách hàng" className="w-full px-3 py-2 border border-slate-300 rounded-lg" />
-              <div className="grid grid-cols-2 gap-2">
-                <input type="date" value={orderDate} onChange={e => setOrderDate(e.target.value)} className="w-full px-3 py-2 border border-slate-300 rounded-lg" />
-                <select value={status} onChange={e => setStatus(e.target.value)} className="w-full px-3 py-2 border border-slate-300 rounded-lg">
-                  <option value="completed">completed</option>
-                  <option value="pending">pending</option>
-                </select>
+          <div className="bg-white p-5 rounded-2xl border border-blue-100 shadow-sm h-fit">
+            <h2 className="font-bold text-slate-900 mb-3">➕ Ghi đơn hàng mới</h2>
+
+            {products.length === 0 ? (
+              <div className="p-4 rounded-xl bg-blue-50 border border-blue-100 text-xs text-slate-700 space-y-3">
+                <p>Cửa hàng của bạn chưa có sản phẩm nào để tạo đơn. Hãy thêm sản phẩm trước nhé!</p>
+                <button onClick={goToProducts} className="w-full py-2 bg-blue-600 text-white rounded-lg font-bold">
+                  + Thêm sản phẩm ngay
+                </button>
               </div>
-              <div className="flex gap-2">
-                <select value={activeProdId} onChange={e => setSelectedProdId(e.target.value)} className="flex-1 px-2 py-2 border border-slate-300 rounded-lg text-xs">
-                  {products.map(p => <option key={p.id} value={p.id}>{p.name} (Tồn: {p.stock})</option>)}
-                </select>
-                <input type="number" min="1" value={qty} onChange={e => setQty(e.target.value)} className="w-16 px-2 py-2 border border-slate-300 rounded-lg text-center" />
-                <button type="button" onClick={addToCart} className="px-3 py-2 bg-slate-800 text-white rounded-lg text-xs">Thêm</button>
-              </div>
-              {cart.length > 0 && (
-                <div className="bg-slate-50 p-2.5 rounded-lg text-xs space-y-1">
-                  {cart.map(c => {
-                    const p = products.find(pr => pr.id === c.product_id);
-                    return <div key={c.product_id} className="flex justify-between"><span>{p?.name} × {c.quantity}</span><strong>{formatVND((p?.selling_price || 0) * c.quantity)}</strong></div>;
-                  })}
+            ) : (
+              <form onSubmit={submitOrder} className="space-y-3 text-sm">
+                <input
+                  value={customerName}
+                  onChange={e => setCustomerName(e.target.value)}
+                  placeholder="Tên khách mua (để trống = Khách lẻ)"
+                  className="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500"
+                />
+                <div className="grid grid-cols-2 gap-2">
+                  <input
+                    type="date"
+                    value={orderDate}
+                    onChange={e => setOrderDate(e.target.value)}
+                    className="w-full px-3 py-2 border border-slate-200 rounded-xl"
+                  />
+                  <select
+                    value={status}
+                    onChange={e => setStatus(e.target.value)}
+                    className="w-full px-3 py-2 border border-slate-200 rounded-xl"
+                  >
+                    <option value="completed">Đã hoàn thành</option>
+                    <option value="pending">Chờ xử lý</option>
+                  </select>
                 </div>
-              )}
-              <button type="submit" disabled={products.length === 0} className="w-full py-2.5 bg-indigo-600 text-white rounded-lg font-semibold disabled:opacity-50">Lưu đơn hàng</button>
-            </form>
+
+                <div className="flex gap-2">
+                  <select
+                    value={activeProdId}
+                    onChange={e => setSelectedProdId(e.target.value)}
+                    className="flex-1 px-2.5 py-2 border border-slate-200 rounded-xl text-xs"
+                  >
+                    {products.map(p => (
+                      <option key={p.id} value={p.id}>{p.name} (Còn: {p.stock})</option>
+                    ))}
+                  </select>
+                  <input
+                    type="number"
+                    min="1"
+                    value={qty}
+                    onChange={e => setQty(e.target.value)}
+                    className="w-16 px-2 py-2 border border-slate-200 rounded-xl text-center"
+                  />
+                  <button
+                    type="button"
+                    onClick={addToCart}
+                    className="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shrink-0"
+                  >
+                    + Thêm
+                  </button>
+                </div>
+
+                {cart.length > 0 && (
+                  <div className="bg-blue-50/70 p-3 rounded-xl border border-blue-100 text-xs space-y-1.5">
+                    <div className="font-bold text-blue-800">Món trong đơn này:</div>
+                    {cart.map(c => {
+                      const p = products.find(pr => pr.id === c.product_id);
+                      return (
+                        <div key={c.product_id} className="flex justify-between items-center">
+                          <span>{p?.name} × {c.quantity}</span>
+                          <div className="flex items-center gap-2">
+                            <strong>{formatVND((p?.selling_price || 0) * c.quantity)}</strong>
+                            <button type="button" onClick={() => removeCartItem(c.product_id)} className="text-rose-500 font-bold">✕</button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
+                <button type="submit" className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold shadow-sm">
+                  Lưu đơn hàng
+                </button>
+              </form>
+            )}
           </div>
 
-          <div className="lg:col-span-2 bg-white p-5 rounded-xl border border-slate-200 shadow-sm overflow-x-auto">
-            <h2 className="font-bold text-slate-800 mb-3">Danh sách đơn hàng ({orders.length})</h2>
-            <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 text-slate-600 uppercase border-b">
-                <tr><th className="py-2 px-3">Mã / Ngày</th><th className="py-2 px-3">Chi tiết</th><th className="py-2 px-3 text-right">Doanh thu</th><th className="py-2 px-3">Trạng thái</th></tr>
-              </thead>
-              <tbody className="divide-y">
-                {orders.map(o => {
-                  const totalRev = o.items.reduce((s, i) => s + i.quantity * i.unit_price, 0);
-                  return (
-                    <tr key={o.id}>
-                      <td className="py-2.5 px-3"><div className="font-bold">{String(o.id).slice(0, 8).toUpperCase()}</div><div className="text-slate-500">{o.order_date}</div></td>
-                      <td className="py-2.5 px-3">{o.items.map((it, i) => <div key={i}>{it.name} × {it.quantity} <span className="text-slate-400">(Vốn lưu: {formatVND(it.unit_cost)})</span></div>)}</td>
-                      <td className="py-2.5 px-3 text-right font-semibold">{o.status === 'completed' ? formatVND(totalRev) : <span className="line-through text-slate-400">{formatVND(totalRev)}</span>}</td>
-                      <td className="py-2.5 px-3">
-                        <select value={o.status} onChange={e => onChangeStatus(o.id, e.target.value)} className="px-2 py-1 border rounded font-semibold">
-                          <option value="completed">completed</option><option value="pending">pending</option><option value="cancelled">cancelled</option>
-                        </select>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+          <div className="lg:col-span-2 bg-white p-5 rounded-2xl border border-blue-100 shadow-sm overflow-x-auto">
+            <h2 className="font-bold text-slate-900 mb-3">Danh sách đơn hàng ({orders.length})</h2>
+            {orders.length === 0 ? (
+              <div className="text-center py-10 text-xs text-slate-400">Chưa có đơn hàng nào. Hãy tạo đơn đầu tiên ở khung bên trái!</div>
+            ) : (
+              <table className="w-full text-left text-xs">
+                <thead className="bg-blue-50/70 text-blue-900 uppercase border-b border-blue-100">
+                  <tr>
+                    <th className="py-2.5 px-3">Khách hàng / Ngày</th>
+                    <th className="py-2.5 px-3">Sản phẩm đã chọn</th>
+                    <th className="py-2.5 px-3 text-right">Tổng tiền</th>
+                    <th className="py-2.5 px-3">Trạng thái</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {orders.map(o => {
+                    const totalRev = o.items.reduce((s, i) => s + i.quantity * i.unit_price, 0);
+                    return (
+                      <tr key={o.id} className="hover:bg-blue-50/30">
+                        <td className="py-3 px-3">
+                          <div className="font-bold text-slate-800">{o.customer_name || 'Khách lẻ'}</div>
+                          <div className="text-slate-500">{o.order_date}</div>
+                        </td>
+                        <td className="py-3 px-3">
+                          {o.items.map((it, i) => (
+                            <div key={i}>
+                              {it.name} × <strong>{it.quantity}</strong>{' '}
+                              <span className="text-slate-400">(Giá nhập lúc bán: {formatVND(it.unit_cost)})</span>
+                            </div>
+                          ))}
+                        </td>
+                        <td className="py-3 px-3 text-right font-bold text-slate-900">
+                          {o.status === 'completed' ? formatVND(totalRev) : <span className="line-through text-slate-400">{formatVND(totalRev)}</span>}
+                        </td>
+                        <td className="py-3 px-3">
+                          <select
+                            value={o.status}
+                            onChange={e => onChangeStatus(o.id, e.target.value)}
+                            className={`px-2.5 py-1 border rounded-lg font-semibold ${
+                              o.status === 'completed' ? 'bg-emerald-50 border-emerald-200 text-emerald-700' :
+                              o.status === 'pending' ? 'bg-amber-50 border-amber-200 text-amber-700' :
+                              'bg-slate-100 border-slate-200 text-slate-500'
+                            }`}
+                          >
+                            <option value="completed">{ORDER_STATUS_LABEL.completed}</option>
+                            <option value="pending">{ORDER_STATUS_LABEL.pending}</option>
+                            <option value="cancelled">{ORDER_STATUS_LABEL.cancelled}</option>
+                          </select>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            )}
           </div>
         </div>
       );
     }
 
-    function ProductsView({ products, onAddProduct, onUpdateProduct }) {
+    // ==========================================
+    // 3. TRANG SẢN PHẨM & KHO
+    // ==========================================
+    function ProductsView({ products, onAddProduct, onUpdateProduct, onDeleteProduct }) {
       const [form, setForm] = useState({ name: '', selling_price: '', cost_price: '', stock: '', low_stock_threshold: 10 });
       const [editingId, setEditingId] = useState(null);
 
@@ -1005,119 +1112,208 @@
 
       return (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm h-fit">
-            <h2 className="font-bold text-slate-800 mb-3">{editingId ? '✏️ Sửa sản phẩm' : '➕ Thêm sản phẩm'}</h2>
+          <div className="bg-white p-5 rounded-2xl border border-blue-100 shadow-sm h-fit">
+            <h2 className="font-bold text-slate-900 mb-3">{editingId ? '✏️ Sửa thông tin sản phẩm' : '➕ Thêm sản phẩm mới'}</h2>
             <form onSubmit={handleSubmit} className="space-y-3 text-sm">
-              <input required placeholder="Tên sản phẩm" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} className="w-full px-3 py-2 border rounded-lg" />
-              <div className="grid grid-cols-2 gap-2">
-                <input required type="number" placeholder="Giá bán" value={form.selling_price} onChange={e => setForm({ ...form, selling_price: e.target.value })} className="w-full px-3 py-2 border rounded-lg" />
-                <input required type="number" placeholder="Giá vốn" value={form.cost_price} onChange={e => setForm({ ...form, cost_price: e.target.value })} className="w-full px-3 py-2 border rounded-lg" />
+              <div>
+                <label className="block text-xs font-semibold text-slate-600 mb-1">Tên sản phẩm</label>
+                <input required placeholder="VD: Trà đào cam sả" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} className="w-full px-3 py-2 border border-slate-200 rounded-xl" />
               </div>
               <div className="grid grid-cols-2 gap-2">
-                <input required type="number" placeholder="Tồn kho" value={form.stock} onChange={e => setForm({ ...form, stock: e.target.value })} className="w-full px-3 py-2 border rounded-lg" />
-                <input required type="number" placeholder="Ngưỡng cảnh báo" value={form.low_stock_threshold} onChange={e => setForm({ ...form, low_stock_threshold: e.target.value })} className="w-full px-3 py-2 border rounded-lg" />
+                <div>
+                  <label className="block text-xs font-semibold text-slate-600 mb-1">Giá bán cho khách</label>
+                  <input required type="number" min="0" placeholder="VD: 35000" value={form.selling_price} onChange={e => setForm({ ...form, selling_price: e.target.value })} className="w-full px-3 py-2 border border-slate-200 rounded-xl" />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-600 mb-1">Giá nhập / Giá vốn</label>
+                  <input required type="number" min="0" placeholder="VD: 15000" value={form.cost_price} onChange={e => setForm({ ...form, cost_price: e.target.value })} className="w-full px-3 py-2 border border-slate-200 rounded-xl" />
+                </div>
               </div>
-              <div className="flex gap-2">
-                <button type="submit" className="flex-1 py-2.5 bg-indigo-600 text-white rounded-lg font-semibold">{editingId ? 'Cập nhật' : 'Thêm sản phẩm'}</button>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-600 mb-1">Số lượng đang có</label>
+                  <input required type="number" min="0" placeholder="VD: 50" value={form.stock} onChange={e => setForm({ ...form, stock: e.target.value })} className="w-full px-3 py-2 border border-slate-200 rounded-xl" />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-600 mb-1">Báo khi còn dưới</label>
+                  <input required type="number" min="0" placeholder="10" value={form.low_stock_threshold} onChange={e => setForm({ ...form, low_stock_threshold: e.target.value })} className="w-full px-3 py-2 border border-slate-200 rounded-xl" />
+                </div>
+              </div>
+              <div className="flex gap-2 pt-1">
+                <button type="submit" className="flex-1 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold">
+                  {editingId ? 'Lưu thay đổi' : 'Thêm vào kho'}
+                </button>
                 {editingId && (
-                  <button type="button" onClick={() => { setEditingId(null); setForm({ name: '', selling_price: '', cost_price: '', stock: '', low_stock_threshold: 10 }); }} className="px-3 py-2.5 border rounded-lg text-xs">Hủy</button>
+                  <button
+                    type="button"
+                    onClick={() => { setEditingId(null); setForm({ name: '', selling_price: '', cost_price: '', stock: '', low_stock_threshold: 10 }); }}
+                    className="px-3 py-2.5 border border-slate-200 rounded-xl text-xs font-semibold"
+                  >
+                    Hủy
+                  </button>
                 )}
               </div>
             </form>
           </div>
-          <div className="lg:col-span-2 bg-white p-5 rounded-xl border border-slate-200 shadow-sm overflow-x-auto">
-            <h2 className="font-bold text-slate-800 mb-3">Danh sách sản phẩm ({products.length})</h2>
-            <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 uppercase border-b"><tr><th className="py-2 px-3">Sản phẩm</th><th className="py-2 px-3 text-right">Giá bán</th><th className="py-2 px-3 text-right">Giá vốn</th><th className="py-2 px-3 text-right">Biên LN</th><th className="py-2 px-3 text-center">Tồn</th><th className="py-2 px-3"></th></tr></thead>
-              <tbody className="divide-y">
-                {products.map(p => (
-                  <tr key={p.id} className={p.isLowStock ? 'bg-rose-50/50' : ''}>
-                    <td className="py-2.5 px-3 font-medium">{p.name} {p.isLowStock && <span className="ml-1 px-1.5 py-0.5 bg-rose-100 text-rose-700 rounded text-[10px] font-bold">SẮP HẾT</span>}</td>
-                    <td className="py-2.5 px-3 text-right">{formatVND(p.selling_price)}</td>
-                    <td className="py-2.5 px-3 text-right">{formatVND(p.cost_price)}</td>
-                    <td className={`py-2.5 px-3 text-right font-bold ${p.isLowMargin ? 'text-amber-600' : 'text-emerald-600'}`}>{p.margin.toFixed(1)}%</td>
-                    <td className="py-2.5 px-3 text-center font-bold">{p.stock}</td>
-                    <td className="py-2.5 px-3 text-right"><button onClick={() => startEdit(p)} className="text-indigo-600 font-semibold">Sửa</button></td>
+
+          <div className="lg:col-span-2 bg-white p-5 rounded-2xl border border-blue-100 shadow-sm overflow-x-auto">
+            <h2 className="font-bold text-slate-900 mb-3">Danh sách sản phẩm ({products.length})</h2>
+            {products.length === 0 ? (
+              <div className="text-center py-10 text-xs text-slate-400">Chưa có sản phẩm nào. Hãy nhập sản phẩm đầu tiên ở khung bên trái!</div>
+            ) : (
+              <table className="w-full text-left text-xs">
+                <thead className="bg-blue-50/70 text-blue-900 uppercase border-b border-blue-100">
+                  <tr>
+                    <th className="py-2.5 px-3">Tên sản phẩm</th>
+                    <th className="py-2.5 px-3 text-right">Giá bán</th>
+                    <th className="py-2.5 px-3 text-right">Giá nhập</th>
+                    <th className="py-2.5 px-3 text-right">Tỷ lệ lãi</th>
+                    <th className="py-2.5 px-3 text-center">Tồn kho</th>
+                    <th className="py-2.5 px-3 text-right">Thao tác</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {products.map(p => (
+                    <tr key={p.id} className={p.isLowStock ? 'bg-rose-50/40' : 'hover:bg-blue-50/30'}>
+                      <td className="py-3 px-3 font-semibold text-slate-800">
+                        {p.name}
+                        {p.isLowStock && <span className="ml-1.5 px-1.5 py-0.5 bg-rose-100 text-rose-700 rounded text-[10px] font-bold">SẮP HẾT</span>}
+                      </td>
+                      <td className="py-3 px-3 text-right">{formatVND(p.selling_price)}</td>
+                      <td className="py-3 px-3 text-right">{formatVND(p.cost_price)}</td>
+                      <td className={`py-3 px-3 text-right font-bold ${p.isLowMargin ? 'text-amber-600' : 'text-emerald-600'}`}>{p.margin.toFixed(0)}%</td>
+                      <td className="py-3 px-3 text-center font-bold">{p.stock}</td>
+                      <td className="py-3 px-3 text-right space-x-2">
+                        <button onClick={() => startEdit(p)} className="text-blue-600 hover:underline font-bold">Sửa</button>
+                        <button onClick={() => { if (confirm(`Xóa "${p.name}" khỏi danh sách?`)) onDeleteProduct(p.id); }} className="text-rose-500 hover:underline font-semibold">Xóa</button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
         </div>
       );
     }
 
-    function FinanceView({ expenses, analytics, onAddExpense }) {
-      const [form, setForm] = useState({ type: 'expense', category: 'Nguyên liệu', amount: '', expense_date: todayStr(), note: '' });
+    // ==========================================
+    // 4. TRANG SỔ THU & CHI
+    // ==========================================
+    function FinanceView({ expenses, analytics, onAddExpense, onDeleteExpense }) {
+      const [form, setForm] = useState({ type: 'expense', category: 'Nguyên liệu & Bao bì', amount: '', expense_date: todayStr(), note: '' });
       const submit = (e) => {
         e.preventDefault();
         if (!form.amount) return;
         onAddExpense({ ...form, amount: Number(form.amount) });
         setForm({ ...form, amount: '', note: '' });
       };
+
       return (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm h-fit">
-            <h2 className="font-bold text-slate-800 mb-3">➕ Ghi nhận Thu / Chi</h2>
+          <div className="bg-white p-5 rounded-2xl border border-blue-100 shadow-sm h-fit">
+            <h2 className="font-bold text-slate-900 mb-3">➕ Ghi khoản Thu hoặc Chi</h2>
             <form onSubmit={submit} className="space-y-3 text-sm">
-              <select value={form.type} onChange={e => setForm({ ...form, type: e.target.value })} className="w-full px-3 py-2 border rounded-lg">
-                <option value="expense">Chi phí vận hành (Trừ Lợi nhuận)</option>
-                <option value="inventory_purchase">Chi nhập hàng tồn kho (Chỉ trừ Dòng tiền)</option>
-                <option value="income">Thu nhập khác</option>
-              </select>
-              <select value={form.category} onChange={e => setForm({ ...form, category: e.target.value })} className="w-full px-3 py-2 border rounded-lg">
-                <option value="Nguyên liệu">Nguyên liệu</option><option value="Vận chuyển">Vận chuyển</option><option value="Mặt bằng">Mặt bằng</option><option value="Nhập hàng tồn kho">Nhập hàng tồn kho</option><option value="Thu khác">Thu khác</option>
-              </select>
-              <input required type="number" placeholder="Số tiền" value={form.amount} onChange={e => setForm({ ...form, amount: e.target.value })} className="w-full px-3 py-2 border rounded-lg" />
-              <input required type="date" value={form.expense_date} onChange={e => setForm({ ...form, expense_date: e.target.value })} className="w-full px-3 py-2 border rounded-lg" />
-              <input placeholder="Ghi chú" value={form.note} onChange={e => setForm({ ...form, note: e.target.value })} className="w-full px-3 py-2 border rounded-lg" />
-              <button type="submit" className="w-full py-2.5 bg-indigo-600 text-white rounded-lg font-semibold">Lưu giao dịch</button>
+              <div>
+                <label className="block text-xs font-semibold text-slate-600 mb-1">Loại giao dịch</label>
+                <select value={form.type} onChange={e => setForm({ ...form, type: e.target.value })} className="w-full px-3 py-2 border border-slate-200 rounded-xl">
+                  <option value="expense">Chi phí cửa hàng (Trừ vào tiền lãi)</option>
+                  <option value="inventory_purchase">Chi tiền nhập hàng về kho (Chỉ trừ tiền mặt)</option>
+                  <option value="income">Khoản thu thêm khác</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-slate-600 mb-1">Nhóm khoản mục</label>
+                <select value={form.category} onChange={e => setForm({ ...form, category: e.target.value })} className="w-full px-3 py-2 border border-slate-200 rounded-xl">
+                  <option value="Nguyên liệu & Bao bì">Nguyên liệu & Bao bì</option>
+                  <option value="Phí giao hàng">Phí giao hàng</option>
+                  <option value="Thuê mặt bằng">Thuê mặt bằng / Điện nước</option>
+                  <option value="Nhập hàng về kho">Nhập hàng về kho</option>
+                  <option value="Thu khác">Khoản thu khác</option>
+                </select>
+              </div>
+              <input required type="number" min="1" placeholder="Số tiền (VNĐ)" value={form.amount} onChange={e => setForm({ ...form, amount: e.target.value })} className="w-full px-3 py-2 border border-slate-200 rounded-xl" />
+              <input required type="date" value={form.expense_date} onChange={e => setForm({ ...form, expense_date: e.target.value })} className="w-full px-3 py-2 border border-slate-200 rounded-xl" />
+              <input placeholder="Ghi chú thêm (tùy chọn)" value={form.note} onChange={e => setForm({ ...form, note: e.target.value })} className="w-full px-3 py-2 border border-slate-200 rounded-xl" />
+              <button type="submit" className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold">Lưu vào sổ</button>
             </form>
           </div>
-          <div className="lg:col-span-2 bg-white p-5 rounded-xl border border-slate-200 shadow-sm overflow-x-auto">
-            <h2 className="font-bold text-slate-800 mb-3">Sổ Thu Chi (LN: {formatVND(analytics.thisM.netProfit)} | Dòng tiền: {formatVND(analytics.thisM.cashFlow)})</h2>
-            <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 uppercase border-b"><tr><th className="py-2 px-3">Ngày</th><th className="py-2 px-3">Danh mục</th><th className="py-2 px-3">Ghi chú</th><th className="py-2 px-3 text-right">Số tiền</th></tr></thead>
-              <tbody className="divide-y">
-                {expenses.map(e => (
-                  <tr key={e.id}>
-                    <td className="py-2 px-3 text-slate-500">{e.expense_date}</td>
-                    <td className="py-2 px-3 font-medium">{e.category}</td>
-                    <td className="py-2 px-3 text-slate-600">{e.note}</td>
-                    <td className={`py-2 px-3 text-right font-bold ${e.type === 'income' ? 'text-emerald-600' : 'text-rose-600'}`}>{e.type === 'income' ? '+' : '-'}{formatVND(e.amount)}</td>
+
+          <div className="lg:col-span-2 bg-white p-5 rounded-2xl border border-blue-100 shadow-sm overflow-x-auto">
+            <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+              <h2 className="font-bold text-slate-900">Sổ Thu & Chi</h2>
+              <div className="text-xs font-semibold text-blue-800 bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-100">
+                Tiền lãi tháng này: <strong>{formatVND(analytics.thisM.netProfit)}</strong> | Tiền mặt thực còn: <strong>{formatVND(analytics.thisM.cashFlow)}</strong>
+              </div>
+            </div>
+            {expenses.length === 0 ? (
+              <div className="text-center py-10 text-xs text-slate-400">Chưa có khoản thu chi nào được ghi nhận.</div>
+            ) : (
+              <table className="w-full text-left text-xs">
+                <thead className="bg-blue-50/70 text-blue-900 uppercase border-b border-blue-100">
+                  <tr>
+                    <th className="py-2.5 px-3">Ngày</th>
+                    <th className="py-2.5 px-3">Khoản mục</th>
+                    <th className="py-2.5 px-3">Ghi chú</th>
+                    <th className="py-2.5 px-3 text-right">Số tiền</th>
+                    <th className="py-2.5 px-3"></th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {expenses.map(e => (
+                    <tr key={e.id} className="hover:bg-blue-50/30">
+                      <td className="py-2.5 px-3 text-slate-500">{e.expense_date}</td>
+                      <td className="py-2.5 px-3 font-semibold text-slate-800">{e.category}</td>
+                      <td className="py-2.5 px-3 text-slate-600">{e.note || '-'}</td>
+                      <td className={`py-2.5 px-3 text-right font-bold ${e.type === 'income' ? 'text-emerald-600' : 'text-rose-600'}`}>
+                        {e.type === 'income' ? '+' : '-'}{formatVND(e.amount)}
+                      </td>
+                      <td className="py-2.5 px-3 text-right">
+                        <button onClick={() => onDeleteExpense(e.id)} className="text-slate-400 hover:text-rose-500">✕</button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
         </div>
       );
     }
 
     // ==========================================
-    // AI INTELLIGENCE: GỌI QUA SUPABASE EDGE FUNCTION (KHÔNG LỘ API KEY)
+    // 5. TRANG TRỢ LÝ AI (HOÀN TOÀN TIẾNG VIỆT DỄ HIỂU, KHÔNG LỖI F12)
     // ==========================================
-    function AIIntelligenceView({ analytics, showPipeline, expenses }) {
+    function AIIntelligenceView({ analytics, showHowItWorks, expenses }) {
       const { thisM, lastM, revChangePct, profitChangePct, materialDiff, shippingDiff, lowStockProducts, lowMarginProducts } = analytics;
       const [messages, setMessages] = useState([
-        { role: 'ai', text: `Xin chào! Tôi là BizFlowAI. Tôi đã tổng hợp dữ liệu kỳ ${thisM.monthKey}. Hãy chọn câu hỏi gợi ý bên dưới hoặc đặt câu hỏi cho tôi!` }
+        { role: 'ai', text: `Xin chào! Tôi là Trợ lý BizFlow AI. Tôi đã tổng hợp toàn bộ số liệu tháng ${thisM.monthKey} của cửa hàng bạn. Hãy bấm chọn câu hỏi gợi ý bên dưới hoặc nhắn câu hỏi cho tôi!` }
       ]);
       const [input, setInput] = useState('');
       const [thinking, setThinking] = useState(false);
 
-      const generateLocalAnswer = (q) => {
+      const generateVietnameseAnswer = (q) => {
         const lower = q.toLowerCase();
-        if (/^(xin )?chào|^hello|^hi\b/.test(lower)) return '👋 Xin chào! Bạn có thể hỏi về lợi nhuận, dòng tiền hoặc tồn kho của cửa hàng.';
-        if (lower.includes('lợi nhuận') && !lower.includes('dòng tiền') && (lower.includes('thay đổi') || lower.includes('vì sao') || lower.includes('tại sao'))) {
-          return `📊 PHÂN TÍCH LỢI NHUẬN (${thisM.monthKey} vs ${lastM.monthKey}):\n• Doanh thu: ${formatVND(thisM.revenue)} (${revChangePct.toFixed(1)}%)\n• Lợi nhuận ròng: ${formatVND(thisM.netProfit)} (${profitChangePct.toFixed(1)}%)\n• Chi phí nguyên liệu biến động: ${materialDiff >= 0 ? '+' : ''}${formatVND(materialDiff)}\n• Chi phí vận chuyển biến động: ${shippingDiff >= 0 ? '+' : ''}${formatVND(shippingDiff)}\n• SP biên lợi nhuận thấp (<20%): ${lowMarginProducts.map(p => `${p.name} (${p.margin.toFixed(1)}%)`).join(', ') || 'Không có'}.`;
+        if (/^(xin )?chào|^hello|^hi\b/.test(lower)) {
+          return '👋 Chào bạn! Bạn có thể hỏi tôi về: tiền lãi tháng này, món hàng nào sắp hết trong kho, hoặc vì sao tiền mặt khác với tiền lãi.';
         }
-        if (lower.includes('tồn kho') || lower.includes('hết hàng')) {
-          return lowStockProducts.length === 0 ? '✅ Tồn kho hiện tại an toàn.' : `🚨 CẢNH BÁO TỒN KHO:\n` + lowStockProducts.map(p => `• ${p.name}: Còn ${p.stock} (Ngưỡng: ${p.low_stock_threshold})`).join('\n');
+        if (lower.includes('lãi') && !lower.includes('tiền mặt') && (lower.includes('thay đổi') || lower.includes('vì sao') || lower.includes('tại sao') || lower.includes('tăng') || lower.includes('giảm'))) {
+          return `📊 GIẢI THÍCH TIỀN LÃI THÁNG ${thisM.monthKey} SO VỚI THÁNG ${lastM.monthKey}:
+• Tiền bán hàng: ${formatVND(thisM.revenue)} (${revChangePct >= 0 ? 'tăng' : 'giảm'} ${Math.abs(revChangePct).toFixed(1)}%)
+• Tiền lãi thực tế: ${formatVND(thisM.netProfit)} (${profitChangePct >= 0 ? 'tăng' : 'giảm'} ${Math.abs(profitChangePct).toFixed(1)}%)
+• Chi phí nguyên liệu & bao bì: ${materialDiff >= 0 ? 'tăng thêm' : 'giảm được'} ${formatVND(Math.abs(materialDiff))}
+• Phí giao hàng: ${shippingDiff >= 0 ? 'tăng thêm' : 'giảm được'} ${formatVND(Math.abs(shippingDiff))}
+• Các món có tiền lãi mỏng (dưới 20%): ${lowMarginProducts.map(p => `${p.name} (lãi ${p.margin.toFixed(0)}%)`).join(', ') || 'Không có món nào'}.`;
         }
-        if (lower.includes('dòng tiền')) {
-          return `💵 Lợi nhuận ròng: ${formatVND(thisM.netProfit)} | Dòng tiền thực tế: ${formatVND(thisM.cashFlow)}.\nLý do chênh lệch: Chi ${formatVND(thisM.inventoryCashOut)} tiền nhập hàng tồn kho (làm giảm tiền mặt nhưng chưa tính vào giá vốn tháng này).`;
+        if (lower.includes('tồn kho') || lower.includes('hết hàng') || lower.includes('nhập thêm')) {
+          return lowStockProducts.length === 0
+            ? '✅ Các mặt hàng trong kho hiện tại đều đang đủ số lượng an toàn.'
+            : `🔔 CẦN NHẬP THÊM HÀNG SỚM:\n` + lowStockProducts.map(p => `• ${p.name}: Chỉ còn ${p.stock} (Mức báo tối thiểu: ${p.low_stock_threshold})`).join('\n');
         }
-        return `📈 TÓM TẮT KỲ ${thisM.monthKey}: Doanh thu ${formatVND(thisM.revenue)}, Giá vốn ${formatVND(thisM.cogs)}, Chi phí ${formatVND(thisM.opex)}, Lợi nhuận ròng ${formatVND(thisM.netProfit)}, Dòng tiền ${formatVND(thisM.cashFlow)}.`;
+        if (lower.includes('tiền mặt') || lower.includes('trong ví') || lower.includes('khác')) {
+          return `💵 VÌ SAO TIỀN MẶT KHÁC VỚI TIỀN LÃI?\n• Tiền lãi tính trên đơn đã bán: ${formatVND(thisM.netProfit)}\n• Tiền mặt thực sự còn lại: ${formatVND(thisM.cashFlow)}\n\n👉 Nguyên nhân: Trong tháng bạn đã chi ${formatVND(thisM.inventoryCashOut)} tiền mặt để nhập hàng dự trữ vào kho. Số hàng này vẫn nằm trong kho chưa bán hết nên làm tiền mặt giảm đi tạm thời, nhưng chưa bị trừ vào tiền lãi.`;
+        }
+        return `📈 TÓM TẮT NHANH THÁNG ${thisM.monthKey}:\n• Tiền bán hàng: ${formatVND(thisM.revenue)}\n• Tiền vốn hàng đã bán: ${formatVND(thisM.cogs)}\n• Chi phí cửa hàng: ${formatVND(thisM.opex)}\n• Tiền lãi thực tế: ${formatVND(thisM.netProfit)}\n• Tiền mặt thực còn: ${formatVND(thisM.cashFlow)}`;
       };
 
       const sendMessage = async (text) => {
@@ -1125,67 +1321,92 @@
         if (!q || thinking) return;
         setMessages(prev => [...prev, { role: 'user', text: q }]);
         setInput('');
-        setThinking(true);
 
-        try {
-          const { data, error } = await sb.functions.invoke('ai-advisor', {
-            body: {
-              question: q,
-              context: {
-                thisM,
-                lastM,
-                lowStockProducts: lowStockProducts.map(p => ({ name: p.name, stock: p.stock, threshold: p.low_stock_threshold })),
-                lowMarginProducts: lowMarginProducts.map(p => ({ name: p.name, margin: Number(p.margin.toFixed(1)) }))
+        if (window.ENABLE_AI_EDGE_FUNCTION) {
+          setThinking(true);
+          try {
+            const { data, error } = await sb.functions.invoke('ai-advisor', {
+              body: {
+                question: q,
+                context: {
+                  thisM,
+                  lastM,
+                  lowStockProducts: lowStockProducts.map(p => ({ name: p.name, stock: p.stock, threshold: p.low_stock_threshold })),
+                  lowMarginProducts: lowMarginProducts.map(p => ({ name: p.name, margin: Number(p.margin.toFixed(1)) }))
+                }
               }
+            });
+            if (!error && data?.reply) {
+              setMessages(prev => [...prev, { role: 'ai', text: data.reply }]);
+              setThinking(false);
+              return;
             }
-          });
-
-          if (!error && data?.reply) {
-            setMessages(prev => [...prev, { role: 'ai', text: data.reply }]);
-            return;
+          } catch {
+            // Chuyển sang trả lời nội bộ
           }
-
-          // Fallback an toàn về Local Engine nếu chưa deploy Edge Function
-          const fallback = generateLocalAnswer(q);
-          setMessages(prev => [...prev, { role: 'ai', text: `${fallback}\n\n(⚙️ Chế độ phân tích nội bộ)` }]);
-        } catch (err) {
-          setMessages(prev => [...prev, { role: 'ai', text: generateLocalAnswer(q) }]);
-        } finally {
           setThinking(false);
         }
+
+        setMessages(prev => [...prev, { role: 'ai', text: generateVietnameseAnswer(q) }]);
       };
 
       return (
         <div className="space-y-4">
-          {showPipeline && (
-            <div className="bg-slate-900 text-slate-100 p-4 rounded-xl text-xs grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div><strong className="text-indigo-300">1. INPUT:</strong> {thisM.completedCount} đơn completed, {expenses.length} phiếu thu/chi</div>
-              <div><strong className="text-amber-300">2. PROCESS:</strong> LN = {formatVND(thisM.revenue)} - {formatVND(thisM.cogs)} - {formatVND(thisM.opex)}</div>
-              <div><strong className="text-emerald-300">3. OUTPUT:</strong> {lowStockProducts.length} cảnh báo tồn, {lowMarginProducts.length} SP biên thấp</div>
+          {showHowItWorks && (
+            <div className="bg-gradient-to-r from-blue-900 to-blue-800 text-white p-4 rounded-2xl text-xs grid grid-cols-1 md:grid-cols-3 gap-4 shadow-sm">
+              <div><strong className="text-sky-300">1. DỮ LIỆU ĐẦU VÀO:</strong> {thisM.completedCount} đơn đã bán, {expenses.length} phiếu thu chi</div>
+              <div><strong className="text-sky-300">2. CÁCH TÍNH LÃI:</strong> {formatVND(thisM.revenue)} - {formatVND(thisM.cogs)} - {formatVND(thisM.opex)}</div>
+              <div><strong className="text-sky-300">3. GỢI Ý TỰ ĐỘNG:</strong> {lowStockProducts.length} món sắp hết, {lowMarginProducts.length} món lãi mỏng</div>
             </div>
           )}
 
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col h-[480px]">
+          <div className="bg-white rounded-2xl border border-blue-100 shadow-sm flex flex-col h-[480px]">
             <div className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-thin">
               {messages.map((m, idx) => (
                 <div key={idx} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`max-w-[85%] rounded-xl px-4 py-3 text-xs whitespace-pre-line ${m.role === 'user' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-800 border'}`}>{m.text}</div>
+                  <div className={`max-w-[85%] rounded-2xl px-4 py-3 text-xs leading-relaxed whitespace-pre-line ${
+                    m.role === 'user'
+                      ? 'bg-blue-600 text-white shadow-sm'
+                      : 'bg-blue-50/70 text-slate-800 border border-blue-100'
+                  }`}>
+                    {m.text}
+                  </div>
                 </div>
               ))}
               {thinking && (
                 <div className="flex justify-start">
-                  <div className="rounded-xl px-4 py-2 text-xs bg-slate-100 text-slate-500 border">⏳ BizFlowAI đang phân tích số liệu...</div>
+                  <div className="rounded-2xl px-4 py-2 text-xs bg-blue-50 text-blue-700 border border-blue-100">⏳ Đang phân tích số liệu...</div>
                 </div>
               )}
             </div>
-            <div className="px-4 py-2 border-t flex flex-wrap gap-1.5 bg-slate-50">
-              {['Vì sao lợi nhuận tháng này thay đổi?', 'Sản phẩm nào sắp hết hàng?', 'Tại sao dòng tiền khác lợi nhuận?'].map((q, i) => (
-                <button key={i} onClick={() => sendMessage(q)} disabled={thinking} className="text-[11px] px-2.5 py-1 rounded-full bg-white border hover:border-indigo-500 disabled:opacity-50">{q}</button>
+
+            <div className="px-4 py-2.5 border-t border-blue-50 flex flex-wrap gap-1.5 bg-blue-50/40">
+              {[
+                'Vì sao tiền lãi tháng này thay đổi?',
+                'Sản phẩm nào sắp hết hàng?',
+                'Tại sao tiền mặt khác với tiền lãi?'
+              ].map((q, i) => (
+                <button
+                  key={i}
+                  onClick={() => sendMessage(q)}
+                  disabled={thinking}
+                  className="text-[11px] font-medium px-3 py-1.5 rounded-full bg-white text-blue-700 border border-blue-200 hover:bg-blue-50 transition"
+                >
+                  {q}
+                </button>
               ))}
             </div>
-            <form onSubmit={e => { e.preventDefault(); sendMessage(); }} className="p-3 border-t flex gap-2">
-              <input value={input} onChange={e => setInput(e.target.value)} placeholder="Đặt câu hỏi cho BizFlowAI..." className="flex-1 px-3 py-2 border rounded-lg text-sm" />
-              <button type="submit" disabled={thinking} className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-semibold disabled:opacity-50">Gửi</button>
+
+            <form onSubmit={e => { e.preventDefault(); sendMessage(); }} className="p-3 border-t border-blue-100 flex gap-2">
+              <input
+                value={input}
+                onChange={e => setInput(e.target.value)}
+                placeholder="Hỏi trợ lý bằng tiếng Việt bình thường..."
+                className="flex-1 px-3.5 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-blue-500"
+              />
+              <button type="submit" disabled={thinking} className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-bold">
+                Gửi
+              </button>
             </form>
           </div>
         </div>
