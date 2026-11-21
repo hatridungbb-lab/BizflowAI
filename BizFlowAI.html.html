@@ -1336,26 +1336,38 @@
                 }
               }
             });
-            console.log('AI result:', { data, error });
-                        if (!error && data?.reply) {
+
+            if (!error && data?.reply) {
               setMessages(prev => [...prev, { role: 'ai', text: data.reply }]);
-              setThinking(false);
               return;
             }
+
             let detail = error?.message || JSON.stringify(data);
             try { const body = await error?.context?.json(); if (body) detail = JSON.stringify(body); } catch {}
             console.error('AI lỗi:', error, data);
-            setMessages(prev => [...prev, { role: 'ai', text: '⚠️ LỖI AI: ' + detail }]);
+            const overloaded = /503|UNAVAILABLE|high demand|429|quota|RESOURCE_EXHAUSTED/i.test(detail);
+            setMessages(prev => [...prev, {
+              role: 'ai',
+              text: overloaded
+                ? '⏳ Trợ lý AI đang quá tải do có quá nhiều người hỏi cùng lúc. Bạn vui lòng đợi một lát rồi thử lại nhé!'
+                : '😔 Trợ lý AI tạm thời chưa trả lời được. Bạn vui lòng thử lại sau ít phút nhé!'
+            }]);
           } catch (err) {
             console.error('AI lỗi:', err);
-            setMessages(prev => [...prev, { role: 'ai', text: '⚠️ LỖI AI: ' + String(err) }]);
+            setMessages(prev => [...prev, {
+              role: 'ai',
+              text: '😔 Trợ lý AI tạm thời chưa trả lời được. Bạn vui lòng thử lại sau ít phút nhé!'
+            }]);
+          } finally {
+            setThinking(false);
           }
-          setThinking(false);
+          return;
         }
 
+        // Chỉ dùng câu trả lời mẫu khi AI thật bị tắt
         setMessages(prev => [...prev, { role: 'ai', text: generateVietnameseAnswer(q) }]);
       };
-
+      
       return (
         <div className="space-y-4">
           {showHowItWorks && (
