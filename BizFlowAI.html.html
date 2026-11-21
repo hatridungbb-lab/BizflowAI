@@ -130,7 +130,10 @@
     // TIỆN ÍCH ĐỊNH DẠNG TIỀN & NGÀY THÁNG
     // ==========================================
     const formatVND = (num) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Math.round(num || 0));
-    const todayStr = () => new Date().toISOString().split('T')[0];
+    const todayStr = () => {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+};
     const getMonthKey = (dateStr) => (dateStr || '').slice(0, 7);
 
     const currentDate = new Date();
@@ -800,7 +803,12 @@
     // ==========================================
     function DashboardView({ analytics, setActiveTab, productsCount, ordersCount, user }) {
       const { thisM, lastM, revChangePct, profitChangePct, lowStockProducts, lowMarginProducts } = analytics;
-      const maxVal = Math.max(thisM.revenue, lastM.revenue, 1);
+      const maxVal = Math.max(
+  thisM.revenue, lastM.revenue,
+  thisM.cogs + thisM.opex, lastM.cogs + lastM.opex,
+  Math.max(0, thisM.netProfit), Math.max(0, lastM.netProfit),
+  1
+);
 
       // Hướng dẫn từng bước cho tài khoản mới đăng ký (chưa có dữ liệu)
       if (productsCount === 0 && ordersCount === 0) {
@@ -1430,56 +1438,52 @@
       };
 
       const sendMessage = async (text) => {
-        const q = (text || input).trim();
-        if (!q || thinking) return;
-        setMessages(prev => [...prev, { role: 'user', text: q }]);
-        setInput('');
+  const q = (text || input).trim();
+  if (!q || thinking) return;
+  setMessages(prev => [...prev, { role: 'user', text: q }]);
+  setInput('');
 
-        if (window.ENABLE_AI_EDGE_FUNCTION) {
-          setThinking(true);
-          try {
-            const { data, error } = await sb.functions.invoke('ai-advisor', {
-              body: {
-                question: q,
-                context: {
-                  thisM,
-                  lastM,
-                  lowStockProducts: lowStockProducts.map(p => ({ name: p.name, stock: p.stock, threshold: p.low_stock_threshold })),
-                  lowMarginProducts: lowMarginProducts.map(p => ({ name: p.name, margin: Number(p.margin.toFixed(1)) }))
-                }
-              }
-            });
+  // Câu trả lời dự phòng (tính từ số liệu có sẵn, không cần mạng)
+  const fallbackReply = () =>
+    '💡 Trợ lý AI đang bận nên mình trả lời nhanh từ số liệu của bạn:\n\n' + generateVietnameseAnswer(q);
 
-            if (!error && data?.reply) {
-              setMessages(prev => [...prev, { role: 'ai', text: data.reply }]);
-              return;
-            }
-
-            let detail = error?.message || JSON.stringify(data);
-            try { const body = await error?.context?.json(); if (body) detail = JSON.stringify(body); } catch {}
-            console.error('AI lỗi:', error, data);
-            const overloaded = /503|UNAVAILABLE|high demand|429|quota|RESOURCE_EXHAUSTED/i.test(detail);
-            setMessages(prev => [...prev, {
-              role: 'ai',
-              text: overloaded
-                ? '⏳ Trợ lý AI đang quá tải do có quá nhiều người hỏi cùng lúc. Bạn vui lòng đợi một lát rồi thử lại nhé!'
-                : '😔 Trợ lý AI tạm thời chưa trả lời được. Bạn vui lòng thử lại sau ít phút nhé!'
-            }]);
-          } catch (err) {
-            console.error('AI lỗi:', err);
-            setMessages(prev => [...prev, {
-              role: 'ai',
-              text: '😔 Trợ lý AI tạm thời chưa trả lời được. Bạn vui lòng thử lại sau ít phút nhé!'
-            }]);
-          } finally {
-            setThinking(false);
+  if (window.ENABLE_AI_EDGE_FUNCTION) {
+    setThinking(true);
+    try {
+      const { data, error } = await sb.functions.invoke('ai-advisor', {
+        body: {
+          question: q,
+          context: {
+            thisM,
+            lastM,
+            lowStockProducts: lowStockProducts.map(p => ({ name: p.name, stock: p.stock, threshold: p.low_stock_threshold })),
+            lowMarginProducts: lowMarginProducts.map(p => ({ name: p.name, margin: Number(p.margin.toFixed(1)) }))
           }
-          return;
         }
+      });
 
-        // Chỉ dùng câu trả lời mẫu khi AI thật bị tắt
-        setMessages(prev => [...prev, { role: 'ai', text: generateVietnameseAnswer(q) }]);
-      };
+      // Trường hợp 1: AI trả lời bình thường
+      if (!error && data?.reply) {
+        setMessages(prev => [...prev, { role: 'ai', text: data.reply }]);
+        return;
+      }
+
+      // Trường hợp 2: function trả về lỗi (chưa deploy, quá tải, hết quota...)
+      console.error('AI lỗi:', error, data);
+      setMessages(prev => [...prev, { role: 'ai', text: fallbackReply() }]);
+    } catch (err) {
+      // Trường hợp 3: lỗi mạng hoặc lỗi bất ngờ
+      console.error('AI lỗi:', err);
+      setMessages(prev => [...prev, { role: 'ai', text: fallbackReply() }]);
+    } finally {
+      setThinking(false);
+    }
+    return;
+  }
+
+  // Khi AI thật bị tắt: dùng câu trả lời mẫu
+  setMessages(prev => [...prev, { role: 'ai', text: generateVietnameseAnswer(q) }]);
+};
 
       return (
         <div className="flex flex-col flex-1 min-h-0 h-[calc(100dvh-180px)] md:h-full gap-2.5">
