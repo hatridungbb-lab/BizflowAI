@@ -75,53 +75,56 @@
     // LOGO CHÍNH THỨC BIZFLOW AI (SVG SẮC NÉT)
     // ==========================================
     function BizFlowLogo({ size = 'md', showTagline = false }) {
-      const iconSizes = { sm: 'w-8 h-8', md: 'w-9 h-9 sm:w-10 sm:h-10', lg: 'w-14 h-14' };
-      const textSizes = { sm: 'text-base sm:text-lg', md: 'text-lg sm:text-xl', lg: 'text-2xl sm:text-3xl' };
+  const uid = React.useId().replace(/:/g, '');
+  const blueId = `bfBlue-${uid}`;
+  const arrowId = `bfArrow-${uid}`;
+  const iconSizes = { sm: 'w-8 h-8', md: 'w-9 h-9 sm:w-10 sm:h-10', lg: 'w-14 h-14' };
+  const textSizes = { sm: 'text-base sm:text-lg', md: 'text-lg sm:text-xl', lg: 'text-2xl sm:text-3xl' };
 
-      return (
-        <div className="flex items-center gap-2.5 select-none min-w-0">
-          <svg viewBox="0 0 120 110" className={`${iconSizes[size]} shrink-0 drop-shadow-sm`} fill="none">
-            <defs>
-              <linearGradient id="bfBlueGrad" x1="15" y1="10" x2="105" y2="100" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" stopColor="#0ea5e9" />
-                <stop offset="50%" stopColor="#2563eb" />
-                <stop offset="100%" stopColor="#4338ca" />
-              </linearGradient>
-              <linearGradient id="bfArrowGrad" x1="15" y1="85" x2="112" y2="18" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" stopColor="#38bdf8" />
-                <stop offset="100%" stopColor="#1d4ed8" />
-              </linearGradient>
-            </defs>
-            {/* Khối chữ B cách điệu */}
-            <path
-              d="M28 14 H66 C85 14 96 24 96 38 C96 47 90 54 81 58 C93 61 100 71 100 83 C100 98 87 104 68 104 H22 L28 14 Z M47 31 L45 48 H64 C71 48 76 44 76 39 C76 34 71 31 64 31 H47 Z"
-              fill="url(#bfBlueGrad)"
-            />
-            {/* Khoét sáng bên trong tạo đường cong tăng trưởng */}
-            <path d="M16 86 C34 62 58 50 86 42 C60 56 38 72 22 96 Z" fill="#ffffff" />
-            {/* 3 cột biểu đồ tăng trưởng */}
-            <rect x="40" y="76" width="9" height="18" rx="2" fill="#ffffff" />
-            <rect x="54" y="68" width="9" height="26" rx="2" fill="#ffffff" />
-            <rect x="68" y="59" width="9" height="35" rx="2" fill="#ffffff" />
-            {/* Mũi tên đi lên */}
-            <path d="M56 54 C74 47 90 36 104 23" stroke="url(#bfArrowGrad)" strokeWidth="7" strokeLinecap="round" />
-            <path d="M92 20 L111 16 L107 35 Z" fill="#2563eb" />
-          </svg>
+  return (
+    <div className="flex items-center gap-2.5 select-none min-w-0">
+      <svg viewBox="0 0 120 110" className={`${iconSizes[size]} shrink-0 drop-shadow-sm`} fill="none">
+        <defs>
+          <linearGradient id={blueId} x1="15" y1="10" x2="105" y2="100" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="#0ea5e9" />
+            <stop offset="50%" stopColor="#2563eb" />
+            <stop offset="100%" stopColor="#4338ca" />
+          </linearGradient>
+          <linearGradient id={arrowId} x1="15" y1="85" x2="112" y2="18" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="#38bdf8" />
+            <stop offset="100%" stopColor="#1d4ed8" />
+          </linearGradient>
+        </defs>
+        {/* Khối chữ B cách điệu */}
+        <path
+          d="M28 14 H66 C85 14 96 24 96 38 C96 47 90 54 81 58 C93 61 100 71 100 83 C100 98 87 104 68 104 H22 L28 14 Z M47 31 L45 48 H64 C71 48 76 44 76 39 C76 34 71 31 64 31 H47 Z"
+          fill={`url(#${blueId})`}
+        />
+        {/* Khoét sáng bên trong tạo đường cong tăng trưởng */}
+        <path d="M16 86 C34 62 58 50 86 42 C60 56 38 72 22 96 Z" fill="#ffffff" />
+        {/* 3 cột biểu đồ tăng trưởng */}
+        <rect x="40" y="76" width="9" height="18" rx="2" fill="#ffffff" />
+        <rect x="54" y="68" width="9" height="26" rx="2" fill="#ffffff" />
+        <rect x="68" y="59" width="9" height="35" rx="2" fill="#ffffff" />
+        {/* Mũi tên đi lên */}
+        <path d="M56 54 C74 47 90 36 104 23" stroke={`url(#${arrowId})`} strokeWidth="7" strokeLinecap="round" />
+        <path d="M92 20 L111 16 L107 35 Z" fill="#2563eb" />
+      </svg>
 
-          <div className="min-w-0">
-            <div className={`font-extrabold tracking-tight leading-none truncate ${textSizes[size]}`}>
-              <span className="text-slate-900">BizFlow</span>{' '}
-              <span className="bg-gradient-to-r from-sky-500 via-blue-600 to-indigo-600 bg-clip-text text-transparent">AI</span>
-            </div>
-            {showTagline && (
-              <div className="text-[11px] font-medium text-slate-500 mt-0.5 tracking-wide hidden sm:block">
-                Biến dữ liệu bán hàng thành quyết định thông minh
-              </div>
-            )}
-          </div>
+      <div className="min-w-0">
+        <div className={`font-extrabold tracking-tight leading-none truncate ${textSizes[size]}`}>
+          <span className="text-slate-900">BizFlow</span>{' '}
+          <span className="bg-gradient-to-r from-sky-500 via-blue-600 to-indigo-600 bg-clip-text text-transparent">AI</span>
         </div>
-      );
-    }
+        {showTagline && (
+          <div className="text-[11px] font-medium text-slate-500 mt-0.5 tracking-wide hidden sm:block">
+            Biến dữ liệu bán hàng thành quyết định thông minh
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
 
     // ==========================================
     // TIỆN ÍCH ĐỊNH DẠNG TIỀN & NGÀY THÁNG
