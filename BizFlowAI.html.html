@@ -75,11 +75,11 @@
     // LOGO CHÍNH THỨC BIZFLOW AI (SVG SẮC NÉT)
     // ==========================================
     function BizFlowLogo({ size = 'md', showTagline = false }) {
-      const iconSizes = { sm: 'w-8 h-8 sm:w-9 sm:h-9', md: 'w-10 h-10 sm:w-11 sm:h-11', lg: 'w-14 h-14 sm:w-16 sm:h-16' };
+      const iconSizes = { sm: 'w-8 h-8', md: 'w-9 h-9 sm:w-10 sm:h-10', lg: 'w-14 h-14' };
       const textSizes = { sm: 'text-base sm:text-lg', md: 'text-lg sm:text-xl', lg: 'text-2xl sm:text-3xl' };
 
       return (
-        <div className="flex items-center gap-2.5 sm:gap-3 select-none min-w-0">
+        <div className="flex items-center gap-2.5 select-none min-w-0">
           <svg viewBox="0 0 120 110" className={`${iconSizes[size]} shrink-0 drop-shadow-sm`} fill="none">
             <defs>
               <linearGradient id="bfBlueGrad" x1="15" y1="10" x2="105" y2="100" gradientUnits="userSpaceOnUse">
@@ -114,7 +114,7 @@
               <span className="bg-gradient-to-r from-sky-500 via-blue-600 to-indigo-600 bg-clip-text text-transparent">AI</span>
             </div>
             {showTagline && (
-              <div className="text-[11px] font-medium text-slate-500 mt-1 tracking-wide hidden sm:block">
+              <div className="text-[11px] font-medium text-slate-500 mt-0.5 tracking-wide hidden sm:block">
                 Biến dữ liệu bán hàng thành quyết định thông minh
               </div>
             )}
@@ -340,7 +340,7 @@
     }
 
     // ==========================================
-    // MÀN HÌNH ĐĂNG NHẬP & ĐĂNG KÝ (BLUE & WHITE BUSINESS SPACE)
+    // MÀN HÌNH ĐĂNG NHẬP & ĐĂNG KÝ (CỐ ĐỊNH VỪA KHÍT 100% & 110% ZOOM)
     // ==========================================
     function AuthPage({ onRegister, onLogin, onQuickDemo, demoLoading }) {
       const [mode, setMode] = useState('login');
@@ -369,13 +369,12 @@
       };
 
       return (
-        <div className="min-h-[100dvh] bg-business-hero flex flex-col relative overflow-x-hidden">
-          {/* Họa tiết trang trí góc trên/dưới */}
+        <div className="min-h-[100dvh] md:h-screen md:overflow-hidden bg-business-hero flex flex-col relative overflow-x-hidden">
           <div className="pointer-events-none absolute -top-24 -right-24 w-80 h-80 rounded-full bg-blue-100/70 blur-3xl"></div>
           <div className="pointer-events-none absolute -bottom-24 -left-24 w-80 h-80 rounded-full bg-sky-100/70 blur-3xl"></div>
 
-          <header className="relative z-10 w-full border-b border-blue-100 bg-white/85 backdrop-blur-md">
-            <div className="max-w-6xl w-full mx-auto px-4 sm:px-6 py-3 sm:py-4 flex flex-wrap items-center justify-between gap-3">
+          <header className="relative z-10 w-full border-b border-blue-100 bg-white/85 backdrop-blur-md shrink-0">
+            <div className="max-w-6xl w-full mx-auto px-4 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-2.5">
               <BizFlowLogo size="md" showTagline={true} />
               <button
                 onClick={onQuickDemo}
@@ -387,117 +386,119 @@
             </div>
           </header>
 
-          <main className="relative z-10 flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-5 sm:py-8 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center">
-            {/* CỘT PHẢI ĐƯA LÊN TRÊN Ở MOBILE ĐỂ NGƯỜI DÙNG ĐĂNG NHẬP NGAY, DESKTOP NẰM BÊN PHẢI */}
-            <div className="order-1 lg:order-2 lg:col-span-5 bg-white rounded-2xl p-5 sm:p-7 shadow-xl shadow-blue-900/5 border border-blue-100 min-w-0">
-              <div className="flex bg-blue-50/70 p-1 rounded-xl mb-5">
-                <button
-                  type="button"
-                  onClick={() => { setMode('login'); setError(''); }}
-                  className={`flex-1 py-2 text-sm font-bold rounded-lg transition ${mode === 'login' ? 'bg-white text-blue-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
-                >
-                  Đăng nhập
-                </button>
-                <button
-                  type="button"
-                  onClick={() => { setMode('register'); setError(''); }}
-                  className={`flex-1 py-2 text-sm font-bold rounded-lg transition ${mode === 'register' ? 'bg-white text-blue-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
-                >
-                  Tạo cửa hàng mới
-                </button>
-              </div>
-
-              {error && (
-                <div className="mb-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium">
-                  {error}
+          <main className="relative z-10 flex-1 min-h-0 overflow-y-auto md:overflow-hidden flex items-center">
+            <div className="max-w-6xl w-full mx-auto px-4 sm:px-6 py-4 grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-8 items-center">
+              {/* FORM ĐĂNG NHẬP / ĐĂNG KÝ */}
+              <div className="order-1 lg:order-2 lg:col-span-5 bg-white rounded-2xl p-5 sm:p-6 shadow-xl shadow-blue-900/5 border border-blue-100 min-w-0">
+                <div className="flex bg-blue-50/70 p-1 rounded-xl mb-4">
+                  <button
+                    type="button"
+                    onClick={() => { setMode('login'); setError(''); }}
+                    className={`flex-1 py-2 text-xs sm:text-sm font-bold rounded-lg transition ${mode === 'login' ? 'bg-white text-blue-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                  >
+                    Đăng nhập
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setMode('register'); setError(''); }}
+                    className={`flex-1 py-2 text-xs sm:text-sm font-bold rounded-lg transition ${mode === 'register' ? 'bg-white text-blue-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                  >
+                    Tạo cửa hàng mới
+                  </button>
                 </div>
-              )}
 
-              <form onSubmit={submitForm} className="space-y-3.5 text-sm">
-                {mode === 'register' && (
+                {error && (
+                  <div className="mb-3 p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium">
+                    {error}
+                  </div>
+                )}
+
+                <form onSubmit={submitForm} className="space-y-3 text-sm">
+                  {mode === 'register' && (
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 mb-1">Tên cửa hàng của bạn</label>
+                      <input
+                        required
+                        value={shopName}
+                        onChange={e => setShopName(e.target.value)}
+                        placeholder="VD: Tiệm Trà Sữa Minh Anh"
+                        className="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600"
+                      />
+                    </div>
+                  )}
+
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">Tên cửa hàng của bạn</label>
+                    <label className="block text-xs font-semibold text-slate-700 mb-1">Địa chỉ Email</label>
                     <input
                       required
-                      value={shopName}
-                      onChange={e => setShopName(e.target.value)}
-                      placeholder="VD: Tiệm Trà Sữa Minh Anh"
-                      className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600"
+                      type="email"
+                      value={email}
+                      onChange={e => setEmail(e.target.value)}
+                      placeholder="tenban@gmail.com"
+                      className="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600"
                     />
                   </div>
-                )}
 
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Địa chỉ Email</label>
-                  <input
-                    required
-                    type="email"
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
-                    placeholder="tenban@gmail.com"
-                    className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Mật khẩu</label>
-                  <input
-                    required
-                    minLength={6}
-                    type="password"
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                    placeholder="Ít nhất 6 ký tự"
-                    className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600"
-                  />
-                </div>
-
-                {mode === 'register' && (
-                  <div className="p-3 rounded-xl bg-blue-50/80 border border-blue-100 text-xs text-blue-800">
-                    🔒 Dữ liệu cửa hàng của bạn được tách biệt hoàn toàn. Sau khi tạo tài khoản, bạn sẽ tự thêm sản phẩm và đơn hàng của riêng mình.
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-700 mb-1">Mật khẩu</label>
+                    <input
+                      required
+                      minLength={6}
+                      type="password"
+                      value={password}
+                      onChange={e => setPassword(e.target.value)}
+                      placeholder="Ít nhất 6 ký tự"
+                      className="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600"
+                    />
                   </div>
-                )}
 
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className="w-full py-3 bg-gradient-to-r from-blue-600 to-sky-600 hover:from-blue-700 hover:to-sky-700 text-white font-bold rounded-xl shadow-md shadow-blue-200 transition disabled:opacity-50"
-                >
-                  {submitting ? 'Đang xử lý...' : mode === 'register' ? 'Tạo cửa hàng & Bắt đầu →' : 'Đăng nhập vào cửa hàng'}
-                </button>
-              </form>
-            </div>
+                  {mode === 'register' && (
+                    <div className="p-2.5 rounded-xl bg-blue-50/80 border border-blue-100 text-[11px] text-blue-800 leading-snug">
+                      🔒 Dữ liệu cửa hàng của bạn được tách biệt hoàn toàn. Sau khi tạo tài khoản, bạn sẽ tự thêm sản phẩm và đơn hàng của riêng mình.
+                    </div>
+                  )}
 
-            {/* CỘT TRÁI: GIỚI THIỆU DỄ HIỂU */}
-            <div className="order-2 lg:order-1 lg:col-span-7 space-y-4 sm:space-y-5 min-w-0">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 text-xs font-bold">
-                <span className="w-2 h-2 rounded-full bg-blue-600"></span>
-                Sổ quản lý kinh doanh thông minh cho chủ cửa hàng
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="w-full py-2.5 bg-gradient-to-r from-blue-600 to-sky-600 hover:from-blue-700 hover:to-sky-700 text-white font-bold rounded-xl shadow-md shadow-blue-200 transition disabled:opacity-50"
+                  >
+                    {submitting ? 'Đang xử lý...' : mode === 'register' ? 'Tạo cửa hàng & Bắt đầu →' : 'Đăng nhập vào cửa hàng'}
+                  </button>
+                </form>
               </div>
 
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 leading-tight">
-                Nắm rõ <span className="text-blue-600">Tiền lãi thực tế</span> và <span className="text-sky-600">Hàng tồn kho</span> chỉ trong vài phút mỗi ngày.
-              </h1>
-
-              <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-                Không cần biết kế toán phức tạp. BizFlow AI giúp bạn ghi đơn bán hàng, theo dõi hàng sắp hết, ghi chép thu chi hằng ngày và tự động giải thích lý do tăng giảm tiền lãi.
-              </p>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 pt-1">
-                <div className="bg-white/90 p-3.5 sm:p-4 rounded-2xl border border-blue-100 shadow-sm">
-                  <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center text-base mb-1.5">🧾</div>
-                  <div className="font-bold text-sm text-slate-800">Ghi đơn nhanh</div>
-                  <div className="text-xs text-slate-500 mt-1">Tự trừ tồn kho và nhớ sẵn giá nhập lúc bán.</div>
+              {/* GIỚI THIỆU */}
+              <div className="order-2 lg:order-1 lg:col-span-7 space-y-3.5 min-w-0">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200 text-xs font-bold">
+                  <span className="w-2 h-2 rounded-full bg-blue-600"></span>
+                  Sổ quản lý kinh doanh thông minh cho chủ cửa hàng
                 </div>
-                <div className="bg-white/90 p-3.5 sm:p-4 rounded-2xl border border-blue-100 shadow-sm">
-                  <div className="w-8 h-8 rounded-lg bg-sky-100 text-sky-700 flex items-center justify-center text-base mb-1.5">💰</div>
-                  <div className="font-bold text-sm text-slate-800">Rõ tiền lời, tiền mặt</div>
-                  <div className="text-xs text-slate-500 mt-1">Phân biệt rạch ròi tiền bán được và tiền còn trong túi.</div>
-                </div>
-                <div className="bg-white/90 p-3.5 sm:p-4 rounded-2xl border border-blue-100 shadow-sm">
-                  <div className="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center text-base mb-1.5">🤖</div>
-                  <div className="font-bold text-sm text-slate-800">Hỏi đáp dễ hiểu</div>
-                  <div className="text-xs text-slate-500 mt-1">Trợ lý AI giải thích bằng tiếng Việt đơn giản.</div>
+
+                <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 leading-tight">
+                  Nắm rõ <span className="text-blue-600">Tiền lãi thực tế</span> và <span className="text-sky-600">Hàng tồn kho</span> chỉ trong vài phút mỗi ngày.
+                </h1>
+
+                <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
+                  Không cần biết kế toán phức tạp. BizFlow AI giúp bạn ghi đơn bán hàng, theo dõi hàng sắp hết, ghi chép thu chi hằng ngày và tự động giải thích lý do tăng giảm tiền lãi.
+                </p>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+                  <div className="bg-white/90 p-3 rounded-2xl border border-blue-100 shadow-sm">
+                    <div className="w-7 h-7 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center text-sm mb-1.5">🧾</div>
+                    <div className="font-bold text-xs sm:text-sm text-slate-800">Ghi đơn nhanh</div>
+                    <div className="text-[11px] text-slate-500 mt-0.5">Tự trừ tồn kho và nhớ sẵn giá nhập lúc bán.</div>
+                  </div>
+                  <div className="bg-white/90 p-3 rounded-2xl border border-blue-100 shadow-sm">
+                    <div className="w-7 h-7 rounded-lg bg-sky-100 text-sky-700 flex items-center justify-center text-sm mb-1.5">💰</div>
+                    <div className="font-bold text-xs sm:text-sm text-slate-800">Rõ tiền lời, tiền mặt</div>
+                    <div className="text-[11px] text-slate-500 mt-0.5">Phân biệt rạch ròi tiền bán được và tiền còn trong túi.</div>
+                  </div>
+                  <div className="bg-white/90 p-3 rounded-2xl border border-blue-100 shadow-sm">
+                    <div className="w-7 h-7 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center text-sm mb-1.5">🤖</div>
+                    <div className="font-bold text-xs sm:text-sm text-slate-800">Hỏi đáp dễ hiểu</div>
+                    <div className="text-[11px] text-slate-500 mt-0.5">Trợ lý AI giải thích bằng tiếng Việt đơn giản.</div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -507,7 +508,7 @@
     }
 
     // ==========================================
-    // KHÔNG GIAN LÀM VIỆC CHÍNH (BLUE & WHITE)
+    // KHÔNG GIAN LÀM VIỆC CHÍNH (CỐ ĐỊNH 1 MÀN HÌNH TRÊN MÁY TÍNH)
     // ==========================================
     function WorkspaceApp({
       user, onLogout, products, orders, expenses,
@@ -603,7 +604,7 @@
 
       return (
         <div className="min-h-[100dvh] md:h-screen flex flex-col md:flex-row md:overflow-hidden">
-          {/* HEADER TRÊN ĐIỆN THOẠI (9:16) - GỌN NHẸ ĐỂ KHÔNG PHẢI CUỘN HOẶC ZOOM */}
+          {/* HEADER TRÊN ĐIỆN THOẠI (9:16) */}
           <div className="md:hidden sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-blue-100 px-3 py-2 flex items-center justify-between gap-2">
             <div className="min-w-0 flex items-center gap-2">
               <BizFlowLogo size="sm" />
@@ -631,25 +632,25 @@
             </div>
           </div>
 
-          {/* THANH ĐIỀU HƯỚNG TRÁI TRÊN MÁY TÍNH (CỐ ĐỊNH CHIỀU CAO, KHÔNG BỊ MẤT NÚT KHI ZOOM 100%-110%) */}
-          <aside className="hidden md:flex md:w-60 lg:w-64 md:h-screen bg-white border-r border-blue-100 flex-col shrink-0 shadow-sm">
-            <div className="p-4 border-b border-blue-100 bg-gradient-to-br from-white to-blue-50/60 shrink-0">
+          {/* THANH ĐIỀU HƯỚNG TRÁI TRÊN MÁY TÍNH */}
+          <aside className="hidden md:flex md:w-56 lg:w-64 md:h-screen bg-white border-r border-blue-100 flex-col shrink-0 shadow-sm">
+            <div className="p-3.5 border-b border-blue-100 bg-gradient-to-br from-white to-blue-50/60 shrink-0">
               <BizFlowLogo size="sm" />
-              <div className="mt-3 p-2.5 rounded-xl bg-blue-50 border border-blue-100">
+              <div className="mt-2.5 p-2 rounded-xl bg-blue-50 border border-blue-100">
                 <div className="text-[10px] font-semibold text-blue-600 uppercase tracking-wider">Cửa hàng đang quản lý</div>
                 <div className="text-xs font-bold text-slate-900 truncate mt-0.5">🏪 {user.shop_name}</div>
-                <div className="text-[11px] text-slate-500 truncate mt-0.5">{user.email}</div>
+                <div className="text-[11px] text-slate-500 truncate">{user.email}</div>
               </div>
             </div>
 
-            <nav className="flex-1 overflow-y-auto scrollbar-thin p-2.5 space-y-1">
+            <nav className="flex-1 overflow-y-auto scrollbar-thin p-2 space-y-1">
               {navItems.map(item => {
                 const isActive = activeTab === item.id;
                 return (
                   <button
                     key={item.id}
                     onClick={() => setActiveTab(item.id)}
-                    className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-sm font-semibold transition ${
+                    className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs lg:text-sm font-semibold transition ${
                       isActive
                         ? 'bg-gradient-to-r from-blue-600 to-sky-600 text-white shadow-md shadow-blue-200'
                         : item.highlight
@@ -662,7 +663,7 @@
                       <span className="truncate">{item.label}</span>
                     </span>
                     {item.badge > 0 && (
-                      <span className={`px-2 py-0.5 text-xs rounded-full text-white shrink-0 ${isActive ? 'bg-white/25' : (item.badgeColor || 'bg-amber-500')}`}>
+                      <span className={`px-1.5 py-0.5 text-[11px] rounded-full text-white shrink-0 ${isActive ? 'bg-white/25' : (item.badgeColor || 'bg-amber-500')}`}>
                         {item.badge}
                       </span>
                     )}
@@ -671,7 +672,7 @@
               })}
             </nav>
 
-            <div className="p-3 m-2.5 rounded-2xl bg-gradient-to-br from-blue-50 to-white border border-blue-100 text-xs space-y-2 shrink-0">
+            <div className="p-2.5 m-2 rounded-2xl bg-gradient-to-br from-blue-50 to-white border border-blue-100 text-xs space-y-1.5 shrink-0">
               <div className="text-[11px] text-slate-600 leading-snug">
                 {user.is_demo
                   ? '👀 Bạn đang xem bản mẫu riêng. Mọi thao tác không ảnh hưởng người khác.'
@@ -695,21 +696,21 @@
             </div>
           </aside>
 
-          {/* NỘI DUNG CHÍNH */}
+          {/* NỘI DUNG CHÍNH - CỐ ĐỊNH TRONG 1 MÀN HÌNH TRÊN MÁY TÍNH */}
           <main className="flex-1 min-w-0 flex flex-col md:h-screen md:overflow-hidden bg-business-grid">
-            <header className="bg-white/90 backdrop-blur-md border-b border-blue-100 px-4 sm:px-6 py-2.5 sm:py-3 flex flex-wrap items-center justify-between gap-2 shrink-0">
+            <header className="bg-white/90 backdrop-blur-md border-b border-blue-100 px-4 sm:px-5 py-2 flex flex-wrap items-center justify-between gap-2 shrink-0">
               <div className="min-w-0">
-                <h1 className="text-base sm:text-lg font-extrabold text-slate-900 truncate">
+                <h1 className="text-sm sm:text-base font-extrabold text-slate-900 truncate">
                   {navItems.find(n => n.id === activeTab)?.icon} {navItems.find(n => n.id === activeTab)?.label}
                 </h1>
-                <p className="text-[11px] sm:text-xs text-slate-500">
+                <p className="text-[11px] text-slate-500">
                   Tháng hiện tại: <strong className="text-blue-700">{THIS_MONTH}</strong> • Tháng trước: <strong>{LAST_MONTH}</strong>
                 </p>
               </div>
 
               <div className="flex items-center gap-2 shrink-0">
                 {activeTab === 'ai' && (
-                  <label className="flex items-center gap-1.5 text-[11px] sm:text-xs font-semibold bg-blue-50 text-blue-700 px-3 py-1.5 rounded-full cursor-pointer border border-blue-200">
+                  <label className="flex items-center gap-1.5 text-[11px] font-semibold bg-blue-50 text-blue-700 px-3 py-1 rounded-full cursor-pointer border border-blue-200">
                     <input type="checkbox" checked={showHowItWorks} onChange={e => setShowHowItWorks(e.target.checked)} className="accent-blue-600" />
                     <span>Hiện cách AI tính</span>
                   </label>
@@ -717,13 +718,7 @@
               </div>
             </header>
 
-            <div
-              className={`flex-1 min-w-0 p-3 sm:p-5 ${
-                activeTab === 'ai'
-                  ? 'flex flex-col min-h-0 pb-20 md:pb-4 overflow-hidden'
-                  : 'overflow-y-auto scrollbar-thin pb-24 md:pb-6 space-y-5'
-              }`}
-            >
+            <div className="flex-1 min-w-0 min-h-0 flex flex-col p-3 sm:p-4 pb-24 md:pb-4 overflow-y-auto md:overflow-hidden">
               {activeTab === 'dashboard' && (
                 <DashboardView
                   analytics={analytics}
@@ -798,7 +793,7 @@
     }
 
     // ==========================================
-    // 1. TRANG TỔNG QUAN
+    // 1. TRANG TỔNG QUAN (VỪA KHÍT 1 MÀN HÌNH Ở 100% & 110% ZOOM)
     // ==========================================
     function DashboardView({ analytics, setActiveTab, productsCount, ordersCount, user }) {
       const { thisM, lastM, revChangePct, profitChangePct, lowStockProducts, lowMarginProducts } = analytics;
@@ -807,32 +802,34 @@
       // Hướng dẫn từng bước cho tài khoản mới đăng ký (chưa có dữ liệu)
       if (productsCount === 0 && ordersCount === 0) {
         return (
-          <div className="bg-white border border-blue-100 rounded-2xl p-6 sm:p-10 shadow-sm max-w-3xl mx-auto text-center space-y-6">
-            <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center text-3xl">🏪</div>
-            <div>
-              <h2 className="text-lg sm:text-xl font-extrabold text-slate-900">Chào mừng {user.shop_name} đến với BizFlow AI!</h2>
-              <p className="text-xs sm:text-sm text-slate-600 mt-2 max-w-lg mx-auto">
-                Cửa hàng mới của bạn hiện đang trống để đảm bảo tách biệt hoàn toàn với các tài khoản khác. Hãy làm theo 2 bước đơn giản sau để bắt đầu:
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
-              <div className="p-4 rounded-xl bg-blue-50/70 border border-blue-100 space-y-2">
-                <div className="text-xs font-bold text-blue-700">BƯỚC 1</div>
-                <div className="font-bold text-slate-900 text-sm">Thêm sản phẩm bạn đang bán</div>
-                <p className="text-xs text-slate-600">Nhập tên món, giá bán ra, giá nhập vào và số lượng đang có trong kho.</p>
-                <button onClick={() => setActiveTab('products')} className="mt-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold">
-                  + Thêm sản phẩm ngay
-                </button>
+          <div className="md:h-full flex items-center justify-center">
+            <div className="bg-white border border-blue-100 rounded-2xl p-6 sm:p-8 shadow-sm max-w-3xl w-full text-center space-y-5">
+              <div className="w-14 h-14 mx-auto rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center text-3xl">🏪</div>
+              <div>
+                <h2 className="text-lg sm:text-xl font-extrabold text-slate-900">Chào mừng {user.shop_name} đến với BizFlow AI!</h2>
+                <p className="text-xs sm:text-sm text-slate-600 mt-2 max-w-lg mx-auto">
+                  Cửa hàng mới của bạn hiện đang trống để đảm bảo tách biệt hoàn toàn với các tài khoản khác. Hãy làm theo 2 bước đơn giản sau để bắt đầu:
+                </p>
               </div>
 
-              <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
-                <div className="text-xs font-bold text-slate-500">BƯỚC 2</div>
-                <div className="font-bold text-slate-900 text-sm">Tạo đơn hàng đầu tiên</div>
-                <p className="text-xs text-slate-600">Khi có khách mua hàng, ghi đơn mới để hệ thống tự tính tiền lời và trừ kho.</p>
-                <button onClick={() => setActiveTab('orders')} className="mt-1 px-4 py-2 bg-white border border-blue-200 text-blue-700 hover:bg-blue-50 rounded-lg text-xs font-bold">
-                  Đi tới mục Đơn hàng →
-                </button>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
+                <div className="p-4 rounded-xl bg-blue-50/70 border border-blue-100 space-y-2">
+                  <div className="text-xs font-bold text-blue-700">BƯỚC 1</div>
+                  <div className="font-bold text-slate-900 text-sm">Thêm sản phẩm bạn đang bán</div>
+                  <p className="text-xs text-slate-600">Nhập tên món, giá bán ra, giá nhập vào và số lượng đang có trong kho.</p>
+                  <button onClick={() => setActiveTab('products')} className="mt-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold">
+                    + Thêm sản phẩm ngay
+                  </button>
+                </div>
+
+                <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                  <div className="text-xs font-bold text-slate-500">BƯỚC 2</div>
+                  <div className="font-bold text-slate-900 text-sm">Tạo đơn hàng đầu tiên</div>
+                  <p className="text-xs text-slate-600">Khi có khách mua hàng, ghi đơn mới để hệ thống tự tính tiền lời và trừ kho.</p>
+                  <button onClick={() => setActiveTab('orders')} className="mt-1 px-4 py-2 bg-white border border-blue-200 text-blue-700 hover:bg-blue-50 rounded-lg text-xs font-bold">
+                    Đi tới mục Đơn hàng →
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -840,12 +837,12 @@
       }
 
       return (
-        <div className="space-y-5">
-          {/* 4 THẺ CHỈ SỐ DỄ HIỂU */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
+        <div className="flex flex-col md:h-full md:min-h-0 gap-3 lg:gap-4">
+          {/* 4 THẺ CHỈ SỐ LUÔN TRÊN 1 HÀNG Ở MÁY TÍNH (lg:grid-cols-4) ĐỂ KHÔNG TĂNG CHIỀU CAO KHI ZOOM 110% */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 shrink-0">
             <KpiCard
               title="Tiền bán hàng tháng này"
-              sub="Chỉ tính các đơn đã hoàn thành"
+              sub="Chỉ tính đơn đã hoàn thành"
               value={formatVND(thisM.revenue)}
               trend={`${revChangePct >= 0 ? '▲ Tăng' : '▼ Giảm'} ${Math.abs(revChangePct).toFixed(1)}% so với tháng trước`}
               trendPositive={revChangePct >= 0}
@@ -853,7 +850,7 @@
             />
             <KpiCard
               title="Tổng vốn & chi phí"
-              sub={`Tiền hàng: ${formatVND(thisM.cogs)} | Chi phí khác: ${formatVND(thisM.opex)}`}
+              sub={`Hàng: ${formatVND(thisM.cogs)} | Phí: ${formatVND(thisM.opex)}`}
               value={formatVND(thisM.cogs + thisM.opex)}
               trend={`Giao hàng & Bao bì: ${formatVND(thisM.shippingCost + thisM.materialCost)}`}
               trendPositive={false}
@@ -861,7 +858,7 @@
             />
             <KpiCard
               title="Tiền lãi thực tế"
-              sub={`Trung bình bán 100đ lãi ${thisM.netMargin.toFixed(0)}đ`}
+              sub={`Bán 100đ lãi ${thisM.netMargin.toFixed(0)}đ`}
               value={formatVND(thisM.netProfit)}
               trend={`${profitChangePct >= 0 ? '▲ Tăng' : '▼ Giảm'} ${Math.abs(profitChangePct).toFixed(1)}% so với tháng trước`}
               trendPositive={profitChangePct >= 0}
@@ -869,55 +866,55 @@
             />
             <KpiCard
               title="Tiền mặt thực còn"
-              sub={`Đã trừ ${formatVND(thisM.inventoryCashOut)} tiền nhập hàng dự trữ`}
+              sub={`Đã trừ ${formatVND(thisM.inventoryCashOut)} tiền nhập hàng`}
               value={formatVND(thisM.cashFlow)}
-              trend="Số tiền thực sự còn lại trong ví/két"
+              trend="Số tiền thực còn trong ví/két"
               trendPositive={thisM.cashFlow >= 0}
               accent="indigo"
             />
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-            {/* BIỂU ĐỒ SO SÁNH */}
-            <div className="lg:col-span-2 bg-white p-4 sm:p-6 rounded-2xl border border-blue-100 shadow-sm min-w-0">
-              <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 lg:gap-4 md:flex-1 md:min-h-0">
+            {/* BIỂU ĐỒ SO SÁNH CO GIÃN THEO CHIỀU CAO MÀN HÌNH */}
+            <div className="lg:col-span-2 bg-white p-4 rounded-2xl border border-blue-100 shadow-sm min-w-0 flex flex-col md:min-h-0">
+              <div className="flex flex-wrap items-center justify-between gap-2 mb-2 shrink-0">
                 <div>
-                  <h2 className="font-bold text-slate-900 text-sm sm:text-base">So sánh Tháng trước và Tháng này</h2>
-                  <p className="text-xs text-slate-500">Nhìn nhanh mức bán, chi phí và tiền lãi giữa hai tháng</p>
+                  <h2 className="font-bold text-slate-900 text-sm">So sánh Tháng trước và Tháng này</h2>
+                  <p className="text-[11px] text-slate-500">Nhìn nhanh mức bán, chi phí và tiền lãi giữa hai tháng</p>
                 </div>
-                <div className="flex flex-wrap gap-3 text-[11px] sm:text-xs font-medium text-slate-600">
+                <div className="flex flex-wrap gap-3 text-[11px] font-medium text-slate-600">
                   <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded bg-blue-600 inline-block"></span> Tiền bán hàng</span>
                   <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded bg-sky-400 inline-block"></span> Tổng chi phí</span>
                   <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded bg-emerald-500 inline-block"></span> Tiền lãi</span>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3 sm:gap-8 pt-4 pb-2 px-1 sm:px-4 border-b border-blue-50">
+              <div className="flex-1 min-h-[165px] grid grid-cols-2 gap-3 sm:gap-8 pt-3 pb-1 px-1 sm:px-4 border-b border-blue-50">
                 {[{ label: `Tháng trước (${lastM.monthKey})`, data: lastM }, { label: `Tháng này (${thisM.monthKey})`, data: thisM }].map((col, idx) => (
-                  <div key={idx} className="flex flex-col items-center min-w-0">
-                    <div className="h-36 sm:h-44 w-full flex items-end justify-center gap-2 sm:gap-4">
+                  <div key={idx} className="flex flex-col items-center min-w-0 h-full">
+                    <div className="flex-1 min-h-0 w-full flex items-end justify-center gap-2 sm:gap-4">
                       <BarItem heightPct={(col.data.revenue / maxVal) * 100} color="bg-blue-600" label={formatVND(col.data.revenue)} />
                       <BarItem heightPct={((col.data.cogs + col.data.opex) / maxVal) * 100} color="bg-sky-400" label={formatVND(col.data.cogs + col.data.opex)} />
                       <BarItem heightPct={(Math.max(0, col.data.netProfit) / maxVal) * 100} color="bg-emerald-500" label={formatVND(col.data.netProfit)} />
                     </div>
-                    <span className="mt-3 text-[11px] sm:text-xs font-bold text-slate-700 text-center">{col.label}</span>
+                    <span className="mt-2 text-[11px] font-bold text-slate-700 text-center shrink-0">{col.label}</span>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* CẢNH BÁO NHANH */}
-            <div className="bg-white p-4 sm:p-6 rounded-2xl border border-blue-100 shadow-sm flex flex-col justify-between space-y-4 min-w-0">
-              <div>
-                <h2 className="font-bold text-slate-900 mb-3 text-sm sm:text-base">🔔 Việc cần chú ý ngay</h2>
-                <div className="space-y-3 text-xs">
-                  <div className="p-3.5 rounded-xl bg-rose-50/80 border border-rose-200">
+            <div className="bg-white p-4 rounded-2xl border border-blue-100 shadow-sm flex flex-col justify-between gap-3 min-w-0 md:min-h-0">
+              <div className="flex-1 min-h-0 flex flex-col">
+                <h2 className="font-bold text-slate-900 mb-2 text-sm shrink-0">🔔 Việc cần chú ý ngay</h2>
+                <div className="flex-1 min-h-0 overflow-y-auto scrollbar-thin space-y-2.5 text-xs pr-0.5">
+                  <div className="p-3 rounded-xl bg-rose-50/80 border border-rose-200">
                     <div className="font-bold text-rose-800">Hàng sắp hết trong kho ({lowStockProducts.length} món)</div>
                     {lowStockProducts.length === 0 ? (
                       <div className="text-rose-700/80 mt-1">Kho hàng hiện đang đủ, chưa cần nhập thêm.</div>
                     ) : (
                       lowStockProducts.map(p => (
-                        <div key={p.id} className="text-rose-700 flex justify-between mt-1.5 gap-2">
+                        <div key={p.id} className="text-rose-700 flex justify-between mt-1 gap-2">
                           <span className="truncate">{p.name}</span>
                           <strong className="shrink-0">Còn {p.stock}</strong>
                         </div>
@@ -925,13 +922,13 @@
                     )}
                   </div>
 
-                  <div className="p-3.5 rounded-xl bg-blue-50/80 border border-blue-200">
-                    <div className="font-bold text-blue-900">Món có tiền lãi mỏng dưới 20% ({lowMarginProducts.length} món)</div>
+                  <div className="p-3 rounded-xl bg-blue-50/80 border border-blue-200">
+                    <div className="font-bold text-blue-900">Món lãi mỏng dưới 20% ({lowMarginProducts.length} món)</div>
                     {lowMarginProducts.length === 0 ? (
                       <div className="text-blue-700/80 mt-1">Tất cả sản phẩm đều đang có mức lãi tốt.</div>
                     ) : (
                       lowMarginProducts.map(p => (
-                        <div key={p.id} className="text-blue-800 flex justify-between mt-1.5 gap-2">
+                        <div key={p.id} className="text-blue-800 flex justify-between mt-1 gap-2">
                           <span className="truncate">{p.name}</span>
                           <strong className="shrink-0">Lãi {p.margin.toFixed(0)}%</strong>
                         </div>
@@ -943,7 +940,7 @@
 
               <button
                 onClick={() => setActiveTab('ai')}
-                className="w-full py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-sky-600 hover:from-blue-700 hover:to-sky-700 text-white text-sm font-bold shadow-sm transition"
+                className="w-full py-2 rounded-xl bg-gradient-to-r from-blue-600 to-sky-600 hover:from-blue-700 hover:to-sky-700 text-white text-xs sm:text-sm font-bold shadow-sm transition shrink-0"
               >
                 Hỏi Trợ lý AI ngay ✨
               </button>
@@ -962,11 +959,11 @@
         indigo: 'border-t-indigo-600'
       };
       return (
-        <div className={`bg-white p-4 sm:p-5 rounded-2xl border border-blue-100 border-t-4 ${accents[accent]} shadow-sm min-w-0`}>
-          <div className="text-xs font-semibold text-slate-500">{title}</div>
-          <div className="text-lg sm:text-xl font-extrabold text-slate-900 mt-1 truncate">{value}</div>
-          <div className="text-[11px] text-slate-500 mt-1">{sub}</div>
-          <div className={`text-xs font-bold mt-2 ${trendPositive ? 'text-emerald-600' : 'text-blue-700'}`}>{trend}</div>
+        <div className={`bg-white p-3 lg:p-3.5 rounded-2xl border border-blue-100 border-t-4 ${accents[accent]} shadow-sm min-w-0`}>
+          <div className="text-[11px] font-semibold text-slate-500 truncate">{title}</div>
+          <div className="text-base lg:text-lg font-extrabold text-slate-900 mt-0.5 truncate">{value}</div>
+          <div className="text-[11px] text-slate-500 mt-0.5 truncate" title={sub}>{sub}</div>
+          <div className={`text-[11px] font-bold mt-1.5 truncate ${trendPositive ? 'text-emerald-600' : 'text-blue-700'}`} title={trend}>{trend}</div>
         </div>
       );
     }
@@ -974,14 +971,14 @@
     function BarItem({ heightPct, color, label }) {
       return (
         <div className="flex flex-col items-center justify-end h-full w-8 sm:w-12 md:w-14 min-w-0">
-          <div className="text-[9px] sm:text-[10px] font-bold text-slate-600 mb-1 truncate max-w-full">{label.replace('₫', '').trim()}</div>
-          <div className={`w-full rounded-t-lg ${color} transition-all`} style={{ height: `${Math.max(4, heightPct)}%` }}></div>
+          <div className="text-[9px] sm:text-[10px] font-bold text-slate-600 mb-1 truncate max-w-full shrink-0">{label.replace('₫', '').trim()}</div>
+          <div className={`w-full rounded-t-lg ${color} transition-all`} style={{ height: `${Math.max(4, heightPct * 0.85)}%` }}></div>
         </div>
       );
     }
 
     // ==========================================
-    // 2. TRANG ĐƠN HÀNG
+    // 2. TRANG ĐƠN HÀNG (BẢNG CUỘN TRONG KHUNG, KHÔNG TRÀN TRANG)
     // ==========================================
     function OrdersView({ orders, products, onCreateOrder, onChangeStatus, goToProducts }) {
       const [customerName, setCustomerName] = useState('');
@@ -1013,9 +1010,9 @@
       };
 
       return (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-          <div className="bg-white p-4 sm:p-5 rounded-2xl border border-blue-100 shadow-sm h-fit min-w-0">
-            <h2 className="font-bold text-slate-900 mb-3">➕ Ghi đơn hàng mới</h2>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:h-full md:min-h-0">
+          <div className="bg-white p-4 rounded-2xl border border-blue-100 shadow-sm h-fit max-h-full overflow-y-auto scrollbar-thin min-w-0">
+            <h2 className="font-bold text-slate-900 mb-2.5 text-sm">➕ Ghi đơn hàng mới</h2>
 
             {products.length === 0 ? (
               <div className="p-4 rounded-xl bg-blue-50 border border-blue-100 text-xs text-slate-700 space-y-3">
@@ -1025,31 +1022,30 @@
                 </button>
               </div>
             ) : (
-              <form onSubmit={submitOrder} className="space-y-3 text-sm">
+              <form onSubmit={submitOrder} className="space-y-2.5 text-sm">
                 <input
                   value={customerName}
                   onChange={e => setCustomerName(e.target.value)}
                   placeholder="Tên khách mua (để trống = Khách lẻ)"
-                  className="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 text-xs sm:text-sm"
                 />
                 <div className="grid grid-cols-2 gap-2">
                   <input
                     type="date"
                     value={orderDate}
                     onChange={e => setOrderDate(e.target.value)}
-                    className="w-full min-w-0 px-2.5 py-2 border border-slate-200 rounded-xl"
+                    className="w-full min-w-0 px-2.5 py-2 border border-slate-200 rounded-xl text-xs sm:text-sm"
                   />
                   <select
                     value={status}
                     onChange={e => setStatus(e.target.value)}
-                    className="w-full min-w-0 px-2.5 py-2 border border-slate-200 rounded-xl"
+                    className="w-full min-w-0 px-2.5 py-2 border border-slate-200 rounded-xl text-xs sm:text-sm"
                   >
                     <option value="completed">Đã hoàn thành</option>
                     <option value="pending">Chờ xử lý</option>
                   </select>
                 </div>
 
-                {/* min-w-0 trên select giúp nút + Thêm không bao giờ bị đẩy mất khi zoom 100%-110% */}
                 <div className="flex items-stretch gap-1.5 min-w-0">
                   <select
                     value={activeProdId}
@@ -1065,7 +1061,7 @@
                     min="1"
                     value={qty}
                     onChange={e => setQty(e.target.value)}
-                    className="w-14 shrink-0 px-1.5 py-2 border border-slate-200 rounded-xl text-center"
+                    className="w-14 shrink-0 px-1.5 py-2 border border-slate-200 rounded-xl text-center text-xs sm:text-sm"
                   />
                   <button
                     type="button"
@@ -1077,7 +1073,7 @@
                 </div>
 
                 {cart.length > 0 && (
-                  <div className="bg-blue-50/70 p-3 rounded-xl border border-blue-100 text-xs space-y-1.5">
+                  <div className="bg-blue-50/70 p-2.5 rounded-xl border border-blue-100 text-xs space-y-1 max-h-32 overflow-y-auto scrollbar-thin">
                     <div className="font-bold text-blue-800">Món trong đơn này:</div>
                     {cart.map(c => {
                       const p = products.find(pr => pr.id === c.product_id);
@@ -1094,26 +1090,26 @@
                   </div>
                 )}
 
-                <button type="submit" className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold shadow-sm">
+                <button type="submit" className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold shadow-sm text-xs sm:text-sm">
                   Lưu đơn hàng
                 </button>
               </form>
             )}
           </div>
 
-          <div className="lg:col-span-2 bg-white p-4 sm:p-5 rounded-2xl border border-blue-100 shadow-sm min-w-0">
-            <h2 className="font-bold text-slate-900 mb-3">Danh sách đơn hàng ({orders.length})</h2>
+          <div className="lg:col-span-2 bg-white p-4 rounded-2xl border border-blue-100 shadow-sm min-w-0 flex flex-col md:h-full md:min-h-0">
+            <h2 className="font-bold text-slate-900 mb-2.5 text-sm shrink-0">Danh sách đơn hàng ({orders.length})</h2>
             {orders.length === 0 ? (
               <div className="text-center py-10 text-xs text-slate-400">Chưa có đơn hàng nào. Hãy tạo đơn đầu tiên ở khung bên trái!</div>
             ) : (
-              <div className="overflow-x-auto scrollbar-thin">
+              <div className="flex-1 min-h-0 overflow-auto scrollbar-thin">
                 <table className="w-full min-w-[540px] text-left text-xs">
-                  <thead className="bg-blue-50/70 text-blue-900 uppercase border-b border-blue-100">
+                  <thead className="sticky top-0 z-10 bg-blue-50 text-blue-900 uppercase border-b border-blue-100">
                     <tr>
-                      <th className="py-2.5 px-3">Khách hàng / Ngày</th>
-                      <th className="py-2.5 px-3">Sản phẩm đã chọn</th>
-                      <th className="py-2.5 px-3 text-right">Tổng tiền</th>
-                      <th className="py-2.5 px-3">Trạng thái</th>
+                      <th className="py-2 px-3">Khách hàng / Ngày</th>
+                      <th className="py-2 px-3">Sản phẩm đã chọn</th>
+                      <th className="py-2 px-3 text-right">Tổng tiền</th>
+                      <th className="py-2 px-3">Trạng thái</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
@@ -1121,26 +1117,26 @@
                       const totalRev = o.items.reduce((s, i) => s + i.quantity * i.unit_price, 0);
                       return (
                         <tr key={o.id} className="hover:bg-blue-50/30">
-                          <td className="py-3 px-3">
+                          <td className="py-2.5 px-3">
                             <div className="font-bold text-slate-800">{o.customer_name || 'Khách lẻ'}</div>
                             <div className="text-slate-500">{o.order_date}</div>
                           </td>
-                          <td className="py-3 px-3">
+                          <td className="py-2.5 px-3">
                             {o.items.map((it, i) => (
                               <div key={i}>
                                 {it.name} × <strong>{it.quantity}</strong>{' '}
-                                <span className="text-slate-400">(Giá nhập lúc bán: {formatVND(it.unit_cost)})</span>
+                                <span className="text-slate-400">(Giá nhập: {formatVND(it.unit_cost)})</span>
                               </div>
                             ))}
                           </td>
-                          <td className="py-3 px-3 text-right font-bold text-slate-900 whitespace-nowrap">
+                          <td className="py-2.5 px-3 text-right font-bold text-slate-900 whitespace-nowrap">
                             {o.status === 'completed' ? formatVND(totalRev) : <span className="line-through text-slate-400">{formatVND(totalRev)}</span>}
                           </td>
-                          <td className="py-3 px-3">
+                          <td className="py-2.5 px-3">
                             <select
                               value={o.status}
                               onChange={e => onChangeStatus(o.id, e.target.value)}
-                              className={`px-2.5 py-1 border rounded-lg font-semibold ${
+                              className={`px-2 py-1 border rounded-lg font-semibold ${
                                 o.status === 'completed' ? 'bg-emerald-50 border-emerald-200 text-emerald-700' :
                                 o.status === 'pending' ? 'bg-amber-50 border-amber-200 text-amber-700' :
                                 'bg-slate-100 border-slate-200 text-slate-500'
@@ -1196,36 +1192,36 @@
       };
 
       return (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-          <div className="bg-white p-4 sm:p-5 rounded-2xl border border-blue-100 shadow-sm h-fit min-w-0">
-            <h2 className="font-bold text-slate-900 mb-3">{editingId ? '✏️ Sửa thông tin sản phẩm' : '➕ Thêm sản phẩm mới'}</h2>
-            <form onSubmit={handleSubmit} className="space-y-3 text-sm">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:h-full md:min-h-0">
+          <div className="bg-white p-4 rounded-2xl border border-blue-100 shadow-sm h-fit max-h-full overflow-y-auto scrollbar-thin min-w-0">
+            <h2 className="font-bold text-slate-900 mb-2.5 text-sm">{editingId ? '✏️ Sửa thông tin sản phẩm' : '➕ Thêm sản phẩm mới'}</h2>
+            <form onSubmit={handleSubmit} className="space-y-2.5 text-sm">
               <div>
                 <label className="block text-xs font-semibold text-slate-600 mb-1">Tên sản phẩm</label>
-                <input required placeholder="VD: Trà đào cam sả" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} className="w-full px-3 py-2 border border-slate-200 rounded-xl" />
+                <input required placeholder="VD: Trà đào cam sả" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} className="w-full px-3 py-1.5 sm:py-2 border border-slate-200 rounded-xl text-xs sm:text-sm" />
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div>
                   <label className="block text-xs font-semibold text-slate-600 mb-1">Giá bán cho khách</label>
-                  <input required type="number" min="0" placeholder="VD: 35000" value={form.selling_price} onChange={e => setForm({ ...form, selling_price: e.target.value })} className="w-full px-3 py-2 border border-slate-200 rounded-xl" />
+                  <input required type="number" min="0" placeholder="VD: 35000" value={form.selling_price} onChange={e => setForm({ ...form, selling_price: e.target.value })} className="w-full px-3 py-1.5 sm:py-2 border border-slate-200 rounded-xl text-xs sm:text-sm" />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-slate-600 mb-1">Giá nhập / Giá vốn</label>
-                  <input required type="number" min="0" placeholder="VD: 15000" value={form.cost_price} onChange={e => setForm({ ...form, cost_price: e.target.value })} className="w-full px-3 py-2 border border-slate-200 rounded-xl" />
+                  <input required type="number" min="0" placeholder="VD: 15000" value={form.cost_price} onChange={e => setForm({ ...form, cost_price: e.target.value })} className="w-full px-3 py-1.5 sm:py-2 border border-slate-200 rounded-xl text-xs sm:text-sm" />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div>
                   <label className="block text-xs font-semibold text-slate-600 mb-1">Số lượng đang có</label>
-                  <input required type="number" min="0" placeholder="VD: 50" value={form.stock} onChange={e => setForm({ ...form, stock: e.target.value })} className="w-full px-3 py-2 border border-slate-200 rounded-xl" />
+                  <input required type="number" min="0" placeholder="VD: 50" value={form.stock} onChange={e => setForm({ ...form, stock: e.target.value })} className="w-full px-3 py-1.5 sm:py-2 border border-slate-200 rounded-xl text-xs sm:text-sm" />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-slate-600 mb-1">Báo khi còn dưới</label>
-                  <input required type="number" min="0" placeholder="10" value={form.low_stock_threshold} onChange={e => setForm({ ...form, low_stock_threshold: e.target.value })} className="w-full px-3 py-2 border border-slate-200 rounded-xl" />
+                  <input required type="number" min="0" placeholder="10" value={form.low_stock_threshold} onChange={e => setForm({ ...form, low_stock_threshold: e.target.value })} className="w-full px-3 py-1.5 sm:py-2 border border-slate-200 rounded-xl text-xs sm:text-sm" />
                 </div>
               </div>
               <div className="flex gap-2 pt-1">
-                <button type="submit" className="flex-1 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold">
+                <button type="submit" className="flex-1 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-xs sm:text-sm">
                   {editingId ? 'Lưu thay đổi' : 'Thêm vào kho'}
                 </button>
                 {editingId && (
@@ -1241,35 +1237,35 @@
             </form>
           </div>
 
-          <div className="lg:col-span-2 bg-white p-4 sm:p-5 rounded-2xl border border-blue-100 shadow-sm min-w-0">
-            <h2 className="font-bold text-slate-900 mb-3">Danh sách sản phẩm ({products.length})</h2>
+          <div className="lg:col-span-2 bg-white p-4 rounded-2xl border border-blue-100 shadow-sm min-w-0 flex flex-col md:h-full md:min-h-0">
+            <h2 className="font-bold text-slate-900 mb-2.5 text-sm shrink-0">Danh sách sản phẩm ({products.length})</h2>
             {products.length === 0 ? (
               <div className="text-center py-10 text-xs text-slate-400">Chưa có sản phẩm nào. Hãy nhập sản phẩm đầu tiên ở khung bên trái!</div>
             ) : (
-              <div className="overflow-x-auto scrollbar-thin">
+              <div className="flex-1 min-h-0 overflow-auto scrollbar-thin">
                 <table className="w-full min-w-[540px] text-left text-xs">
-                  <thead className="bg-blue-50/70 text-blue-900 uppercase border-b border-blue-100">
+                  <thead className="sticky top-0 z-10 bg-blue-50 text-blue-900 uppercase border-b border-blue-100">
                     <tr>
-                      <th className="py-2.5 px-3">Tên sản phẩm</th>
-                      <th className="py-2.5 px-3 text-right">Giá bán</th>
-                      <th className="py-2.5 px-3 text-right">Giá nhập</th>
-                      <th className="py-2.5 px-3 text-right">Tỷ lệ lãi</th>
-                      <th className="py-2.5 px-3 text-center">Tồn kho</th>
-                      <th className="py-2.5 px-3 text-right">Thao tác</th>
+                      <th className="py-2 px-3">Tên sản phẩm</th>
+                      <th className="py-2 px-3 text-right">Giá bán</th>
+                      <th className="py-2 px-3 text-right">Giá nhập</th>
+                      <th className="py-2 px-3 text-right">Tỷ lệ lãi</th>
+                      <th className="py-2 px-3 text-center">Tồn kho</th>
+                      <th className="py-2 px-3 text-right">Thao tác</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
                     {products.map(p => (
                       <tr key={p.id} className={p.isLowStock ? 'bg-rose-50/40' : 'hover:bg-blue-50/30'}>
-                        <td className="py-3 px-3 font-semibold text-slate-800">
+                        <td className="py-2.5 px-3 font-semibold text-slate-800">
                           {p.name}
                           {p.isLowStock && <span className="ml-1.5 px-1.5 py-0.5 bg-rose-100 text-rose-700 rounded text-[10px] font-bold">SẮP HẾT</span>}
                         </td>
-                        <td className="py-3 px-3 text-right whitespace-nowrap">{formatVND(p.selling_price)}</td>
-                        <td className="py-3 px-3 text-right whitespace-nowrap">{formatVND(p.cost_price)}</td>
-                        <td className={`py-3 px-3 text-right font-bold ${p.isLowMargin ? 'text-amber-600' : 'text-emerald-600'}`}>{p.margin.toFixed(0)}%</td>
-                        <td className="py-3 px-3 text-center font-bold">{p.stock}</td>
-                        <td className="py-3 px-3 text-right space-x-2 whitespace-nowrap">
+                        <td className="py-2.5 px-3 text-right whitespace-nowrap">{formatVND(p.selling_price)}</td>
+                        <td className="py-2.5 px-3 text-right whitespace-nowrap">{formatVND(p.cost_price)}</td>
+                        <td className={`py-2.5 px-3 text-right font-bold ${p.isLowMargin ? 'text-amber-600' : 'text-emerald-600'}`}>{p.margin.toFixed(0)}%</td>
+                        <td className="py-2.5 px-3 text-center font-bold">{p.stock}</td>
+                        <td className="py-2.5 px-3 text-right space-x-2 whitespace-nowrap">
                           <button onClick={() => startEdit(p)} className="text-blue-600 hover:underline font-bold">Sửa</button>
                           <button onClick={() => { if (confirm(`Xóa "${p.name}" khỏi danh sách?`)) onDeleteProduct(p.id); }} className="text-rose-500 hover:underline font-semibold">Xóa</button>
                         </td>
@@ -1297,13 +1293,13 @@
       };
 
       return (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-          <div className="bg-white p-4 sm:p-5 rounded-2xl border border-blue-100 shadow-sm h-fit min-w-0">
-            <h2 className="font-bold text-slate-900 mb-3">➕ Ghi khoản Thu hoặc Chi</h2>
-            <form onSubmit={submit} className="space-y-3 text-sm">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:h-full md:min-h-0">
+          <div className="bg-white p-4 rounded-2xl border border-blue-100 shadow-sm h-fit max-h-full overflow-y-auto scrollbar-thin min-w-0">
+            <h2 className="font-bold text-slate-900 mb-2.5 text-sm">➕ Ghi khoản Thu hoặc Chi</h2>
+            <form onSubmit={submit} className="space-y-2.5 text-sm">
               <div>
                 <label className="block text-xs font-semibold text-slate-600 mb-1">Loại giao dịch</label>
-                <select value={form.type} onChange={e => setForm({ ...form, type: e.target.value })} className="w-full px-3 py-2 border border-slate-200 rounded-xl">
+                <select value={form.type} onChange={e => setForm({ ...form, type: e.target.value })} className="w-full px-3 py-1.5 sm:py-2 border border-slate-200 rounded-xl text-xs sm:text-sm">
                   <option value="expense">Chi phí cửa hàng (Trừ vào tiền lãi)</option>
                   <option value="inventory_purchase">Chi tiền nhập hàng về kho (Chỉ trừ tiền mặt)</option>
                   <option value="income">Khoản thu thêm khác</option>
@@ -1311,7 +1307,7 @@
               </div>
               <div>
                 <label className="block text-xs font-semibold text-slate-600 mb-1">Nhóm khoản mục</label>
-                <select value={form.category} onChange={e => setForm({ ...form, category: e.target.value })} className="w-full px-3 py-2 border border-slate-200 rounded-xl">
+                <select value={form.category} onChange={e => setForm({ ...form, category: e.target.value })} className="w-full px-3 py-1.5 sm:py-2 border border-slate-200 rounded-xl text-xs sm:text-sm">
                   <option value="Nguyên liệu & Bao bì">Nguyên liệu & Bao bì</option>
                   <option value="Phí giao hàng">Phí giao hàng</option>
                   <option value="Thuê mặt bằng">Thuê mặt bằng / Điện nước</option>
@@ -1319,44 +1315,44 @@
                   <option value="Thu khác">Khoản thu khác</option>
                 </select>
               </div>
-              <input required type="number" min="1" placeholder="Số tiền (VNĐ)" value={form.amount} onChange={e => setForm({ ...form, amount: e.target.value })} className="w-full px-3 py-2 border border-slate-200 rounded-xl" />
-              <input required type="date" value={form.expense_date} onChange={e => setForm({ ...form, expense_date: e.target.value })} className="w-full px-3 py-2 border border-slate-200 rounded-xl" />
-              <input placeholder="Ghi chú thêm (tùy chọn)" value={form.note} onChange={e => setForm({ ...form, note: e.target.value })} className="w-full px-3 py-2 border border-slate-200 rounded-xl" />
-              <button type="submit" className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold">Lưu vào sổ</button>
+              <input required type="number" min="1" placeholder="Số tiền (VNĐ)" value={form.amount} onChange={e => setForm({ ...form, amount: e.target.value })} className="w-full px-3 py-1.5 sm:py-2 border border-slate-200 rounded-xl text-xs sm:text-sm" />
+              <input required type="date" value={form.expense_date} onChange={e => setForm({ ...form, expense_date: e.target.value })} className="w-full px-3 py-1.5 sm:py-2 border border-slate-200 rounded-xl text-xs sm:text-sm" />
+              <input placeholder="Ghi chú thêm (tùy chọn)" value={form.note} onChange={e => setForm({ ...form, note: e.target.value })} className="w-full px-3 py-1.5 sm:py-2 border border-slate-200 rounded-xl text-xs sm:text-sm" />
+              <button type="submit" className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-xs sm:text-sm">Lưu vào sổ</button>
             </form>
           </div>
 
-          <div className="lg:col-span-2 bg-white p-4 sm:p-5 rounded-2xl border border-blue-100 shadow-sm min-w-0">
-            <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-              <h2 className="font-bold text-slate-900">Sổ Thu & Chi</h2>
-              <div className="text-[11px] sm:text-xs font-semibold text-blue-800 bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-100">
+          <div className="lg:col-span-2 bg-white p-4 rounded-2xl border border-blue-100 shadow-sm min-w-0 flex flex-col md:h-full md:min-h-0">
+            <div className="flex flex-wrap items-center justify-between gap-2 mb-2.5 shrink-0">
+              <h2 className="font-bold text-slate-900 text-sm">Sổ Thu & Chi</h2>
+              <div className="text-[11px] font-semibold text-blue-800 bg-blue-50 px-3 py-1 rounded-lg border border-blue-100">
                 Tiền lãi tháng này: <strong>{formatVND(analytics.thisM.netProfit)}</strong> | Tiền mặt thực còn: <strong>{formatVND(analytics.thisM.cashFlow)}</strong>
               </div>
             </div>
             {expenses.length === 0 ? (
               <div className="text-center py-10 text-xs text-slate-400">Chưa có khoản thu chi nào được ghi nhận.</div>
             ) : (
-              <div className="overflow-x-auto scrollbar-thin">
+              <div className="flex-1 min-h-0 overflow-auto scrollbar-thin">
                 <table className="w-full min-w-[480px] text-left text-xs">
-                  <thead className="bg-blue-50/70 text-blue-900 uppercase border-b border-blue-100">
+                  <thead className="sticky top-0 z-10 bg-blue-50 text-blue-900 uppercase border-b border-blue-100">
                     <tr>
-                      <th className="py-2.5 px-3">Ngày</th>
-                      <th className="py-2.5 px-3">Khoản mục</th>
-                      <th className="py-2.5 px-3">Ghi chú</th>
-                      <th className="py-2.5 px-3 text-right">Số tiền</th>
-                      <th className="py-2.5 px-3"></th>
+                      <th className="py-2 px-3">Ngày</th>
+                      <th className="py-2 px-3">Khoản mục</th>
+                      <th className="py-2 px-3">Ghi chú</th>
+                      <th className="py-2 px-3 text-right">Số tiền</th>
+                      <th className="py-2 px-3"></th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
                     {expenses.map(e => (
                       <tr key={e.id} className="hover:bg-blue-50/30">
-                        <td className="py-2.5 px-3 text-slate-500 whitespace-nowrap">{e.expense_date}</td>
-                        <td className="py-2.5 px-3 font-semibold text-slate-800">{e.category}</td>
-                        <td className="py-2.5 px-3 text-slate-600">{e.note || '-'}</td>
-                        <td className={`py-2.5 px-3 text-right font-bold whitespace-nowrap ${e.type === 'income' ? 'text-emerald-600' : 'text-rose-600'}`}>
+                        <td className="py-2 px-3 text-slate-500 whitespace-nowrap">{e.expense_date}</td>
+                        <td className="py-2 px-3 font-semibold text-slate-800">{e.category}</td>
+                        <td className="py-2 px-3 text-slate-600">{e.note || '-'}</td>
+                        <td className={`py-2 px-3 text-right font-bold whitespace-nowrap ${e.type === 'income' ? 'text-emerald-600' : 'text-rose-600'}`}>
                           {e.type === 'income' ? '+' : '-'}{formatVND(e.amount)}
                         </td>
-                        <td className="py-2.5 px-3 text-right">
+                        <td className="py-2 px-3 text-right">
                           <button onClick={() => onDeleteExpense(e.id)} className="text-slate-400 hover:text-rose-500 px-1">✕</button>
                         </td>
                       </tr>
@@ -1371,7 +1367,7 @@
     }
 
     // ==========================================
-    // 5. TRANG TRỢ LÝ AI (TỰ ĐỘNG CUỘN XUỐNG CÂU TRẢ LỜI + HIỂN THỊ ĐẦY ĐỦ NÚT Ở MỌI ZOOM)
+    // 5. TRANG TRỢ LÝ AI (TỰ ĐỘNG CUỘN XUỐNG CÂU TRẢ LỜI)
     // ==========================================
     function AIIntelligenceView({ analytics, showHowItWorks, expenses }) {
       const { thisM, lastM, revChangePct, profitChangePct, materialDiff, shippingDiff, lowStockProducts, lowMarginProducts } = analytics;
@@ -1392,7 +1388,6 @@
         requestAnimationFrame(() => {
           const lastMsg = messages[messages.length - 1];
           const lastEl = lastMsgRef.current;
-          // Nếu câu trả lời AI rất dài hơn khung chat, cuộn đến đầu câu trả lời để đọc từ đầu; ngược lại cuộn xuống đáy
           if (!thinking && lastMsg?.role === 'ai' && lastEl && lastEl.offsetHeight > container.clientHeight * 0.85) {
             container.scrollTo({
               top: Math.max(0, lastEl.offsetTop - 12),
@@ -1484,9 +1479,9 @@
       };
 
       return (
-        <div className="flex flex-col flex-1 min-h-0 h-[calc(100dvh-180px)] md:h-full gap-3">
+        <div className="flex flex-col flex-1 min-h-0 h-[calc(100dvh-180px)] md:h-full gap-2.5">
           {showHowItWorks && (
-            <div className="bg-gradient-to-r from-blue-900 to-blue-800 text-white p-3 rounded-2xl text-[11px] sm:text-xs grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-4 shadow-sm shrink-0">
+            <div className="bg-gradient-to-r from-blue-900 to-blue-800 text-white py-2 px-3 rounded-2xl text-[11px] sm:text-xs grid grid-cols-1 md:grid-cols-3 gap-1.5 md:gap-4 shadow-sm shrink-0">
               <div><strong className="text-sky-300">1. DỮ LIỆU ĐẦU VÀO:</strong> {thisM.completedCount} đơn đã bán, {expenses.length} phiếu thu chi</div>
               <div><strong className="text-sky-300">2. CÁCH TÍNH LÃI:</strong> {formatVND(thisM.revenue)} - {formatVND(thisM.cogs)} - {formatVND(thisM.opex)}</div>
               <div><strong className="text-sky-300">3. GỢI Ý TỰ ĐỘNG:</strong> {lowStockProducts.length} món sắp hết, {lowMarginProducts.length} món lãi mỏng</div>
@@ -1538,7 +1533,7 @@
               ))}
             </div>
 
-            <form onSubmit={e => { e.preventDefault(); sendMessage(); }} className="p-2.5 sm:p-3 border-t border-blue-100 flex gap-2 shrink-0 bg-white">
+            <form onSubmit={e => { e.preventDefault(); sendMessage(); }} className="p-2.5 border-t border-blue-100 flex gap-2 shrink-0 bg-white">
               <input
                 value={input}
                 onChange={e => setInput(e.target.value)}
