@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>BizFlow AI - Quản lý Bán hàng & Lợi nhuận cho Cửa hàng</title>
   <!-- Favicon SVG giúp không bị lỗi 404 favicon.ico khi bấm F12 -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231d4ed8'/%3E%3Cpath d='M18 46V18h14c7 0 11 4 11 9.5 0 3.6-2 6.2-5 7.2 4 1 6.5 4 6.5 8.3 0 6-4.8 9-12 9H18z' fill='white'/%3E%3C/svg%3E" />
@@ -11,10 +11,25 @@
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <style>
+    html, body {
+      width: 100%;
+      max-width: 100%;
+      overflow-x: hidden;
+      -webkit-text-size-adjust: 100%;
+    }
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background-color: #f8fbff;
       color: #0f172a;
+    }
+    button, a, select {
+      touch-action: manipulation;
+    }
+    /* Ngăn iOS/Android tự động zoom-in khi người dùng chạm vào ô nhập trên điện thoại 9:16 */
+    @media (max-width: 767px) {
+      input, select, textarea {
+        font-size: 16px !important;
+      }
     }
     /* Họa tiết lưới chấm bi phong cách không gian doanh nghiệp hiện đại */
     .bg-business-grid {
@@ -34,7 +49,7 @@
         radial-gradient(circle at 15% 80%, rgba(14, 165, 233, 0.12), transparent 45%);
       background-size: 36px 36px, 36px 36px, 100% 100%, 100% 100%;
     }
-    .scrollbar-thin::-webkit-scrollbar { width: 6px; }
+    .scrollbar-thin::-webkit-scrollbar { width: 6px; height: 6px; }
     .scrollbar-thin::-webkit-scrollbar-thumb { background: #bfdbfe; border-radius: 3px; }
   </style>
 </head>
@@ -54,17 +69,17 @@
   </script>
 
   <script type="text/babel">
-    const { useState, useMemo, useEffect } = React;
+    const { useState, useMemo, useEffect, useRef } = React;
 
     // ==========================================
     // LOGO CHÍNH THỨC BIZFLOW AI (SVG SẮC NÉT)
     // ==========================================
     function BizFlowLogo({ size = 'md', showTagline = false }) {
-      const iconSizes = { sm: 'w-9 h-9', md: 'w-11 h-11', lg: 'w-16 h-16' };
-      const textSizes = { sm: 'text-lg', md: 'text-xl', lg: 'text-3xl' };
+      const iconSizes = { sm: 'w-8 h-8 sm:w-9 sm:h-9', md: 'w-10 h-10 sm:w-11 sm:h-11', lg: 'w-14 h-14 sm:w-16 sm:h-16' };
+      const textSizes = { sm: 'text-base sm:text-lg', md: 'text-lg sm:text-xl', lg: 'text-2xl sm:text-3xl' };
 
       return (
-        <div className="flex items-center gap-3 select-none">
+        <div className="flex items-center gap-2.5 sm:gap-3 select-none min-w-0">
           <svg viewBox="0 0 120 110" className={`${iconSizes[size]} shrink-0 drop-shadow-sm`} fill="none">
             <defs>
               <linearGradient id="bfBlueGrad" x1="15" y1="10" x2="105" y2="100" gradientUnits="userSpaceOnUse">
@@ -93,13 +108,13 @@
             <path d="M92 20 L111 16 L107 35 Z" fill="#2563eb" />
           </svg>
 
-          <div>
-            <div className={`font-extrabold tracking-tight leading-none ${textSizes[size]}`}>
+          <div className="min-w-0">
+            <div className={`font-extrabold tracking-tight leading-none truncate ${textSizes[size]}`}>
               <span className="text-slate-900">BizFlow</span>{' '}
               <span className="bg-gradient-to-r from-sky-500 via-blue-600 to-indigo-600 bg-clip-text text-transparent">AI</span>
             </div>
             {showTagline && (
-              <div className="text-[11px] font-medium text-slate-500 mt-1 tracking-wide">
+              <div className="text-[11px] font-medium text-slate-500 mt-1 tracking-wide hidden sm:block">
                 Biến dữ liệu bán hàng thành quyết định thông minh
               </div>
             )}
@@ -292,7 +307,7 @@
 
       if (loading) {
         return (
-          <div className="min-h-screen flex flex-col items-center justify-center gap-3 bg-business-grid">
+          <div className="min-h-[100dvh] flex flex-col items-center justify-center gap-3 bg-business-grid px-4">
             <BizFlowLogo size="md" />
             <div className="text-sm text-blue-700 font-medium">Đang tải dữ liệu cửa hàng...</div>
           </div>
@@ -354,69 +369,39 @@
       };
 
       return (
-        <div className="min-h-screen bg-business-hero flex flex-col relative overflow-hidden">
+        <div className="min-h-[100dvh] bg-business-hero flex flex-col relative overflow-x-hidden">
           {/* Họa tiết trang trí góc trên/dưới */}
-          <div className="pointer-events-none absolute -top-24 -right-24 w-96 h-96 rounded-full bg-blue-100/70 blur-3xl"></div>
-          <div className="pointer-events-none absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-sky-100/70 blur-3xl"></div>
+          <div className="pointer-events-none absolute -top-24 -right-24 w-80 h-80 rounded-full bg-blue-100/70 blur-3xl"></div>
+          <div className="pointer-events-none absolute -bottom-24 -left-24 w-80 h-80 rounded-full bg-sky-100/70 blur-3xl"></div>
 
-          <header className="relative z-10 max-w-6xl w-full mx-auto px-6 py-5 flex flex-wrap items-center justify-between gap-4 border-b border-blue-100 bg-white/80 backdrop-blur-md">
-            <BizFlowLogo size="md" showTagline={true} />
-            <button
-              onClick={onQuickDemo}
-              disabled={demoLoading}
-              className="px-4 py-2.5 rounded-xl bg-blue-50 text-blue-700 border border-blue-200 text-xs font-bold hover:bg-blue-100 transition shadow-sm disabled:opacity-50"
-            >
-              {demoLoading ? '⏳ Đang mở bản mẫu riêng...' : '👀 Xem thử với dữ liệu mẫu (Tách biệt)'}
-            </button>
+          <header className="relative z-10 w-full border-b border-blue-100 bg-white/85 backdrop-blur-md">
+            <div className="max-w-6xl w-full mx-auto px-4 sm:px-6 py-3 sm:py-4 flex flex-wrap items-center justify-between gap-3">
+              <BizFlowLogo size="md" showTagline={true} />
+              <button
+                onClick={onQuickDemo}
+                disabled={demoLoading}
+                className="w-full sm:w-auto px-3.5 py-2 rounded-xl bg-blue-50 text-blue-700 border border-blue-200 text-xs font-bold hover:bg-blue-100 transition shadow-sm disabled:opacity-50 text-center"
+              >
+                {demoLoading ? '⏳ Đang mở bản mẫu riêng...' : '👀 Xem thử với dữ liệu mẫu'}
+              </button>
+            </div>
           </header>
 
-          <main className="relative z-10 flex-1 max-w-6xl w-full mx-auto px-6 py-10 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-            {/* CỘT TRÁI: GIỚI THIỆU DỄ HIỂU */}
-            <div className="lg:col-span-7 space-y-6">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 text-xs font-bold">
-                <span className="w-2 h-2 rounded-full bg-blue-600"></span>
-                Sổ quản lý kinh doanh thông minh cho chủ cửa hàng
-              </div>
-
-              <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 leading-tight">
-                Nắm rõ <span className="text-blue-600">Tiền lãi thực tế</span> và <span className="text-sky-600">Hàng tồn kho</span> chỉ trong vài phút mỗi ngày.
-              </h1>
-
-              <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-                Không cần biết kế toán phức tạp. BizFlow AI giúp bạn ghi đơn bán hàng, theo dõi hàng sắp hết, ghi chép thu chi hằng ngày và tự động giải thích lý do tăng giảm tiền lãi.
-              </p>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
-                <div className="bg-white/90 p-4 rounded-2xl border border-blue-100 shadow-sm">
-                  <div className="w-9 h-9 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center text-lg mb-2">🧾</div>
-                  <div className="font-bold text-sm text-slate-800">Ghi đơn nhanh</div>
-                  <div className="text-xs text-slate-500 mt-1">Tự trừ tồn kho và nhớ sẵn giá nhập lúc bán.</div>
-                </div>
-                <div className="bg-white/90 p-4 rounded-2xl border border-blue-100 shadow-sm">
-                  <div className="w-9 h-9 rounded-lg bg-sky-100 text-sky-700 flex items-center justify-center text-lg mb-2">💰</div>
-                  <div className="font-bold text-sm text-slate-800">Rõ tiền lời, tiền mặt</div>
-                  <div className="text-xs text-slate-500 mt-1">Phân biệt rạch ròi tiền bán được và tiền còn trong túi.</div>
-                </div>
-                <div className="bg-white/90 p-4 rounded-2xl border border-blue-100 shadow-sm">
-                  <div className="w-9 h-9 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center text-lg mb-2">🤖</div>
-                  <div className="font-bold text-sm text-slate-800">Hỏi đáp dễ hiểu</div>
-                  <div className="text-xs text-slate-500 mt-1">Trợ lý AI giải thích bằng tiếng Việt đơn giản.</div>
-                </div>
-              </div>
-            </div>
-
-            {/* CỘT PHẢI: FORM ĐĂNG NHẬP / ĐĂNG KÝ */}
-            <div className="lg:col-span-5 bg-white rounded-2xl p-6 sm:p-8 shadow-xl shadow-blue-900/5 border border-blue-100">
-              <div className="flex bg-blue-50/70 p-1 rounded-xl mb-6">
+          <main className="relative z-10 flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-5 sm:py-8 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center">
+            {/* CỘT PHẢI ĐƯA LÊN TRÊN Ở MOBILE ĐỂ NGƯỜI DÙNG ĐĂNG NHẬP NGAY, DESKTOP NẰM BÊN PHẢI */}
+            <div className="order-1 lg:order-2 lg:col-span-5 bg-white rounded-2xl p-5 sm:p-7 shadow-xl shadow-blue-900/5 border border-blue-100 min-w-0">
+              <div className="flex bg-blue-50/70 p-1 rounded-xl mb-5">
                 <button
+                  type="button"
                   onClick={() => { setMode('login'); setError(''); }}
-                  className={`flex-1 py-2.5 text-sm font-bold rounded-lg transition ${mode === 'login' ? 'bg-white text-blue-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                  className={`flex-1 py-2 text-sm font-bold rounded-lg transition ${mode === 'login' ? 'bg-white text-blue-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                 >
                   Đăng nhập
                 </button>
                 <button
+                  type="button"
                   onClick={() => { setMode('register'); setError(''); }}
-                  className={`flex-1 py-2.5 text-sm font-bold rounded-lg transition ${mode === 'register' ? 'bg-white text-blue-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                  className={`flex-1 py-2 text-sm font-bold rounded-lg transition ${mode === 'register' ? 'bg-white text-blue-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                 >
                   Tạo cửa hàng mới
                 </button>
@@ -428,10 +413,10 @@
                 </div>
               )}
 
-              <form onSubmit={submitForm} className="space-y-4 text-sm">
+              <form onSubmit={submitForm} className="space-y-3.5 text-sm">
                 {mode === 'register' && (
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1.5">Tên cửa hàng của bạn</label>
+                    <label className="block text-xs font-semibold text-slate-700 mb-1">Tên cửa hàng của bạn</label>
                     <input
                       required
                       value={shopName}
@@ -443,7 +428,7 @@
                 )}
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">Địa chỉ Email</label>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">Địa chỉ Email</label>
                   <input
                     required
                     type="email"
@@ -455,7 +440,7 @@
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">Mật khẩu</label>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">Mật khẩu</label>
                   <input
                     required
                     minLength={6}
@@ -481,6 +466,40 @@
                   {submitting ? 'Đang xử lý...' : mode === 'register' ? 'Tạo cửa hàng & Bắt đầu →' : 'Đăng nhập vào cửa hàng'}
                 </button>
               </form>
+            </div>
+
+            {/* CỘT TRÁI: GIỚI THIỆU DỄ HIỂU */}
+            <div className="order-2 lg:order-1 lg:col-span-7 space-y-4 sm:space-y-5 min-w-0">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 text-xs font-bold">
+                <span className="w-2 h-2 rounded-full bg-blue-600"></span>
+                Sổ quản lý kinh doanh thông minh cho chủ cửa hàng
+              </div>
+
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 leading-tight">
+                Nắm rõ <span className="text-blue-600">Tiền lãi thực tế</span> và <span className="text-sky-600">Hàng tồn kho</span> chỉ trong vài phút mỗi ngày.
+              </h1>
+
+              <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+                Không cần biết kế toán phức tạp. BizFlow AI giúp bạn ghi đơn bán hàng, theo dõi hàng sắp hết, ghi chép thu chi hằng ngày và tự động giải thích lý do tăng giảm tiền lãi.
+              </p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 pt-1">
+                <div className="bg-white/90 p-3.5 sm:p-4 rounded-2xl border border-blue-100 shadow-sm">
+                  <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center text-base mb-1.5">🧾</div>
+                  <div className="font-bold text-sm text-slate-800">Ghi đơn nhanh</div>
+                  <div className="text-xs text-slate-500 mt-1">Tự trừ tồn kho và nhớ sẵn giá nhập lúc bán.</div>
+                </div>
+                <div className="bg-white/90 p-3.5 sm:p-4 rounded-2xl border border-blue-100 shadow-sm">
+                  <div className="w-8 h-8 rounded-lg bg-sky-100 text-sky-700 flex items-center justify-center text-base mb-1.5">💰</div>
+                  <div className="font-bold text-sm text-slate-800">Rõ tiền lời, tiền mặt</div>
+                  <div className="text-xs text-slate-500 mt-1">Phân biệt rạch ròi tiền bán được và tiền còn trong túi.</div>
+                </div>
+                <div className="bg-white/90 p-3.5 sm:p-4 rounded-2xl border border-blue-100 shadow-sm">
+                  <div className="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center text-base mb-1.5">🤖</div>
+                  <div className="font-bold text-sm text-slate-800">Hỏi đáp dễ hiểu</div>
+                  <div className="text-xs text-slate-500 mt-1">Trợ lý AI giải thích bằng tiếng Việt đơn giản.</div>
+                </div>
+              </div>
             </div>
           </main>
         </div>
@@ -575,34 +594,62 @@
       const handleDeleteExpense = (id) => run(() => sb.from('transactions').delete().eq('id', id));
 
       const navItems = [
-        { id: 'dashboard', label: 'Tổng quan', icon: '📊' },
-        { id: 'orders', label: 'Đơn hàng', icon: '🧾', badge: analytics.thisM.pendingCount },
-        { id: 'products', label: 'Sản phẩm & Kho', icon: '📦', badge: analytics.lowStockProducts.length, badgeColor: 'bg-rose-500' },
-        { id: 'finance', label: 'Sổ Thu & Chi', icon: '💳' },
-        { id: 'ai', label: 'Trợ lý AI', icon: '🤖', highlight: true },
+        { id: 'dashboard', label: 'Tổng quan', shortLabel: 'Tổng quan', icon: '📊' },
+        { id: 'orders', label: 'Đơn hàng', shortLabel: 'Đơn hàng', icon: '🧾', badge: analytics.thisM.pendingCount },
+        { id: 'products', label: 'Sản phẩm & Kho', shortLabel: 'Sản phẩm', icon: '📦', badge: analytics.lowStockProducts.length, badgeColor: 'bg-rose-500' },
+        { id: 'finance', label: 'Sổ Thu & Chi', shortLabel: 'Thu & Chi', icon: '💳' },
+        { id: 'ai', label: 'Trợ lý AI', shortLabel: 'Trợ lý AI', icon: '🤖', highlight: true },
       ];
 
       return (
-        <div className="min-h-screen flex flex-col md:flex-row">
-          {/* THANH ĐIỀU HƯỚNG TRÁI (WHITE + BLUE BUSINESS ACCENTS) */}
-          <aside className="w-full md:w-64 bg-white border-r border-blue-100 flex flex-col shrink-0 shadow-sm">
-            <div className="p-5 border-b border-blue-100 bg-gradient-to-br from-white to-blue-50/60">
+        <div className="min-h-[100dvh] md:h-screen flex flex-col md:flex-row md:overflow-hidden">
+          {/* HEADER TRÊN ĐIỆN THOẠI (9:16) - GỌN NHẸ ĐỂ KHÔNG PHẢI CUỘN HOẶC ZOOM */}
+          <div className="md:hidden sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-blue-100 px-3 py-2 flex items-center justify-between gap-2">
+            <div className="min-w-0 flex items-center gap-2">
               <BizFlowLogo size="sm" />
-              <div className="mt-4 p-3 rounded-xl bg-blue-50 border border-blue-100">
-                <div className="text-[11px] font-semibold text-blue-600 uppercase tracking-wider">Cửa hàng đang quản lý</div>
-                <div className="text-sm font-bold text-slate-900 truncate mt-0.5">🏪 {user.shop_name}</div>
+              <span className="text-[11px] font-bold text-blue-700 bg-blue-50 border border-blue-100 px-2 py-0.5 rounded-full truncate max-w-[115px]">
+                {user.shop_name}
+              </span>
+            </div>
+            <div className="flex items-center gap-1.5 shrink-0">
+              {user.is_demo && (
+                <button
+                  onClick={() => { if (confirm('Khôi phục lại dữ liệu mẫu ban đầu cho phiên xem thử này?')) onResetSampleData(); }}
+                  disabled={busy}
+                  title="Làm mới dữ liệu mẫu"
+                  className="px-2.5 py-1.5 rounded-lg bg-blue-50 border border-blue-200 text-blue-700 text-xs font-bold disabled:opacity-50"
+                >
+                  🔄
+                </button>
+              )}
+              <button
+                onClick={onLogout}
+                className="px-2.5 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold"
+              >
+                Thoát
+              </button>
+            </div>
+          </div>
+
+          {/* THANH ĐIỀU HƯỚNG TRÁI TRÊN MÁY TÍNH (CỐ ĐỊNH CHIỀU CAO, KHÔNG BỊ MẤT NÚT KHI ZOOM 100%-110%) */}
+          <aside className="hidden md:flex md:w-60 lg:w-64 md:h-screen bg-white border-r border-blue-100 flex-col shrink-0 shadow-sm">
+            <div className="p-4 border-b border-blue-100 bg-gradient-to-br from-white to-blue-50/60 shrink-0">
+              <BizFlowLogo size="sm" />
+              <div className="mt-3 p-2.5 rounded-xl bg-blue-50 border border-blue-100">
+                <div className="text-[10px] font-semibold text-blue-600 uppercase tracking-wider">Cửa hàng đang quản lý</div>
+                <div className="text-xs font-bold text-slate-900 truncate mt-0.5">🏪 {user.shop_name}</div>
                 <div className="text-[11px] text-slate-500 truncate mt-0.5">{user.email}</div>
               </div>
             </div>
 
-            <nav className="flex-1 p-3 space-y-1.5">
+            <nav className="flex-1 overflow-y-auto scrollbar-thin p-2.5 space-y-1">
               {navItems.map(item => {
                 const isActive = activeTab === item.id;
                 return (
                   <button
                     key={item.id}
                     onClick={() => setActiveTab(item.id)}
-                    className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition ${
+                    className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-sm font-semibold transition ${
                       isActive
                         ? 'bg-gradient-to-r from-blue-600 to-sky-600 text-white shadow-md shadow-blue-200'
                         : item.highlight
@@ -610,9 +657,12 @@
                         : 'text-slate-600 hover:bg-blue-50/60 hover:text-blue-700'
                     }`}
                   >
-                    <span className="flex items-center gap-2.5"><span>{item.icon}</span><span>{item.label}</span></span>
+                    <span className="flex items-center gap-2 min-w-0">
+                      <span>{item.icon}</span>
+                      <span className="truncate">{item.label}</span>
+                    </span>
                     {item.badge > 0 && (
-                      <span className={`px-2 py-0.5 text-xs rounded-full text-white ${isActive ? 'bg-white/25' : (item.badgeColor || 'bg-amber-500')}`}>
+                      <span className={`px-2 py-0.5 text-xs rounded-full text-white shrink-0 ${isActive ? 'bg-white/25' : (item.badgeColor || 'bg-amber-500')}`}>
                         {item.badge}
                       </span>
                     )}
@@ -621,8 +671,8 @@
               })}
             </nav>
 
-            <div className="p-4 m-3 rounded-2xl bg-gradient-to-br from-blue-50 to-white border border-blue-100 text-xs space-y-2.5">
-              <div className="text-slate-600 leading-relaxed">
+            <div className="p-3 m-2.5 rounded-2xl bg-gradient-to-br from-blue-50 to-white border border-blue-100 text-xs space-y-2 shrink-0">
+              <div className="text-[11px] text-slate-600 leading-snug">
                 {user.is_demo
                   ? '👀 Bạn đang xem bản mẫu riêng. Mọi thao tác không ảnh hưởng người khác.'
                   : '🔒 Dữ liệu được lưu riêng cho tài khoản của bạn.'}
@@ -631,14 +681,14 @@
                 <button
                   onClick={() => { if (confirm('Khôi phục lại dữ liệu mẫu ban đầu cho phiên xem thử này?')) onResetSampleData(); }}
                   disabled={busy}
-                  className="w-full py-2 rounded-lg bg-white border border-blue-200 text-blue-700 font-semibold hover:bg-blue-50 disabled:opacity-50"
+                  className="w-full py-1.5 rounded-lg bg-white border border-blue-200 text-blue-700 font-semibold hover:bg-blue-50 disabled:opacity-50"
                 >
                   🔄 Làm mới dữ liệu mẫu
                 </button>
               )}
               <button
                 onClick={onLogout}
-                className="w-full py-2 rounded-lg bg-slate-100 hover:bg-rose-50 text-slate-700 hover:text-rose-600 font-semibold transition"
+                className="w-full py-1.5 rounded-lg bg-slate-100 hover:bg-rose-50 text-slate-700 hover:text-rose-600 font-semibold transition"
               >
                 Đăng xuất
               </button>
@@ -646,28 +696,34 @@
           </aside>
 
           {/* NỘI DUNG CHÍNH */}
-          <main className="flex-1 flex flex-col overflow-hidden bg-business-grid">
-            <header className="bg-white/90 backdrop-blur-md border-b border-blue-100 px-6 py-4 flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <h1 className="text-lg font-extrabold text-slate-900">
+          <main className="flex-1 min-w-0 flex flex-col md:h-screen md:overflow-hidden bg-business-grid">
+            <header className="bg-white/90 backdrop-blur-md border-b border-blue-100 px-4 sm:px-6 py-2.5 sm:py-3 flex flex-wrap items-center justify-between gap-2 shrink-0">
+              <div className="min-w-0">
+                <h1 className="text-base sm:text-lg font-extrabold text-slate-900 truncate">
                   {navItems.find(n => n.id === activeTab)?.icon} {navItems.find(n => n.id === activeTab)?.label}
                 </h1>
-                <p className="text-xs text-slate-500">
+                <p className="text-[11px] sm:text-xs text-slate-500">
                   Tháng hiện tại: <strong className="text-blue-700">{THIS_MONTH}</strong> • Tháng trước: <strong>{LAST_MONTH}</strong>
                 </p>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 shrink-0">
                 {activeTab === 'ai' && (
-                  <label className="flex items-center gap-2 text-xs font-semibold bg-blue-50 text-blue-700 px-3.5 py-1.5 rounded-full cursor-pointer border border-blue-200">
+                  <label className="flex items-center gap-1.5 text-[11px] sm:text-xs font-semibold bg-blue-50 text-blue-700 px-3 py-1.5 rounded-full cursor-pointer border border-blue-200">
                     <input type="checkbox" checked={showHowItWorks} onChange={e => setShowHowItWorks(e.target.checked)} className="accent-blue-600" />
-                    Hiện cách AI tính toán
+                    <span>Hiện cách AI tính</span>
                   </label>
                 )}
               </div>
             </header>
 
-            <div className="flex-1 overflow-y-auto p-6 space-y-6">
+            <div
+              className={`flex-1 min-w-0 p-3 sm:p-5 ${
+                activeTab === 'ai'
+                  ? 'flex flex-col min-h-0 pb-20 md:pb-4 overflow-hidden'
+                  : 'overflow-y-auto scrollbar-thin pb-24 md:pb-6 space-y-5'
+              }`}
+            >
               {activeTab === 'dashboard' && (
                 <DashboardView
                   analytics={analytics}
@@ -711,6 +767,32 @@
               )}
             </div>
           </main>
+
+          {/* THANH ĐIỀU HƯỚNG CỐ ĐỊNH DƯỚI CÙNG CHO ĐIỆN THOẠI (9:16) */}
+          <nav className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-blue-100 shadow-[0_-4px_20px_rgba(15,23,42,0.06)] grid grid-cols-5 px-1 pt-1.5 pb-[max(0.4rem,env(safe-area-inset-bottom))]">
+            {navItems.map(item => {
+              const isActive = activeTab === item.id;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => setActiveTab(item.id)}
+                  className={`relative flex flex-col items-center justify-center py-1 rounded-xl transition ${
+                    isActive ? 'text-blue-600 bg-blue-50/80' : 'text-slate-500'
+                  }`}
+                >
+                  <span className="text-lg leading-none">{item.icon}</span>
+                  <span className={`text-[10px] mt-1 leading-tight truncate max-w-full px-0.5 ${isActive ? 'font-bold' : 'font-medium'}`}>
+                    {item.shortLabel}
+                  </span>
+                  {item.badge > 0 && (
+                    <span className={`absolute top-0.5 right-2 min-w-[16px] h-4 px-1 flex items-center justify-center text-[9px] font-bold rounded-full text-white ${item.badgeColor || 'bg-amber-500'}`}>
+                      {item.badge}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </nav>
         </div>
       );
     }
@@ -725,11 +807,11 @@
       // Hướng dẫn từng bước cho tài khoản mới đăng ký (chưa có dữ liệu)
       if (productsCount === 0 && ordersCount === 0) {
         return (
-          <div className="bg-white border border-blue-100 rounded-2xl p-8 sm:p-10 shadow-sm max-w-3xl mx-auto text-center space-y-6">
-            <div className="w-16 h-16 mx-auto rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center text-3xl">🏪</div>
+          <div className="bg-white border border-blue-100 rounded-2xl p-6 sm:p-10 shadow-sm max-w-3xl mx-auto text-center space-y-6">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center text-3xl">🏪</div>
             <div>
-              <h2 className="text-xl font-extrabold text-slate-900">Chào mừng {user.shop_name} đến với BizFlow AI!</h2>
-              <p className="text-sm text-slate-600 mt-2 max-w-lg mx-auto">
+              <h2 className="text-lg sm:text-xl font-extrabold text-slate-900">Chào mừng {user.shop_name} đến với BizFlow AI!</h2>
+              <p className="text-xs sm:text-sm text-slate-600 mt-2 max-w-lg mx-auto">
                 Cửa hàng mới của bạn hiện đang trống để đảm bảo tách biệt hoàn toàn với các tài khoản khác. Hãy làm theo 2 bước đơn giản sau để bắt đầu:
               </p>
             </div>
@@ -758,9 +840,9 @@
       }
 
       return (
-        <div className="space-y-6">
+        <div className="space-y-5">
           {/* 4 THẺ CHỈ SỐ DỄ HIỂU */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
             <KpiCard
               title="Tiền bán hàng tháng này"
               sub="Chỉ tính các đơn đã hoàn thành"
@@ -795,39 +877,39 @@
             />
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
             {/* BIỂU ĐỒ SO SÁNH */}
-            <div className="lg:col-span-2 bg-white p-6 rounded-2xl border border-blue-100 shadow-sm">
-              <div className="flex flex-wrap items-center justify-between gap-2 mb-5">
+            <div className="lg:col-span-2 bg-white p-4 sm:p-6 rounded-2xl border border-blue-100 shadow-sm min-w-0">
+              <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
                 <div>
-                  <h2 className="font-bold text-slate-900">So sánh Tháng trước và Tháng này</h2>
+                  <h2 className="font-bold text-slate-900 text-sm sm:text-base">So sánh Tháng trước và Tháng này</h2>
                   <p className="text-xs text-slate-500">Nhìn nhanh mức bán, chi phí và tiền lãi giữa hai tháng</p>
                 </div>
-                <div className="flex gap-4 text-xs font-medium text-slate-600">
-                  <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-blue-600 inline-block"></span> Tiền bán hàng</span>
-                  <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-sky-400 inline-block"></span> Tổng chi phí</span>
-                  <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-emerald-500 inline-block"></span> Tiền lãi</span>
+                <div className="flex flex-wrap gap-3 text-[11px] sm:text-xs font-medium text-slate-600">
+                  <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded bg-blue-600 inline-block"></span> Tiền bán hàng</span>
+                  <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded bg-sky-400 inline-block"></span> Tổng chi phí</span>
+                  <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded bg-emerald-500 inline-block"></span> Tiền lãi</span>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-8 pt-6 pb-2 px-4 border-b border-blue-50">
+              <div className="grid grid-cols-2 gap-3 sm:gap-8 pt-4 pb-2 px-1 sm:px-4 border-b border-blue-50">
                 {[{ label: `Tháng trước (${lastM.monthKey})`, data: lastM }, { label: `Tháng này (${thisM.monthKey})`, data: thisM }].map((col, idx) => (
-                  <div key={idx} className="flex flex-col items-center">
-                    <div className="h-44 w-full flex items-end justify-center gap-4">
+                  <div key={idx} className="flex flex-col items-center min-w-0">
+                    <div className="h-36 sm:h-44 w-full flex items-end justify-center gap-2 sm:gap-4">
                       <BarItem heightPct={(col.data.revenue / maxVal) * 100} color="bg-blue-600" label={formatVND(col.data.revenue)} />
                       <BarItem heightPct={((col.data.cogs + col.data.opex) / maxVal) * 100} color="bg-sky-400" label={formatVND(col.data.cogs + col.data.opex)} />
                       <BarItem heightPct={(Math.max(0, col.data.netProfit) / maxVal) * 100} color="bg-emerald-500" label={formatVND(col.data.netProfit)} />
                     </div>
-                    <span className="mt-3 text-xs font-bold text-slate-700">{col.label}</span>
+                    <span className="mt-3 text-[11px] sm:text-xs font-bold text-slate-700 text-center">{col.label}</span>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* CẢNH BÁO NHANH */}
-            <div className="bg-white p-6 rounded-2xl border border-blue-100 shadow-sm flex flex-col justify-between space-y-4">
+            <div className="bg-white p-4 sm:p-6 rounded-2xl border border-blue-100 shadow-sm flex flex-col justify-between space-y-4 min-w-0">
               <div>
-                <h2 className="font-bold text-slate-900 mb-3">🔔 Việc cần chú ý ngay</h2>
+                <h2 className="font-bold text-slate-900 mb-3 text-sm sm:text-base">🔔 Việc cần chú ý ngay</h2>
                 <div className="space-y-3 text-xs">
                   <div className="p-3.5 rounded-xl bg-rose-50/80 border border-rose-200">
                     <div className="font-bold text-rose-800">Hàng sắp hết trong kho ({lowStockProducts.length} món)</div>
@@ -835,8 +917,8 @@
                       <div className="text-rose-700/80 mt-1">Kho hàng hiện đang đủ, chưa cần nhập thêm.</div>
                     ) : (
                       lowStockProducts.map(p => (
-                        <div key={p.id} className="text-rose-700 flex justify-between mt-1.5">
-                          <span className="truncate pr-2">{p.name}</span>
+                        <div key={p.id} className="text-rose-700 flex justify-between mt-1.5 gap-2">
+                          <span className="truncate">{p.name}</span>
                           <strong className="shrink-0">Còn {p.stock}</strong>
                         </div>
                       ))
@@ -849,8 +931,8 @@
                       <div className="text-blue-700/80 mt-1">Tất cả sản phẩm đều đang có mức lãi tốt.</div>
                     ) : (
                       lowMarginProducts.map(p => (
-                        <div key={p.id} className="text-blue-800 flex justify-between mt-1.5">
-                          <span className="truncate pr-2">{p.name}</span>
+                        <div key={p.id} className="text-blue-800 flex justify-between mt-1.5 gap-2">
+                          <span className="truncate">{p.name}</span>
                           <strong className="shrink-0">Lãi {p.margin.toFixed(0)}%</strong>
                         </div>
                       ))
@@ -880,19 +962,19 @@
         indigo: 'border-t-indigo-600'
       };
       return (
-        <div className={`bg-white p-5 rounded-2xl border border-blue-100 border-t-4 ${accents[accent]} shadow-sm`}>
+        <div className={`bg-white p-4 sm:p-5 rounded-2xl border border-blue-100 border-t-4 ${accents[accent]} shadow-sm min-w-0`}>
           <div className="text-xs font-semibold text-slate-500">{title}</div>
-          <div className="text-xl font-extrabold text-slate-900 mt-1.5">{value}</div>
+          <div className="text-lg sm:text-xl font-extrabold text-slate-900 mt-1 truncate">{value}</div>
           <div className="text-[11px] text-slate-500 mt-1">{sub}</div>
-          <div className={`text-xs font-bold mt-2.5 ${trendPositive ? 'text-emerald-600' : 'text-blue-700'}`}>{trend}</div>
+          <div className={`text-xs font-bold mt-2 ${trendPositive ? 'text-emerald-600' : 'text-blue-700'}`}>{trend}</div>
         </div>
       );
     }
 
     function BarItem({ heightPct, color, label }) {
       return (
-        <div className="flex flex-col items-center justify-end h-full w-14">
-          <div className="text-[10px] font-bold text-slate-600 mb-1 whitespace-nowrap">{label.replace('₫', '')}</div>
+        <div className="flex flex-col items-center justify-end h-full w-8 sm:w-12 md:w-14 min-w-0">
+          <div className="text-[9px] sm:text-[10px] font-bold text-slate-600 mb-1 truncate max-w-full">{label.replace('₫', '').trim()}</div>
           <div className={`w-full rounded-t-lg ${color} transition-all`} style={{ height: `${Math.max(4, heightPct)}%` }}></div>
         </div>
       );
@@ -924,15 +1006,15 @@
 
       const submitOrder = (e) => {
         e.preventDefault();
-        if (cart.length === 0) return alert('Bạn hãy bấm nút "+ Thêm món" vào đơn trước khi lưu!');
+        if (cart.length === 0) return alert('Bạn hãy bấm nút "+ Thêm" món vào đơn trước khi lưu!');
         onCreateOrder({ customer_name: customerName, order_date: orderDate, status, selectedItems: cart });
         setCustomerName('');
         setCart([]);
       };
 
       return (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="bg-white p-5 rounded-2xl border border-blue-100 shadow-sm h-fit">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+          <div className="bg-white p-4 sm:p-5 rounded-2xl border border-blue-100 shadow-sm h-fit min-w-0">
             <h2 className="font-bold text-slate-900 mb-3">➕ Ghi đơn hàng mới</h2>
 
             {products.length === 0 ? (
@@ -955,23 +1037,24 @@
                     type="date"
                     value={orderDate}
                     onChange={e => setOrderDate(e.target.value)}
-                    className="w-full px-3 py-2 border border-slate-200 rounded-xl"
+                    className="w-full min-w-0 px-2.5 py-2 border border-slate-200 rounded-xl"
                   />
                   <select
                     value={status}
                     onChange={e => setStatus(e.target.value)}
-                    className="w-full px-3 py-2 border border-slate-200 rounded-xl"
+                    className="w-full min-w-0 px-2.5 py-2 border border-slate-200 rounded-xl"
                   >
                     <option value="completed">Đã hoàn thành</option>
                     <option value="pending">Chờ xử lý</option>
                   </select>
                 </div>
 
-                <div className="flex gap-2">
+                {/* min-w-0 trên select giúp nút + Thêm không bao giờ bị đẩy mất khi zoom 100%-110% */}
+                <div className="flex items-stretch gap-1.5 min-w-0">
                   <select
                     value={activeProdId}
                     onChange={e => setSelectedProdId(e.target.value)}
-                    className="flex-1 px-2.5 py-2 border border-slate-200 rounded-xl text-xs"
+                    className="flex-1 min-w-0 px-2.5 py-2 border border-slate-200 rounded-xl text-xs"
                   >
                     {products.map(p => (
                       <option key={p.id} value={p.id}>{p.name} (Còn: {p.stock})</option>
@@ -982,12 +1065,12 @@
                     min="1"
                     value={qty}
                     onChange={e => setQty(e.target.value)}
-                    className="w-16 px-2 py-2 border border-slate-200 rounded-xl text-center"
+                    className="w-14 shrink-0 px-1.5 py-2 border border-slate-200 rounded-xl text-center"
                   />
                   <button
                     type="button"
                     onClick={addToCart}
-                    className="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shrink-0"
+                    className="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shrink-0 whitespace-nowrap"
                   >
                     + Thêm
                   </button>
@@ -999,11 +1082,11 @@
                     {cart.map(c => {
                       const p = products.find(pr => pr.id === c.product_id);
                       return (
-                        <div key={c.product_id} className="flex justify-between items-center">
-                          <span>{p?.name} × {c.quantity}</span>
-                          <div className="flex items-center gap-2">
+                        <div key={c.product_id} className="flex justify-between items-center gap-2">
+                          <span className="truncate">{p?.name} × {c.quantity}</span>
+                          <div className="flex items-center gap-2 shrink-0">
                             <strong>{formatVND((p?.selling_price || 0) * c.quantity)}</strong>
-                            <button type="button" onClick={() => removeCartItem(c.product_id)} className="text-rose-500 font-bold">✕</button>
+                            <button type="button" onClick={() => removeCartItem(c.product_id)} className="text-rose-500 font-bold px-1">✕</button>
                           </div>
                         </div>
                       );
@@ -1018,60 +1101,62 @@
             )}
           </div>
 
-          <div className="lg:col-span-2 bg-white p-5 rounded-2xl border border-blue-100 shadow-sm overflow-x-auto">
+          <div className="lg:col-span-2 bg-white p-4 sm:p-5 rounded-2xl border border-blue-100 shadow-sm min-w-0">
             <h2 className="font-bold text-slate-900 mb-3">Danh sách đơn hàng ({orders.length})</h2>
             {orders.length === 0 ? (
               <div className="text-center py-10 text-xs text-slate-400">Chưa có đơn hàng nào. Hãy tạo đơn đầu tiên ở khung bên trái!</div>
             ) : (
-              <table className="w-full text-left text-xs">
-                <thead className="bg-blue-50/70 text-blue-900 uppercase border-b border-blue-100">
-                  <tr>
-                    <th className="py-2.5 px-3">Khách hàng / Ngày</th>
-                    <th className="py-2.5 px-3">Sản phẩm đã chọn</th>
-                    <th className="py-2.5 px-3 text-right">Tổng tiền</th>
-                    <th className="py-2.5 px-3">Trạng thái</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {orders.map(o => {
-                    const totalRev = o.items.reduce((s, i) => s + i.quantity * i.unit_price, 0);
-                    return (
-                      <tr key={o.id} className="hover:bg-blue-50/30">
-                        <td className="py-3 px-3">
-                          <div className="font-bold text-slate-800">{o.customer_name || 'Khách lẻ'}</div>
-                          <div className="text-slate-500">{o.order_date}</div>
-                        </td>
-                        <td className="py-3 px-3">
-                          {o.items.map((it, i) => (
-                            <div key={i}>
-                              {it.name} × <strong>{it.quantity}</strong>{' '}
-                              <span className="text-slate-400">(Giá nhập lúc bán: {formatVND(it.unit_cost)})</span>
-                            </div>
-                          ))}
-                        </td>
-                        <td className="py-3 px-3 text-right font-bold text-slate-900">
-                          {o.status === 'completed' ? formatVND(totalRev) : <span className="line-through text-slate-400">{formatVND(totalRev)}</span>}
-                        </td>
-                        <td className="py-3 px-3">
-                          <select
-                            value={o.status}
-                            onChange={e => onChangeStatus(o.id, e.target.value)}
-                            className={`px-2.5 py-1 border rounded-lg font-semibold ${
-                              o.status === 'completed' ? 'bg-emerald-50 border-emerald-200 text-emerald-700' :
-                              o.status === 'pending' ? 'bg-amber-50 border-amber-200 text-amber-700' :
-                              'bg-slate-100 border-slate-200 text-slate-500'
-                            }`}
-                          >
-                            <option value="completed">{ORDER_STATUS_LABEL.completed}</option>
-                            <option value="pending">{ORDER_STATUS_LABEL.pending}</option>
-                            <option value="cancelled">{ORDER_STATUS_LABEL.cancelled}</option>
-                          </select>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+              <div className="overflow-x-auto scrollbar-thin">
+                <table className="w-full min-w-[540px] text-left text-xs">
+                  <thead className="bg-blue-50/70 text-blue-900 uppercase border-b border-blue-100">
+                    <tr>
+                      <th className="py-2.5 px-3">Khách hàng / Ngày</th>
+                      <th className="py-2.5 px-3">Sản phẩm đã chọn</th>
+                      <th className="py-2.5 px-3 text-right">Tổng tiền</th>
+                      <th className="py-2.5 px-3">Trạng thái</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {orders.map(o => {
+                      const totalRev = o.items.reduce((s, i) => s + i.quantity * i.unit_price, 0);
+                      return (
+                        <tr key={o.id} className="hover:bg-blue-50/30">
+                          <td className="py-3 px-3">
+                            <div className="font-bold text-slate-800">{o.customer_name || 'Khách lẻ'}</div>
+                            <div className="text-slate-500">{o.order_date}</div>
+                          </td>
+                          <td className="py-3 px-3">
+                            {o.items.map((it, i) => (
+                              <div key={i}>
+                                {it.name} × <strong>{it.quantity}</strong>{' '}
+                                <span className="text-slate-400">(Giá nhập lúc bán: {formatVND(it.unit_cost)})</span>
+                              </div>
+                            ))}
+                          </td>
+                          <td className="py-3 px-3 text-right font-bold text-slate-900 whitespace-nowrap">
+                            {o.status === 'completed' ? formatVND(totalRev) : <span className="line-through text-slate-400">{formatVND(totalRev)}</span>}
+                          </td>
+                          <td className="py-3 px-3">
+                            <select
+                              value={o.status}
+                              onChange={e => onChangeStatus(o.id, e.target.value)}
+                              className={`px-2.5 py-1 border rounded-lg font-semibold ${
+                                o.status === 'completed' ? 'bg-emerald-50 border-emerald-200 text-emerald-700' :
+                                o.status === 'pending' ? 'bg-amber-50 border-amber-200 text-amber-700' :
+                                'bg-slate-100 border-slate-200 text-slate-500'
+                              }`}
+                            >
+                              <option value="completed">{ORDER_STATUS_LABEL.completed}</option>
+                              <option value="pending">{ORDER_STATUS_LABEL.pending}</option>
+                              <option value="cancelled">{ORDER_STATUS_LABEL.cancelled}</option>
+                            </select>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
             )}
           </div>
         </div>
@@ -1111,8 +1196,8 @@
       };
 
       return (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="bg-white p-5 rounded-2xl border border-blue-100 shadow-sm h-fit">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+          <div className="bg-white p-4 sm:p-5 rounded-2xl border border-blue-100 shadow-sm h-fit min-w-0">
             <h2 className="font-bold text-slate-900 mb-3">{editingId ? '✏️ Sửa thông tin sản phẩm' : '➕ Thêm sản phẩm mới'}</h2>
             <form onSubmit={handleSubmit} className="space-y-3 text-sm">
               <div>
@@ -1147,7 +1232,7 @@
                   <button
                     type="button"
                     onClick={() => { setEditingId(null); setForm({ name: '', selling_price: '', cost_price: '', stock: '', low_stock_threshold: 10 }); }}
-                    className="px-3 py-2.5 border border-slate-200 rounded-xl text-xs font-semibold"
+                    className="px-3 py-2.5 border border-slate-200 rounded-xl text-xs font-semibold shrink-0"
                   >
                     Hủy
                   </button>
@@ -1156,41 +1241,43 @@
             </form>
           </div>
 
-          <div className="lg:col-span-2 bg-white p-5 rounded-2xl border border-blue-100 shadow-sm overflow-x-auto">
+          <div className="lg:col-span-2 bg-white p-4 sm:p-5 rounded-2xl border border-blue-100 shadow-sm min-w-0">
             <h2 className="font-bold text-slate-900 mb-3">Danh sách sản phẩm ({products.length})</h2>
             {products.length === 0 ? (
               <div className="text-center py-10 text-xs text-slate-400">Chưa có sản phẩm nào. Hãy nhập sản phẩm đầu tiên ở khung bên trái!</div>
             ) : (
-              <table className="w-full text-left text-xs">
-                <thead className="bg-blue-50/70 text-blue-900 uppercase border-b border-blue-100">
-                  <tr>
-                    <th className="py-2.5 px-3">Tên sản phẩm</th>
-                    <th className="py-2.5 px-3 text-right">Giá bán</th>
-                    <th className="py-2.5 px-3 text-right">Giá nhập</th>
-                    <th className="py-2.5 px-3 text-right">Tỷ lệ lãi</th>
-                    <th className="py-2.5 px-3 text-center">Tồn kho</th>
-                    <th className="py-2.5 px-3 text-right">Thao tác</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {products.map(p => (
-                    <tr key={p.id} className={p.isLowStock ? 'bg-rose-50/40' : 'hover:bg-blue-50/30'}>
-                      <td className="py-3 px-3 font-semibold text-slate-800">
-                        {p.name}
-                        {p.isLowStock && <span className="ml-1.5 px-1.5 py-0.5 bg-rose-100 text-rose-700 rounded text-[10px] font-bold">SẮP HẾT</span>}
-                      </td>
-                      <td className="py-3 px-3 text-right">{formatVND(p.selling_price)}</td>
-                      <td className="py-3 px-3 text-right">{formatVND(p.cost_price)}</td>
-                      <td className={`py-3 px-3 text-right font-bold ${p.isLowMargin ? 'text-amber-600' : 'text-emerald-600'}`}>{p.margin.toFixed(0)}%</td>
-                      <td className="py-3 px-3 text-center font-bold">{p.stock}</td>
-                      <td className="py-3 px-3 text-right space-x-2">
-                        <button onClick={() => startEdit(p)} className="text-blue-600 hover:underline font-bold">Sửa</button>
-                        <button onClick={() => { if (confirm(`Xóa "${p.name}" khỏi danh sách?`)) onDeleteProduct(p.id); }} className="text-rose-500 hover:underline font-semibold">Xóa</button>
-                      </td>
+              <div className="overflow-x-auto scrollbar-thin">
+                <table className="w-full min-w-[540px] text-left text-xs">
+                  <thead className="bg-blue-50/70 text-blue-900 uppercase border-b border-blue-100">
+                    <tr>
+                      <th className="py-2.5 px-3">Tên sản phẩm</th>
+                      <th className="py-2.5 px-3 text-right">Giá bán</th>
+                      <th className="py-2.5 px-3 text-right">Giá nhập</th>
+                      <th className="py-2.5 px-3 text-right">Tỷ lệ lãi</th>
+                      <th className="py-2.5 px-3 text-center">Tồn kho</th>
+                      <th className="py-2.5 px-3 text-right">Thao tác</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {products.map(p => (
+                      <tr key={p.id} className={p.isLowStock ? 'bg-rose-50/40' : 'hover:bg-blue-50/30'}>
+                        <td className="py-3 px-3 font-semibold text-slate-800">
+                          {p.name}
+                          {p.isLowStock && <span className="ml-1.5 px-1.5 py-0.5 bg-rose-100 text-rose-700 rounded text-[10px] font-bold">SẮP HẾT</span>}
+                        </td>
+                        <td className="py-3 px-3 text-right whitespace-nowrap">{formatVND(p.selling_price)}</td>
+                        <td className="py-3 px-3 text-right whitespace-nowrap">{formatVND(p.cost_price)}</td>
+                        <td className={`py-3 px-3 text-right font-bold ${p.isLowMargin ? 'text-amber-600' : 'text-emerald-600'}`}>{p.margin.toFixed(0)}%</td>
+                        <td className="py-3 px-3 text-center font-bold">{p.stock}</td>
+                        <td className="py-3 px-3 text-right space-x-2 whitespace-nowrap">
+                          <button onClick={() => startEdit(p)} className="text-blue-600 hover:underline font-bold">Sửa</button>
+                          <button onClick={() => { if (confirm(`Xóa "${p.name}" khỏi danh sách?`)) onDeleteProduct(p.id); }} className="text-rose-500 hover:underline font-semibold">Xóa</button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             )}
           </div>
         </div>
@@ -1210,8 +1297,8 @@
       };
 
       return (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="bg-white p-5 rounded-2xl border border-blue-100 shadow-sm h-fit">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+          <div className="bg-white p-4 sm:p-5 rounded-2xl border border-blue-100 shadow-sm h-fit min-w-0">
             <h2 className="font-bold text-slate-900 mb-3">➕ Ghi khoản Thu hoặc Chi</h2>
             <form onSubmit={submit} className="space-y-3 text-sm">
               <div>
@@ -1239,42 +1326,44 @@
             </form>
           </div>
 
-          <div className="lg:col-span-2 bg-white p-5 rounded-2xl border border-blue-100 shadow-sm overflow-x-auto">
+          <div className="lg:col-span-2 bg-white p-4 sm:p-5 rounded-2xl border border-blue-100 shadow-sm min-w-0">
             <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
               <h2 className="font-bold text-slate-900">Sổ Thu & Chi</h2>
-              <div className="text-xs font-semibold text-blue-800 bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-100">
+              <div className="text-[11px] sm:text-xs font-semibold text-blue-800 bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-100">
                 Tiền lãi tháng này: <strong>{formatVND(analytics.thisM.netProfit)}</strong> | Tiền mặt thực còn: <strong>{formatVND(analytics.thisM.cashFlow)}</strong>
               </div>
             </div>
             {expenses.length === 0 ? (
               <div className="text-center py-10 text-xs text-slate-400">Chưa có khoản thu chi nào được ghi nhận.</div>
             ) : (
-              <table className="w-full text-left text-xs">
-                <thead className="bg-blue-50/70 text-blue-900 uppercase border-b border-blue-100">
-                  <tr>
-                    <th className="py-2.5 px-3">Ngày</th>
-                    <th className="py-2.5 px-3">Khoản mục</th>
-                    <th className="py-2.5 px-3">Ghi chú</th>
-                    <th className="py-2.5 px-3 text-right">Số tiền</th>
-                    <th className="py-2.5 px-3"></th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {expenses.map(e => (
-                    <tr key={e.id} className="hover:bg-blue-50/30">
-                      <td className="py-2.5 px-3 text-slate-500">{e.expense_date}</td>
-                      <td className="py-2.5 px-3 font-semibold text-slate-800">{e.category}</td>
-                      <td className="py-2.5 px-3 text-slate-600">{e.note || '-'}</td>
-                      <td className={`py-2.5 px-3 text-right font-bold ${e.type === 'income' ? 'text-emerald-600' : 'text-rose-600'}`}>
-                        {e.type === 'income' ? '+' : '-'}{formatVND(e.amount)}
-                      </td>
-                      <td className="py-2.5 px-3 text-right">
-                        <button onClick={() => onDeleteExpense(e.id)} className="text-slate-400 hover:text-rose-500">✕</button>
-                      </td>
+              <div className="overflow-x-auto scrollbar-thin">
+                <table className="w-full min-w-[480px] text-left text-xs">
+                  <thead className="bg-blue-50/70 text-blue-900 uppercase border-b border-blue-100">
+                    <tr>
+                      <th className="py-2.5 px-3">Ngày</th>
+                      <th className="py-2.5 px-3">Khoản mục</th>
+                      <th className="py-2.5 px-3">Ghi chú</th>
+                      <th className="py-2.5 px-3 text-right">Số tiền</th>
+                      <th className="py-2.5 px-3"></th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {expenses.map(e => (
+                      <tr key={e.id} className="hover:bg-blue-50/30">
+                        <td className="py-2.5 px-3 text-slate-500 whitespace-nowrap">{e.expense_date}</td>
+                        <td className="py-2.5 px-3 font-semibold text-slate-800">{e.category}</td>
+                        <td className="py-2.5 px-3 text-slate-600">{e.note || '-'}</td>
+                        <td className={`py-2.5 px-3 text-right font-bold whitespace-nowrap ${e.type === 'income' ? 'text-emerald-600' : 'text-rose-600'}`}>
+                          {e.type === 'income' ? '+' : '-'}{formatVND(e.amount)}
+                        </td>
+                        <td className="py-2.5 px-3 text-right">
+                          <button onClick={() => onDeleteExpense(e.id)} className="text-slate-400 hover:text-rose-500 px-1">✕</button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             )}
           </div>
         </div>
@@ -1282,7 +1371,7 @@
     }
 
     // ==========================================
-    // 5. TRANG TRỢ LÝ AI (HOÀN TOÀN TIẾNG VIỆT DỄ HIỂU, KHÔNG LỖI F12)
+    // 5. TRANG TRỢ LÝ AI (TỰ ĐỘNG CUỘN XUỐNG CÂU TRẢ LỜI + HIỂN THỊ ĐẦY ĐỦ NÚT Ở MỌI ZOOM)
     // ==========================================
     function AIIntelligenceView({ analytics, showHowItWorks, expenses }) {
       const { thisM, lastM, revChangePct, profitChangePct, materialDiff, shippingDiff, lowStockProducts, lowMarginProducts } = analytics;
@@ -1291,6 +1380,32 @@
       ]);
       const [input, setInput] = useState('');
       const [thinking, setThinking] = useState(false);
+
+      const chatContainerRef = useRef(null);
+      const lastMsgRef = useRef(null);
+
+      // Tự động kéo xuống phần trả lời mỗi khi có tin nhắn mới hoặc đang phân tích
+      useEffect(() => {
+        const container = chatContainerRef.current;
+        if (!container) return;
+
+        requestAnimationFrame(() => {
+          const lastMsg = messages[messages.length - 1];
+          const lastEl = lastMsgRef.current;
+          // Nếu câu trả lời AI rất dài hơn khung chat, cuộn đến đầu câu trả lời để đọc từ đầu; ngược lại cuộn xuống đáy
+          if (!thinking && lastMsg?.role === 'ai' && lastEl && lastEl.offsetHeight > container.clientHeight * 0.85) {
+            container.scrollTo({
+              top: Math.max(0, lastEl.offsetTop - 12),
+              behavior: 'smooth'
+            });
+          } else {
+            container.scrollTo({
+              top: container.scrollHeight,
+              behavior: 'smooth'
+            });
+          }
+        });
+      }, [messages, thinking]);
 
       const generateVietnameseAnswer = (q) => {
         const lower = q.toLowerCase();
@@ -1367,30 +1482,37 @@
         // Chỉ dùng câu trả lời mẫu khi AI thật bị tắt
         setMessages(prev => [...prev, { role: 'ai', text: generateVietnameseAnswer(q) }]);
       };
-      
+
       return (
-        <div className="space-y-4">
+        <div className="flex flex-col flex-1 min-h-0 h-[calc(100dvh-180px)] md:h-full gap-3">
           {showHowItWorks && (
-            <div className="bg-gradient-to-r from-blue-900 to-blue-800 text-white p-4 rounded-2xl text-xs grid grid-cols-1 md:grid-cols-3 gap-4 shadow-sm">
+            <div className="bg-gradient-to-r from-blue-900 to-blue-800 text-white p-3 rounded-2xl text-[11px] sm:text-xs grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-4 shadow-sm shrink-0">
               <div><strong className="text-sky-300">1. DỮ LIỆU ĐẦU VÀO:</strong> {thisM.completedCount} đơn đã bán, {expenses.length} phiếu thu chi</div>
               <div><strong className="text-sky-300">2. CÁCH TÍNH LÃI:</strong> {formatVND(thisM.revenue)} - {formatVND(thisM.cogs)} - {formatVND(thisM.opex)}</div>
               <div><strong className="text-sky-300">3. GỢI Ý TỰ ĐỘNG:</strong> {lowStockProducts.length} món sắp hết, {lowMarginProducts.length} món lãi mỏng</div>
             </div>
           )}
 
-          <div className="bg-white rounded-2xl border border-blue-100 shadow-sm flex flex-col h-[480px]">
-            <div className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-thin">
-              {messages.map((m, idx) => (
-                <div key={idx} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`max-w-[85%] rounded-2xl px-4 py-3 text-xs leading-relaxed whitespace-pre-line ${
-                    m.role === 'user'
-                      ? 'bg-blue-600 text-white shadow-sm'
-                      : 'bg-blue-50/70 text-slate-800 border border-blue-100'
-                  }`}>
-                    {m.text}
+          <div className="bg-white rounded-2xl border border-blue-100 shadow-sm flex flex-col flex-1 min-h-0 overflow-hidden">
+            <div ref={chatContainerRef} className="relative flex-1 min-h-0 overflow-y-auto p-3 sm:p-4 space-y-3 scrollbar-thin">
+              {messages.map((m, idx) => {
+                const isLast = idx === messages.length - 1;
+                return (
+                  <div
+                    key={idx}
+                    ref={isLast ? lastMsgRef : null}
+                    className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                  >
+                    <div className={`max-w-[88%] sm:max-w-[82%] rounded-2xl px-3.5 py-2.5 text-xs sm:text-[13px] leading-relaxed whitespace-pre-line ${
+                      m.role === 'user'
+                        ? 'bg-blue-600 text-white shadow-sm'
+                        : 'bg-blue-50/70 text-slate-800 border border-blue-100'
+                    }`}>
+                      {m.text}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
               {thinking && (
                 <div className="flex justify-start">
                   <div className="rounded-2xl px-4 py-2 text-xs bg-blue-50 text-blue-700 border border-blue-100">⏳ Đang phân tích số liệu...</div>
@@ -1398,7 +1520,7 @@
               )}
             </div>
 
-            <div className="px-4 py-2.5 border-t border-blue-50 flex flex-wrap gap-1.5 bg-blue-50/40">
+            <div className="px-3 py-2 border-t border-blue-50 flex flex-wrap gap-1.5 bg-blue-50/40 shrink-0">
               {[
                 'Vì sao tiền lãi tháng này thay đổi?',
                 'Sản phẩm nào sắp hết hàng?',
@@ -1406,23 +1528,24 @@
               ].map((q, i) => (
                 <button
                   key={i}
+                  type="button"
                   onClick={() => sendMessage(q)}
                   disabled={thinking}
-                  className="text-[11px] font-medium px-3 py-1.5 rounded-full bg-white text-blue-700 border border-blue-200 hover:bg-blue-50 transition"
+                  className="text-[11px] font-medium px-2.5 py-1 rounded-full bg-white text-blue-700 border border-blue-200 hover:bg-blue-50 transition"
                 >
                   {q}
                 </button>
               ))}
             </div>
 
-            <form onSubmit={e => { e.preventDefault(); sendMessage(); }} className="p-3 border-t border-blue-100 flex gap-2">
+            <form onSubmit={e => { e.preventDefault(); sendMessage(); }} className="p-2.5 sm:p-3 border-t border-blue-100 flex gap-2 shrink-0 bg-white">
               <input
                 value={input}
                 onChange={e => setInput(e.target.value)}
-                placeholder="Hỏi trợ lý bằng tiếng Việt bình thường..."
-                className="flex-1 px-3.5 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-blue-500"
+                placeholder="Hỏi trợ lý bằng tiếng Việt..."
+                className="flex-1 min-w-0 px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-blue-500"
               />
-              <button type="submit" disabled={thinking} className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-bold">
+              <button type="submit" disabled={thinking} className="px-4 sm:px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-bold shrink-0">
                 Gửi
               </button>
             </form>
