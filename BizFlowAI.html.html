@@ -7,6 +7,9 @@
   <!-- Favicon SVG giúp không bị lỗi 404 favicon.ico khi bấm F12 -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231d4ed8'/%3E%3Cpath d='M18 46V18h14c7 0 11 4 11 9.5 0 3.6-2 6.2-5 7.2 4 1 6.5 4 6.5 8.3 0 6-4.8 9-12 9H18z' fill='white'/%3E%3C/svg%3E" />
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { darkMode: 'class' };
+  </script>
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -21,6 +24,7 @@
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background-color: #f8fbff;
       color: #0f172a;
+      transition: background-color 0.2s ease, color 0.2s ease;
     }
     button, a, select {
       touch-action: manipulation;
@@ -31,7 +35,7 @@
         font-size: 16px !important;
       }
     }
-    /* Họa tiết lưới chấm bi phong cách không gian doanh nghiệp hiện đại */
+    /* Họa tiết lưới chấm bi phong cách không gian doanh nghiệp hiện đại (NỀN SÁNG - GIỮ NGUYÊN) */
     .bg-business-grid {
       background-color: #f8fbff;
       background-image:
@@ -51,6 +55,172 @@
     }
     .scrollbar-thin::-webkit-scrollbar { width: 6px; height: 6px; }
     .scrollbar-thin::-webkit-scrollbar-thumb { background: #bfdbfe; border-radius: 3px; }
+
+    /* ======================================================
+       CHẾ ĐỘ NỀN TỐI (ĐEN XÁM + CHỮ TRẮNG & XANH DƯƠNG)
+       ====================================================== */
+    html.dark body {
+      background-color: #0f1115;
+      color: #f8fafc;
+    }
+    html.dark .bg-business-grid {
+      background-color: #0f1115;
+      background-image:
+        radial-gradient(#262b35 1px, transparent 1px),
+        radial-gradient(circle at 85% 10%, rgba(37, 99, 235, 0.12), transparent 42%),
+        radial-gradient(circle at 10% 90%, rgba(14, 165, 233, 0.10), transparent 42%);
+      background-size: 24px 24px, 100% 100%, 100% 100%;
+    }
+    html.dark .bg-business-hero {
+      background-color: #111318;
+      background-image:
+        linear-gradient(to right, rgba(59, 130, 246, 0.07) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(59, 130, 246, 0.07) 1px, transparent 1px),
+        radial-gradient(circle at 80% 20%, rgba(37, 99, 235, 0.16), transparent 50%),
+        radial-gradient(circle at 15% 80%, rgba(14, 165, 233, 0.12), transparent 45%);
+      background-size: 36px 36px, 36px 36px, 100% 100%, 100% 100%;
+    }
+    html.dark .scrollbar-thin::-webkit-scrollbar-thumb {
+      background: #334155;
+    }
+
+    /* Các khối thẻ & thanh điều hướng đen xám */
+    html.dark .bg-white,
+    html.dark .bg-white\/95,
+    html.dark .bg-white\/90,
+    html.dark .bg-white\/85,
+    html.dark .bg-slate-50 {
+      background-color: #181b22 !important;
+    }
+    html.dark .bg-gradient-to-br.from-white {
+      --tw-gradient-from: #181b22 !important;
+      --tw-gradient-to: #141923 !important;
+    }
+    html.dark .bg-gradient-to-br.from-blue-50 {
+      --tw-gradient-from: #1c2434 !important;
+      --tw-gradient-to: #181b22 !important;
+    }
+    html.dark .bg-blue-50,
+    html.dark .bg-blue-50\/80,
+    html.dark .bg-blue-50\/70,
+    html.dark .bg-blue-50\/40,
+    html.dark .bg-blue-100 {
+      background-color: #1e2636 !important;
+    }
+    html.dark .bg-sky-100 {
+      background-color: #1a2a3d !important;
+    }
+    html.dark .bg-indigo-100 {
+      background-color: #21253d !important;
+    }
+    html.dark .bg-slate-100 {
+      background-color: #232833 !important;
+    }
+
+    /* Viền tối hài hòa */
+    html.dark .border-blue-100,
+    html.dark .border-blue-50,
+    html.dark .border-slate-200,
+    html.dark .border-slate-100 {
+      border-color: #2a3140 !important;
+    }
+    html.dark .border-blue-200 {
+      border-color: #314466 !important;
+    }
+    html.dark .divide-slate-100 > :not([hidden]) ~ :not([hidden]) {
+      border-color: #262d3b !important;
+    }
+
+    /* Chữ trắng & xanh dương trên nền đen xám */
+    html.dark .text-slate-900,
+    html.dark .text-slate-800 {
+      color: #f8fafc !important;
+    }
+    html.dark .text-slate-700,
+    html.dark .text-slate-600 {
+      color: #cbd5e1 !important;
+    }
+    html.dark .text-slate-500,
+    html.dark .text-slate-400 {
+      color: #94a3b8 !important;
+    }
+    html.dark .text-blue-900,
+    html.dark .text-blue-800,
+    html.dark .text-blue-700,
+    html.dark .text-blue-600 {
+      color: #60a5fa !important;
+    }
+    html.dark .text-sky-600 {
+      color: #38bdf8 !important;
+    }
+
+    /* Giữ chữ trắng trên các nút nền xanh đậm */
+    html.dark .bg-blue-600,
+    html.dark .bg-gradient-to-r.from-blue-600 {
+      color: #ffffff !important;
+    }
+
+    /* Ô nhập liệu & Select trong nền tối */
+    html.dark input:not([type="checkbox"]),
+    html.dark select,
+    html.dark textarea {
+      background-color: #11141a !important;
+      color: #f8fafc !important;
+      border-color: #334155 !important;
+    }
+    html.dark input::placeholder {
+      color: #64748b !important;
+    }
+    html.dark select option {
+      background-color: #181b22;
+      color: #f8fafc;
+    }
+
+    /* Trạng thái cảnh báo dịu mắt trên nền đen xám */
+    html.dark .bg-rose-50,
+    html.dark .bg-rose-50\/80,
+    html.dark .bg-rose-50\/40,
+    html.dark .bg-rose-100 {
+      background-color: rgba(244, 63, 94, 0.14) !important;
+    }
+    html.dark .border-rose-200 {
+      border-color: rgba(244, 63, 94, 0.35) !important;
+    }
+    html.dark .text-rose-800,
+    html.dark .text-rose-700,
+    html.dark .text-rose-600 {
+      color: #fda4af !important;
+    }
+
+    html.dark .bg-emerald-50 {
+      background-color: rgba(16, 185, 129, 0.14) !important;
+    }
+    html.dark .border-emerald-200 {
+      border-color: rgba(16, 185, 129, 0.35) !important;
+    }
+    html.dark .text-emerald-700,
+    html.dark .text-emerald-600 {
+      color: #6ee7b7 !important;
+    }
+
+    html.dark .bg-amber-50 {
+      background-color: rgba(245, 158, 11, 0.15) !important;
+    }
+    html.dark .border-amber-200 {
+      border-color: rgba(245, 158, 11, 0.35) !important;
+    }
+    html.dark .text-amber-700,
+    html.dark .text-amber-600 {
+      color: #fcd34d !important;
+    }
+
+    html.dark .hover\:bg-blue-50:hover,
+    html.dark .hover\:bg-blue-50\/60:hover,
+    html.dark .hover\:bg-blue-50\/30:hover,
+    html.dark .hover\:bg-blue-100:hover,
+    html.dark .hover\:bg-blue-100\/70:hover {
+      background-color: #253147 !important;
+    }
   </style>
 </head>
 <body class="bg-business-grid">
@@ -72,68 +242,92 @@
     const { useState, useMemo, useEffect, useRef } = React;
 
     // ==========================================
+    // NÚT CHUYỂN NỀN SÁNG / TỐI
+    // ==========================================
+    function ThemeToggleButton({ theme, onToggle, compact = false }) {
+      const isDark = theme === 'dark';
+      return (
+        <button
+          type="button"
+          onClick={onToggle}
+          title={isDark ? 'Chuyển sang nền sáng' : 'Chuyển sang nền tối (đen xám)'}
+          className={`inline-flex items-center justify-center gap-1.5 rounded-xl border text-xs font-bold transition shrink-0 ${
+            compact ? 'px-2.5 py-1.5' : 'px-3 py-1.5'
+          } ${
+            isDark
+              ? 'bg-slate-800 border-slate-700 text-sky-400 hover:bg-slate-700'
+              : 'bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100'
+          }`}
+        >
+          <span>{isDark ? '☀️' : '🌙'}</span>
+          {!compact && <span>{isDark ? 'Nền sáng' : 'Nền tối'}</span>}
+        </button>
+      );
+    }
+
+    // ==========================================
     // LOGO CHÍNH THỨC BIZFLOW AI (SVG SẮC NÉT)
     // ==========================================
     function BizFlowLogo({ size = 'md', showTagline = false }) {
-  const uid = React.useId().replace(/:/g, '');
-  const blueId = `bfBlue-${uid}`;
-  const arrowId = `bfArrow-${uid}`;
-  const iconSizes = { sm: 'w-8 h-8', md: 'w-9 h-9 sm:w-10 sm:h-10', lg: 'w-14 h-14' };
-  const textSizes = { sm: 'text-base sm:text-lg', md: 'text-lg sm:text-xl', lg: 'text-2xl sm:text-3xl' };
+      const uid = React.useId().replace(/:/g, '');
+      const blueId = `bfBlue-${uid}`;
+      const arrowId = `bfArrow-${uid}`;
+      const iconSizes = { sm: 'w-8 h-8', md: 'w-9 h-9 sm:w-10 sm:h-10', lg: 'w-14 h-14' };
+      const textSizes = { sm: 'text-base sm:text-lg', md: 'text-lg sm:text-xl', lg: 'text-2xl sm:text-3xl' };
 
-  return (
-    <div className="flex items-center gap-2.5 select-none min-w-0">
-      <svg viewBox="0 0 120 110" className={`${iconSizes[size]} shrink-0 drop-shadow-sm`} fill="none">
-        <defs>
-          <linearGradient id={blueId} x1="15" y1="10" x2="105" y2="100" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stopColor="#0ea5e9" />
-            <stop offset="50%" stopColor="#2563eb" />
-            <stop offset="100%" stopColor="#4338ca" />
-          </linearGradient>
-          <linearGradient id={arrowId} x1="15" y1="85" x2="112" y2="18" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stopColor="#38bdf8" />
-            <stop offset="100%" stopColor="#1d4ed8" />
-          </linearGradient>
-        </defs>
-        {/* Khối chữ B cách điệu */}
-        <path
-          d="M28 14 H66 C85 14 96 24 96 38 C96 47 90 54 81 58 C93 61 100 71 100 83 C100 98 87 104 68 104 H22 L28 14 Z M47 31 L45 48 H64 C71 48 76 44 76 39 C76 34 71 31 64 31 H47 Z"
-          fill={`url(#${blueId})`}
-        />
-        {/* Khoét sáng bên trong tạo đường cong tăng trưởng */}
-        <path d="M16 86 C34 62 58 50 86 42 C60 56 38 72 22 96 Z" fill="#ffffff" />
-        {/* 3 cột biểu đồ tăng trưởng */}
-        <rect x="40" y="76" width="9" height="18" rx="2" fill="#ffffff" />
-        <rect x="54" y="68" width="9" height="26" rx="2" fill="#ffffff" />
-        <rect x="68" y="59" width="9" height="35" rx="2" fill="#ffffff" />
-        {/* Mũi tên đi lên */}
-        <path d="M56 54 C74 47 90 36 104 23" stroke={`url(#${arrowId})`} strokeWidth="7" strokeLinecap="round" />
-        <path d="M92 20 L111 16 L107 35 Z" fill="#2563eb" />
-      </svg>
+      return (
+        <div className="flex items-center gap-2.5 select-none min-w-0">
+          <svg viewBox="0 0 120 110" className={`${iconSizes[size]} shrink-0 drop-shadow-sm`} fill="none">
+            <defs>
+              <linearGradient id={blueId} x1="15" y1="10" x2="105" y2="100" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stopColor="#0ea5e9" />
+                <stop offset="50%" stopColor="#2563eb" />
+                <stop offset="100%" stopColor="#4338ca" />
+              </linearGradient>
+              <linearGradient id={arrowId} x1="15" y1="85" x2="112" y2="18" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stopColor="#38bdf8" />
+                <stop offset="100%" stopColor="#1d4ed8" />
+              </linearGradient>
+            </defs>
+            {/* Khối chữ B cách điệu */}
+            <path
+              d="M28 14 H66 C85 14 96 24 96 38 C96 47 90 54 81 58 C93 61 100 71 100 83 C100 98 87 104 68 104 H22 L28 14 Z M47 31 L45 48 H64 C71 48 76 44 76 39 C76 34 71 31 64 31 H47 Z"
+              fill={`url(#${blueId})`}
+            />
+            {/* Khoét sáng bên trong tạo đường cong tăng trưởng */}
+            <path d="M16 86 C34 62 58 50 86 42 C60 56 38 72 22 96 Z" fill="#ffffff" />
+            {/* 3 cột biểu đồ tăng trưởng */}
+            <rect x="40" y="76" width="9" height="18" rx="2" fill="#ffffff" />
+            <rect x="54" y="68" width="9" height="26" rx="2" fill="#ffffff" />
+            <rect x="68" y="59" width="9" height="35" rx="2" fill="#ffffff" />
+            {/* Mũi tên đi lên */}
+            <path d="M56 54 C74 47 90 36 104 23" stroke={`url(#${arrowId})`} strokeWidth="7" strokeLinecap="round" />
+            <path d="M92 20 L111 16 L107 35 Z" fill="#2563eb" />
+          </svg>
 
-      <div className="min-w-0">
-        <div className={`font-extrabold tracking-tight leading-none truncate ${textSizes[size]}`}>
-          <span className="text-slate-900">BizFlow</span>{' '}
-          <span className="bg-gradient-to-r from-sky-500 via-blue-600 to-indigo-600 bg-clip-text text-transparent">AI</span>
-        </div>
-        {showTagline && (
-          <div className="text-[11px] font-medium text-slate-500 mt-0.5 tracking-wide hidden sm:block">
-            Biến dữ liệu bán hàng thành quyết định thông minh
+          <div className="min-w-0">
+            <div className={`font-extrabold tracking-tight leading-none truncate ${textSizes[size]}`}>
+              <span className="text-slate-900">BizFlow</span>{' '}
+              <span className="bg-gradient-to-r from-sky-500 via-blue-600 to-indigo-600 bg-clip-text text-transparent">AI</span>
+            </div>
+            {showTagline && (
+              <div className="text-[11px] font-medium text-slate-500 mt-0.5 tracking-wide hidden sm:block">
+                Biến dữ liệu bán hàng thành quyết định thông minh
+              </div>
+            )}
           </div>
-        )}
-      </div>
-    </div>
-  );
-}
+        </div>
+      );
+    }
 
     // ==========================================
     // TIỆN ÍCH ĐỊNH DẠNG TIỀN & NGÀY THÁNG
     // ==========================================
     const formatVND = (num) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Math.round(num || 0));
     const todayStr = () => {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-};
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    };
     const getMonthKey = (dateStr) => (dateStr || '').slice(0, 7);
 
     const currentDate = new Date();
@@ -157,6 +351,20 @@
       const [products, setProducts] = useState([]);
       const [orders, setOrders] = useState([]);
       const [expenses, setExpenses] = useState([]);
+
+      // Chế độ nền Sáng / Tối (mặc định Sáng giữ nguyên như cũ)
+      const [theme, setTheme] = useState(() => {
+        try { return localStorage.getItem('bizflow_theme') || 'light'; } catch { return 'light'; }
+      });
+
+      useEffect(() => {
+        const root = document.documentElement;
+        if (theme === 'dark') root.classList.add('dark');
+        else root.classList.remove('dark');
+        try { localStorage.setItem('bizflow_theme', theme); } catch {}
+      }, [theme]);
+
+      const toggleTheme = () => setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
 
       // Đọc hồ sơ cửa hàng an toàn (dùng maybeSingle để không lỗi 406)
       const loadProfile = async (authUser) => {
@@ -327,6 +535,8 @@
             onLogin={handleLogin}
             onQuickDemo={handleQuickDemo}
             demoLoading={busy}
+            theme={theme}
+            onToggleTheme={toggleTheme}
           />
         );
       }
@@ -341,15 +551,18 @@
           busy={busy}
           onResetSampleData={handleResetSampleData}
           onReload={loadData}
+          theme={theme}
+          onToggleTheme={toggleTheme}
         />
       );
     }
 
     // ==========================================
-    // MÀN HÌNH ĐĂNG NHẬP & ĐĂNG KÝ (CỐ ĐỊNH VỪA KHÍT 100% & 110% ZOOM)
+    // MÀN HÌNH ĐĂNG NHẬP & ĐĂNG KÝ (CÓ GÓI AI 199K/THÁNG DISPLAY & NÚT ĐỔI NỀN)
     // ==========================================
-    function AuthPage({ onRegister, onLogin, onQuickDemo, demoLoading }) {
+    function AuthPage({ onRegister, onLogin, onQuickDemo, demoLoading, theme, onToggleTheme }) {
       const [mode, setMode] = useState('login');
+      const [selectedPlan, setSelectedPlan] = useState('ai_199k'); // Chỉ hiển thị (display), chưa thanh toán thật
       const [shopName, setShopName] = useState('');
       const [email, setEmail] = useState('');
       const [password, setPassword] = useState('');
@@ -376,27 +589,30 @@
 
       return (
         <div className="min-h-[100dvh] md:h-screen md:overflow-hidden bg-business-hero flex flex-col relative overflow-x-hidden">
-          <div className="pointer-events-none absolute -top-24 -right-24 w-80 h-80 rounded-full bg-blue-100/70 blur-3xl"></div>
-          <div className="pointer-events-none absolute -bottom-24 -left-24 w-80 h-80 rounded-full bg-sky-100/70 blur-3xl"></div>
+          <div className="pointer-events-none absolute -top-24 -right-24 w-80 h-80 rounded-full bg-blue-500/10 blur-3xl"></div>
+          <div className="pointer-events-none absolute -bottom-24 -left-24 w-80 h-80 rounded-full bg-sky-500/10 blur-3xl"></div>
 
           <header className="relative z-10 w-full border-b border-blue-100 bg-white/85 backdrop-blur-md shrink-0">
             <div className="max-w-6xl w-full mx-auto px-4 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-2.5">
               <BizFlowLogo size="md" showTagline={true} />
-              <button
-                onClick={onQuickDemo}
-                disabled={demoLoading}
-                className="w-full sm:w-auto px-3.5 py-2 rounded-xl bg-blue-50 text-blue-700 border border-blue-200 text-xs font-bold hover:bg-blue-100 transition shadow-sm disabled:opacity-50 text-center"
-              >
-                {demoLoading ? '⏳ Đang mở bản mẫu riêng...' : '👀 Xem thử với dữ liệu mẫu'}
-              </button>
+              <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+                <ThemeToggleButton theme={theme} onToggle={onToggleTheme} />
+                <button
+                  onClick={onQuickDemo}
+                  disabled={demoLoading}
+                  className="flex-1 sm:flex-initial px-3.5 py-1.5 rounded-xl bg-blue-50 text-blue-700 border border-blue-200 text-xs font-bold hover:bg-blue-100 transition shadow-sm disabled:opacity-50 text-center"
+                >
+                  {demoLoading ? '⏳ Đang mở bản mẫu riêng...' : '👀 Xem thử với dữ liệu mẫu'}
+                </button>
+              </div>
             </div>
           </header>
 
           <main className="relative z-10 flex-1 min-h-0 overflow-y-auto md:overflow-hidden flex items-center">
-            <div className="max-w-6xl w-full mx-auto px-4 sm:px-6 py-4 grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-8 items-center">
+            <div className="max-w-6xl w-full mx-auto px-4 sm:px-6 py-3 grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-8 items-center">
               {/* FORM ĐĂNG NHẬP / ĐĂNG KÝ */}
-              <div className="order-1 lg:order-2 lg:col-span-5 bg-white rounded-2xl p-5 sm:p-6 shadow-xl shadow-blue-900/5 border border-blue-100 min-w-0">
-                <div className="flex bg-blue-50/70 p-1 rounded-xl mb-4">
+              <div className="order-1 lg:order-2 lg:col-span-5 bg-white rounded-2xl p-4 sm:p-5 shadow-xl shadow-blue-900/5 border border-blue-100 min-w-0">
+                <div className="flex bg-blue-50/70 p-1 rounded-xl mb-3.5">
                   <button
                     type="button"
                     onClick={() => { setMode('login'); setError(''); }}
@@ -419,7 +635,7 @@
                   </div>
                 )}
 
-                <form onSubmit={submitForm} className="space-y-3 text-sm">
+                <form onSubmit={submitForm} className="space-y-2.5 text-sm">
                   {mode === 'register' && (
                     <div>
                       <label className="block text-xs font-semibold text-slate-700 mb-1">Tên cửa hàng của bạn</label>
@@ -428,7 +644,7 @@
                         value={shopName}
                         onChange={e => setShopName(e.target.value)}
                         placeholder="VD: Tiệm Trà Sữa Minh Anh"
-                        className="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600"
+                        className="w-full px-3 py-1.5 sm:py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 text-xs sm:text-sm"
                       />
                     </div>
                   )}
@@ -441,7 +657,7 @@
                       value={email}
                       onChange={e => setEmail(e.target.value)}
                       placeholder="tenban@gmail.com"
-                      className="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600"
+                      className="w-full px-3 py-1.5 sm:py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 text-xs sm:text-sm"
                     />
                   </div>
 
@@ -454,13 +670,63 @@
                       value={password}
                       onChange={e => setPassword(e.target.value)}
                       placeholder="Ít nhất 6 ký tự"
-                      className="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600"
+                      className="w-full px-3 py-1.5 sm:py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 text-xs sm:text-sm"
                     />
                   </div>
 
+                  {/* GÓI DỊCH VỤ HIỂN THỊ (DISPLAY) KHI ĐĂNG KÝ */}
                   {mode === 'register' && (
-                    <div className="p-2.5 rounded-xl bg-blue-50/80 border border-blue-100 text-[11px] text-blue-800 leading-snug">
-                      🔒 Dữ liệu cửa hàng của bạn được tách biệt hoàn toàn. Sau khi tạo tài khoản, bạn sẽ tự thêm sản phẩm và đơn hàng của riêng mình.
+                    <div className="pt-0.5">
+                      <div className="flex items-center justify-between gap-1 mb-1">
+                        <span className="text-xs font-semibold text-slate-700">Gói dịch vụ</span>
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200">
+                          Chỉ hiển thị • Chưa thanh toán thật
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setSelectedPlan('free')}
+                          className={`text-left p-2.5 rounded-xl border transition ${
+                            selectedPlan === 'free'
+                              ? 'border-blue-600 bg-blue-50/80 ring-1 ring-blue-500/30'
+                              : 'border-slate-200 hover:border-blue-200'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between gap-1">
+                            <span className="text-xs font-bold text-slate-900">Cơ bản</span>
+                            <span className="text-[11px] font-extrabold text-blue-600">0đ</span>
+                          </div>
+                          <div className="text-[10px] text-slate-500 mt-0.5 leading-snug">
+                            Sổ đơn hàng, kho & thu chi
+                          </div>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => setSelectedPlan('ai_199k')}
+                          className={`text-left p-2.5 rounded-xl border transition ${
+                            selectedPlan === 'ai_199k'
+                              ? 'border-blue-600 bg-blue-50/80 ring-1 ring-blue-500/30'
+                              : 'border-slate-200 hover:border-blue-200'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between gap-1">
+                            <span className="text-xs font-bold text-slate-900">🤖 Gói AI</span>
+                            <span className="text-[11px] font-extrabold text-blue-600 whitespace-nowrap">199k/tháng</span>
+                          </div>
+                          <div className="text-[10px] text-slate-500 mt-0.5 leading-snug">
+                            Phân tích lãi & gợi ý kho AI
+                          </div>
+                        </button>
+                      </div>
+
+                      <div className="mt-2 p-2 rounded-xl bg-blue-50/80 border border-blue-100 text-[11px] text-blue-800 leading-snug">
+                        🔒 Dữ liệu tách biệt hoàn toàn. {selectedPlan === 'ai_199k'
+                          ? 'Gói AI 199.000đ/tháng hiện chỉ hiển thị giới thiệu, chưa thu phí hay thanh toán thật.'
+                          : 'Bạn có thể tạo cửa hàng miễn phí và dùng thử Trợ lý AI ngay.'}
+                      </div>
                     </div>
                   )}
 
@@ -518,7 +784,7 @@
     // ==========================================
     function WorkspaceApp({
       user, onLogout, products, orders, expenses,
-      busy, onResetSampleData, onReload
+      busy, onResetSampleData, onReload, theme, onToggleTheme
     }) {
       const [activeTab, setActiveTab] = useState('dashboard');
       const [showHowItWorks, setShowHowItWorks] = useState(true);
@@ -614,11 +880,12 @@
           <div className="md:hidden sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-blue-100 px-3 py-2 flex items-center justify-between gap-2">
             <div className="min-w-0 flex items-center gap-2">
               <BizFlowLogo size="sm" />
-              <span className="text-[11px] font-bold text-blue-700 bg-blue-50 border border-blue-100 px-2 py-0.5 rounded-full truncate max-w-[115px]">
+              <span className="text-[11px] font-bold text-blue-700 bg-blue-50 border border-blue-100 px-2 py-0.5 rounded-full truncate max-w-[100px]">
                 {user.shop_name}
               </span>
             </div>
             <div className="flex items-center gap-1.5 shrink-0">
+              <ThemeToggleButton theme={theme} onToggle={onToggleTheme} compact={true} />
               {user.is_demo && (
                 <button
                   onClick={() => { if (confirm('Khôi phục lại dữ liệu mẫu ban đầu cho phiên xem thử này?')) onResetSampleData(); }}
@@ -716,11 +983,14 @@
 
               <div className="flex items-center gap-2 shrink-0">
                 {activeTab === 'ai' && (
-                  <label className="flex items-center gap-1.5 text-[11px] font-semibold bg-blue-50 text-blue-700 px-3 py-1 rounded-full cursor-pointer border border-blue-200">
+                  <label className="flex items-center gap-1.5 text-[11px] font-semibold bg-blue-50 text-blue-700 px-3 py-1.5 rounded-full cursor-pointer border border-blue-200">
                     <input type="checkbox" checked={showHowItWorks} onChange={e => setShowHowItWorks(e.target.checked)} className="accent-blue-600" />
                     <span>Hiện cách AI tính</span>
                   </label>
                 )}
+                <div className="hidden md:block">
+                  <ThemeToggleButton theme={theme} onToggle={onToggleTheme} />
+                </div>
               </div>
             </header>
 
@@ -804,13 +1074,12 @@
     function DashboardView({ analytics, setActiveTab, productsCount, ordersCount, user }) {
       const { thisM, lastM, revChangePct, profitChangePct, lowStockProducts, lowMarginProducts } = analytics;
       const maxVal = Math.max(
-  thisM.revenue, lastM.revenue,
-  thisM.cogs + thisM.opex, lastM.cogs + lastM.opex,
-  Math.max(0, thisM.netProfit), Math.max(0, lastM.netProfit),
-  1
-);
+        thisM.revenue, lastM.revenue,
+        thisM.cogs + thisM.opex, lastM.cogs + lastM.opex,
+        Math.max(0, thisM.netProfit), Math.max(0, lastM.netProfit),
+        1
+      );
 
-      // Hướng dẫn từng bước cho tài khoản mới đăng ký (chưa có dữ liệu)
       if (productsCount === 0 && ordersCount === 0) {
         return (
           <div className="md:h-full flex items-center justify-center">
@@ -849,7 +1118,6 @@
 
       return (
         <div className="flex flex-col md:h-full md:min-h-0 gap-3 lg:gap-4">
-          {/* 4 THẺ CHỈ SỐ LUÔN TRÊN 1 HÀNG Ở MÁY TÍNH (lg:grid-cols-4) ĐỂ KHÔNG TĂNG CHIỀU CAO KHI ZOOM 110% */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 shrink-0">
             <KpiCard
               title="Tiền bán hàng tháng này"
@@ -886,7 +1154,6 @@
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 lg:gap-4 md:flex-1 md:min-h-0">
-            {/* BIỂU ĐỒ SO SÁNH CO GIÃN THEO CHIỀU CAO MÀN HÌNH */}
             <div className="lg:col-span-2 bg-white p-4 rounded-2xl border border-blue-100 shadow-sm min-w-0 flex flex-col md:min-h-0">
               <div className="flex flex-wrap items-center justify-between gap-2 mb-2 shrink-0">
                 <div>
@@ -914,7 +1181,6 @@
               </div>
             </div>
 
-            {/* CẢNH BÁO NHANH */}
             <div className="bg-white p-4 rounded-2xl border border-blue-100 shadow-sm flex flex-col justify-between gap-3 min-w-0 md:min-h-0">
               <div className="flex-1 min-h-0 flex flex-col">
                 <h2 className="font-bold text-slate-900 mb-2 text-sm shrink-0">🔔 Việc cần chú ý ngay</h2>
@@ -989,7 +1255,7 @@
     }
 
     // ==========================================
-    // 2. TRANG ĐƠN HÀNG (BẢNG CUỘN TRONG KHUNG, KHÔNG TRÀN TRANG)
+    // 2. TRANG ĐƠN HÀNG
     // ==========================================
     function OrdersView({ orders, products, onCreateOrder, onChangeStatus, goToProducts }) {
       const [customerName, setCustomerName] = useState('');
@@ -998,50 +1264,49 @@
       const [selectedProdId, setSelectedProdId] = useState('');
       const [qty, setQty] = useState(1);
       const [cart, setCart] = useState([]);
-
       const [saving, setSaving] = useState(false);
 
-const activeProdId = selectedProdId || products[0]?.id || '';
+      const activeProdId = selectedProdId || products[0]?.id || '';
 
-const addToCart = () => {
-  const addQty = Number(qty);
-  if (!activeProdId || !(addQty > 0)) return;
+      const addToCart = () => {
+        const addQty = Number(qty);
+        if (!activeProdId || !(addQty > 0)) return;
 
-  const prod = products.find(p => p.id === activeProdId);
-  const inCart = cart.find(c => c.product_id === activeProdId)?.quantity || 0;
-  if (prod && inCart + addQty > prod.stock) {
-    return alert(`"${prod.name}" chỉ còn ${prod.stock} trong kho (đơn này đã có ${inCart}). Bạn hãy giảm số lượng nhé!`);
-  }
+        const prod = products.find(p => p.id === activeProdId);
+        const inCart = cart.find(c => c.product_id === activeProdId)?.quantity || 0;
+        if (prod && inCart + addQty > prod.stock) {
+          return alert(`"${prod.name}" chỉ còn ${prod.stock} trong kho (đơn này đã có ${inCart}). Bạn hãy giảm số lượng nhé!`);
+        }
 
-  if (inCart > 0) setCart(cart.map(c => c.product_id === activeProdId ? { ...c, quantity: c.quantity + addQty } : c));
-  else setCart([...cart, { product_id: activeProdId, quantity: addQty }]);
-};
+        if (inCart > 0) setCart(cart.map(c => c.product_id === activeProdId ? { ...c, quantity: c.quantity + addQty } : c));
+        else setCart([...cart, { product_id: activeProdId, quantity: addQty }]);
+      };
 
-const removeCartItem = (pid) => {
-  setCart(cart.filter(c => c.product_id !== pid));
-};
+      const removeCartItem = (pid) => {
+        setCart(cart.filter(c => c.product_id !== pid));
+      };
 
-const submitOrder = async (e) => {
-  e.preventDefault();
-  if (saving) return;
-  if (cart.length === 0) return alert('Bạn hãy bấm nút "+ Thêm" món vào đơn trước khi lưu!');
+      const submitOrder = async (e) => {
+        e.preventDefault();
+        if (saving) return;
+        if (cart.length === 0) return alert('Bạn hãy bấm nút "+ Thêm" món vào đơn trước khi lưu!');
 
-  for (const c of cart) {
-    const p = products.find(pr => pr.id === c.product_id);
-    if (p && c.quantity > p.stock) {
-      return alert(`"${p.name}" chỉ còn ${p.stock} trong kho, không đủ ${c.quantity}.`);
-    }
-  }
+        for (const c of cart) {
+          const p = products.find(pr => pr.id === c.product_id);
+          if (p && c.quantity > p.stock) {
+            return alert(`"${p.name}" chỉ còn ${p.stock} trong kho, không đủ ${c.quantity}.`);
+          }
+        }
 
-  setSaving(true);
-  try {
-    await onCreateOrder({ customer_name: customerName, order_date: orderDate, status, selectedItems: cart });
-    setCustomerName('');
-    setCart([]);
-  } finally {
-    setSaving(false);
-  }
-};
+        setSaving(true);
+        try {
+          await onCreateOrder({ customer_name: customerName, order_date: orderDate, status, selectedItems: cart });
+          setCustomerName('');
+          setCart([]);
+        } finally {
+          setSaving(false);
+        }
+      };
 
       return (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:h-full md:min-h-0">
@@ -1125,8 +1390,8 @@ const submitOrder = async (e) => {
                 )}
 
                 <button type="submit" disabled={saving} className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold shadow-sm text-xs sm:text-sm disabled:opacity-50">
-  {saving ? 'Đang lưu...' : 'Lưu đơn hàng'}
-</button>
+                  {saving ? 'Đang lưu...' : 'Lưu đơn hàng'}
+                </button>
               </form>
             )}
           </div>
@@ -1318,18 +1583,19 @@ const submitOrder = async (e) => {
     // 4. TRANG SỔ THU & CHI
     // ==========================================
     const CATEGORY_BY_TYPE = {
-  expense: [
-    { value: 'Nguyên liệu & Bao bì', label: 'Nguyên liệu & Bao bì' },
-    { value: 'Phí giao hàng', label: 'Phí giao hàng' },
-    { value: 'Thuê mặt bằng', label: 'Thuê mặt bằng / Điện nước' },
-  ],
-  inventory_purchase: [
-    { value: 'Nhập hàng về kho', label: 'Nhập hàng về kho' },
-  ],
-  income: [
-    { value: 'Thu khác', label: 'Khoản thu khác' },
-  ],
-};
+      expense: [
+        { value: 'Nguyên liệu & Bao bì', label: 'Nguyên liệu & Bao bì' },
+        { value: 'Phí giao hàng', label: 'Phí giao hàng' },
+        { value: 'Thuê mặt bằng', label: 'Thuê mặt bằng / Điện nước' },
+      ],
+      inventory_purchase: [
+        { value: 'Nhập hàng về kho', label: 'Nhập hàng về kho' },
+      ],
+      income: [
+        { value: 'Thu khác', label: 'Khoản thu khác' },
+      ],
+    };
+
     function FinanceView({ expenses, analytics, onAddExpense, onDeleteExpense }) {
       const [form, setForm] = useState({ type: 'expense', category: 'Nguyên liệu & Bao bì', amount: '', expense_date: todayStr(), note: '' });
       const submit = (e) => {
@@ -1346,7 +1612,7 @@ const submitOrder = async (e) => {
             <form onSubmit={submit} className="space-y-2.5 text-sm">
               <div>
                 <label className="block text-xs font-semibold text-slate-600 mb-1">Loại giao dịch</label>
-              <select value={form.type} onChange={e => { const t = e.target.value; setForm({ ...form, type: t, category: CATEGORY_BY_TYPE[t][0].value }); }} className="w-full px-3 py-1.5 sm:py-2 border border-slate-200 rounded-xl text-xs sm:text-sm">
+                <select value={form.type} onChange={e => { const t = e.target.value; setForm({ ...form, type: t, category: CATEGORY_BY_TYPE[t][0].value }); }} className="w-full px-3 py-1.5 sm:py-2 border border-slate-200 rounded-xl text-xs sm:text-sm">
                   <option value="expense">Chi phí cửa hàng (Trừ vào tiền lãi)</option>
                   <option value="inventory_purchase">Chi tiền nhập hàng về kho (Chỉ trừ tiền mặt)</option>
                   <option value="income">Khoản thu thêm khác</option>
@@ -1355,10 +1621,10 @@ const submitOrder = async (e) => {
               <div>
                 <label className="block text-xs font-semibold text-slate-600 mb-1">Nhóm khoản mục</label>
                 <select value={form.category} onChange={e => setForm({ ...form, category: e.target.value })} className="w-full px-3 py-1.5 sm:py-2 border border-slate-200 rounded-xl text-xs sm:text-sm">
-  {CATEGORY_BY_TYPE[form.type].map(c => (
-    <option key={c.value} value={c.value}>{c.label}</option>
-  ))}
-</select>
+                  {CATEGORY_BY_TYPE[form.type].map(c => (
+                    <option key={c.value} value={c.value}>{c.label}</option>
+                  ))}
+                </select>
               </div>
               <input required type="number" min="1" placeholder="Số tiền (VNĐ)" value={form.amount} onChange={e => setForm({ ...form, amount: e.target.value })} className="w-full px-3 py-1.5 sm:py-2 border border-slate-200 rounded-xl text-xs sm:text-sm" />
               <input required type="date" value={form.expense_date} onChange={e => setForm({ ...form, expense_date: e.target.value })} className="w-full px-3 py-1.5 sm:py-2 border border-slate-200 rounded-xl text-xs sm:text-sm" />
@@ -1472,52 +1738,47 @@ const submitOrder = async (e) => {
       };
 
       const sendMessage = async (text) => {
-  const q = (text || input).trim();
-  if (!q || thinking) return;
-  setMessages(prev => [...prev, { role: 'user', text: q }]);
-  setInput('');
+        const q = (text || input).trim();
+        if (!q || thinking) return;
+        setMessages(prev => [...prev, { role: 'user', text: q }]);
+        setInput('');
 
-  // Câu trả lời dự phòng (tính từ số liệu có sẵn, không cần mạng)
-  const fallbackReply = () =>
-    '💡 Trợ lý AI đang bận nên mình trả lời nhanh từ số liệu của bạn:\n\n' + generateVietnameseAnswer(q);
+        const fallbackReply = () =>
+          '💡 Trợ lý AI đang bận nên mình trả lời nhanh từ số liệu của bạn:\n\n' + generateVietnameseAnswer(q);
 
-  if (window.ENABLE_AI_EDGE_FUNCTION) {
-    setThinking(true);
-    try {
-      const { data, error } = await sb.functions.invoke('ai-advisor', {
-        body: {
-          question: q,
-          context: {
-            thisM,
-            lastM,
-            lowStockProducts: lowStockProducts.map(p => ({ name: p.name, stock: p.stock, threshold: p.low_stock_threshold })),
-            lowMarginProducts: lowMarginProducts.map(p => ({ name: p.name, margin: Number(p.margin.toFixed(1)) }))
+        if (window.ENABLE_AI_EDGE_FUNCTION) {
+          setThinking(true);
+          try {
+            const { data, error } = await sb.functions.invoke('ai-advisor', {
+              body: {
+                question: q,
+                context: {
+                  thisM,
+                  lastM,
+                  lowStockProducts: lowStockProducts.map(p => ({ name: p.name, stock: p.stock, threshold: p.low_stock_threshold })),
+                  lowMarginProducts: lowMarginProducts.map(p => ({ name: p.name, margin: Number(p.margin.toFixed(1)) }))
+                }
+              }
+            });
+
+            if (!error && data?.reply) {
+              setMessages(prev => [...prev, { role: 'ai', text: data.reply }]);
+              return;
+            }
+
+            console.error('AI lỗi:', error, data);
+            setMessages(prev => [...prev, { role: 'ai', text: fallbackReply() }]);
+          } catch (err) {
+            console.error('AI lỗi:', err);
+            setMessages(prev => [...prev, { role: 'ai', text: fallbackReply() }]);
+          } finally {
+            setThinking(false);
           }
+          return;
         }
-      });
 
-      // Trường hợp 1: AI trả lời bình thường
-      if (!error && data?.reply) {
-        setMessages(prev => [...prev, { role: 'ai', text: data.reply }]);
-        return;
-      }
-
-      // Trường hợp 2: function trả về lỗi (chưa deploy, quá tải, hết quota...)
-      console.error('AI lỗi:', error, data);
-      setMessages(prev => [...prev, { role: 'ai', text: fallbackReply() }]);
-    } catch (err) {
-      // Trường hợp 3: lỗi mạng hoặc lỗi bất ngờ
-      console.error('AI lỗi:', err);
-      setMessages(prev => [...prev, { role: 'ai', text: fallbackReply() }]);
-    } finally {
-      setThinking(false);
-    }
-    return;
-  }
-
-  // Khi AI thật bị tắt: dùng câu trả lời mẫu
-  setMessages(prev => [...prev, { role: 'ai', text: generateVietnameseAnswer(q) }]);
-};
+        setMessages(prev => [...prev, { role: 'ai', text: generateVietnameseAnswer(q) }]);
+      };
 
       return (
         <div className="flex flex-col flex-1 min-h-0 h-[calc(100dvh-180px)] md:h-full gap-2.5">
