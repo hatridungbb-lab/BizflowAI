@@ -386,11 +386,17 @@
             prof = ensured;
           }
 
+          const isDemo = Boolean(prof.is_demo || authUser.is_anonymous || authUser.user_metadata?.is_demo);
+          const plan = isDemo ? 'ai_199k' : (prof.plan || authUser.user_metadata?.plan || 'free');
+          const hasAI = isDemo || plan === 'ai_199k';
+
           return {
             id: authUser.id,
             email: authUser.email || 'Tài khoản dùng thử riêng',
             shop_name: prof.shop_name,
-            is_demo: Boolean(prof.is_demo || authUser.is_anonymous)
+            is_demo: isDemo,
+            plan,
+            has_ai: hasAI
           };
         } catch {
           return null;
@@ -449,12 +455,12 @@
         return () => sub.subscription.unsubscribe();
       }, []);
 
-      // Đăng ký tài khoản mới -> Bắt đầu với dữ liệu TRẮNG hoàn toàn (tự thêm sản phẩm & đơn hàng)
-      const handleRegister = async ({ email, password, shop_name }) => {
+      // Đăng ký tài khoản mới -> Lưu gói đã chọn (free hoặc ai_199k) và bắt đầu với dữ liệu TRẮNG hoàn toàn
+      const handleRegister = async ({ email, password, shop_name, plan }) => {
         const { data, error } = await sb.auth.signUp({
           email,
           password,
-          options: { data: { shop_name, is_demo: false } }
+          options: { data: { shop_name, is_demo: false, plan: plan || 'free' } }
         });
         if (error) return { error: error.message };
         if (!data.session) return { error: 'Đã tạo tài khoản. Vui lòng kiểm tra email để xác nhận trước khi đăng nhập.' };
@@ -473,14 +479,14 @@
         await sb.auth.signOut();
       };
 
-      // Chỉ dùng cho nút "Xem thử bản mẫu" (tạo phiên riêng biệt không trùng ai)
+      // Chỉ dùng cho nút "Xem thử bản mẫu" (luôn đi kèm khung chat AI)
       const handleQuickDemo = async () => {
         if (busy) return;
         setBusy(true);
         try {
           let authData = null;
           const anonRes = await sb.auth.signInAnonymously({
-            options: { data: { shop_name: 'Cửa hàng Trà & Cà Phê Mẫu', is_demo: true } }
+            options: { data: { shop_name: 'Cửa hàng Trà & Cà Phê Mẫu', is_demo: true, plan: 'ai_199k' } }
           });
 
           if (!anonRes.error && anonRes.data?.session) {
@@ -490,7 +496,7 @@
             const signUpRes = await sb.auth.signUp({
               email: `demo.${randId}@demo.bizflowai.vn`,
               password: `Demo#${randId}88`,
-              options: { data: { shop_name: `Cửa hàng Mẫu #${randId.toUpperCase()}`, is_demo: true } }
+              options: { data: { shop_name: `Cửa hàng Mẫu #${randId.toUpperCase()}`, is_demo: true, plan: 'ai_199k' } }
             });
             if (signUpRes.error || !signUpRes.data?.session) {
               alert('Vui lòng bật "Anonymous Sign-Ins" trong Supabase Authentication để dùng chế độ xem thử nhanh.');
@@ -558,11 +564,11 @@
     }
 
     // ==========================================
-    // MÀN HÌNH ĐĂNG NHẬP & ĐĂNG KÝ (CÓ GÓI AI 199K/THÁNG DISPLAY & NÚT ĐỔI NỀN)
+    // MÀN HÌNH ĐĂNG NHẬP & ĐĂNG KÝ (CHỌN GÓI CƠ BẢN FREE HOẶC GÓI AI 199K/THÁNG)
     // ==========================================
     function AuthPage({ onRegister, onLogin, onQuickDemo, demoLoading, theme, onToggleTheme }) {
       const [mode, setMode] = useState('login');
-      const [selectedPlan, setSelectedPlan] = useState('ai_199k'); // Chỉ hiển thị (display), chưa thanh toán thật
+      const [selectedPlan, setSelectedPlan] = useState('ai_199k');
       const [shopName, setShopName] = useState('');
       const [email, setEmail] = useState('');
       const [password, setPassword] = useState('');
@@ -576,7 +582,7 @@
         try {
           if (mode === 'register') {
             if (!shopName.trim()) return setError('Vui lòng nhập tên cửa hàng của bạn.');
-            const res = await onRegister({ email, password, shop_name: shopName });
+            const res = await onRegister({ email, password, shop_name: shopName, plan: selectedPlan });
             if (res.error) setError(res.error);
           } else {
             const res = await onLogin({ email, password });
@@ -674,13 +680,13 @@
                     />
                   </div>
 
-                  {/* GÓI DỊCH VỤ HIỂN THỊ (DISPLAY) KHI ĐĂNG KÝ */}
+                  {/* CHỌN GÓI DỊCH VỤ KHI ĐĂNG KÝ */}
                   {mode === 'register' && (
                     <div className="pt-0.5">
                       <div className="flex items-center justify-between gap-1 mb-1">
                         <span className="text-xs font-semibold text-slate-700">Gói dịch vụ</span>
                         <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200">
-                          Chỉ hiển thị • Chưa thanh toán thật
+                          Chưa thu phí thật
                         </span>
                       </div>
 
@@ -695,11 +701,11 @@
                           }`}
                         >
                           <div className="flex items-center justify-between gap-1">
-                            <span className="text-xs font-bold text-slate-900">Cơ bản</span>
+                            <span className="text-xs font-bold text-slate-900">Cơ bản (Free)</span>
                             <span className="text-[11px] font-extrabold text-blue-600">0đ</span>
                           </div>
                           <div className="text-[10px] text-slate-500 mt-0.5 leading-snug">
-                            Sổ đơn hàng, kho & thu chi
+                            Đơn hàng, kho & thu chi (Không có chat AI)
                           </div>
                         </button>
 
@@ -717,15 +723,15 @@
                             <span className="text-[11px] font-extrabold text-blue-600 whitespace-nowrap">199k/tháng</span>
                           </div>
                           <div className="text-[10px] text-slate-500 mt-0.5 leading-snug">
-                            Phân tích lãi & gợi ý kho AI
+                            Đầy đủ + Khung chat Trợ lý AI
                           </div>
                         </button>
                       </div>
 
                       <div className="mt-2 p-2 rounded-xl bg-blue-50/80 border border-blue-100 text-[11px] text-blue-800 leading-snug">
                         🔒 Dữ liệu tách biệt hoàn toàn. {selectedPlan === 'ai_199k'
-                          ? 'Gói AI 199.000đ/tháng hiện chỉ hiển thị giới thiệu, chưa thu phí hay thanh toán thật.'
-                          : 'Bạn có thể tạo cửa hàng miễn phí và dùng thử Trợ lý AI ngay.'}
+                          ? 'Gói AI đi kèm khung chat Trợ lý AI phân tích lãi & kho (hiện chỉ hiển thị giới thiệu, chưa thanh toán thật).'
+                          : 'Tài khoản Free gồm quản lý Đơn hàng, Sản phẩm & Kho, Sổ Thu & Chi (không có khung chat AI).'}
                       </div>
                     </div>
                   )}
@@ -769,7 +775,7 @@
                   <div className="bg-white/90 p-3 rounded-2xl border border-blue-100 shadow-sm">
                     <div className="w-7 h-7 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center text-sm mb-1.5">🤖</div>
                     <div className="font-bold text-xs sm:text-sm text-slate-800">Hỏi đáp dễ hiểu</div>
-                    <div className="text-[11px] text-slate-500 mt-0.5">Trợ lý AI giải thích bằng tiếng Việt đơn giản.</div>
+                    <div className="text-[11px] text-slate-500 mt-0.5">Trợ lý AI giải thích bằng tiếng Việt đơn giản (Gói AI & Bản mẫu).</div>
                   </div>
                 </div>
               </div>
@@ -786,8 +792,15 @@
       user, onLogout, products, orders, expenses,
       busy, onResetSampleData, onReload, theme, onToggleTheme
     }) {
+      const hasAI = Boolean(user?.has_ai);
       const [activeTab, setActiveTab] = useState('dashboard');
       const [showHowItWorks, setShowHowItWorks] = useState(true);
+
+      useEffect(() => {
+        if (!hasAI && activeTab === 'ai') {
+          setActiveTab('dashboard');
+        }
+      }, [hasAI, activeTab]);
 
       const analytics = useMemo(() => {
         const calcPeriod = (monthKey) => {
@@ -871,7 +884,7 @@
         { id: 'orders', label: 'Đơn hàng', shortLabel: 'Đơn hàng', icon: '🧾', badge: analytics.thisM.pendingCount },
         { id: 'products', label: 'Sản phẩm & Kho', shortLabel: 'Sản phẩm', icon: '📦', badge: analytics.lowStockProducts.length, badgeColor: 'bg-rose-500' },
         { id: 'finance', label: 'Sổ Thu & Chi', shortLabel: 'Thu & Chi', icon: '💳' },
-        { id: 'ai', label: 'Trợ lý AI', shortLabel: 'Trợ lý AI', icon: '🤖', highlight: true },
+        ...(hasAI ? [{ id: 'ai', label: 'Trợ lý AI', shortLabel: 'Trợ lý AI', icon: '🤖', highlight: true }] : []),
       ];
 
       return (
@@ -910,7 +923,18 @@
             <div className="p-3.5 border-b border-blue-100 bg-gradient-to-br from-white to-blue-50/60 shrink-0">
               <BizFlowLogo size="sm" />
               <div className="mt-2.5 p-2 rounded-xl bg-blue-50 border border-blue-100">
-                <div className="text-[10px] font-semibold text-blue-600 uppercase tracking-wider">Cửa hàng đang quản lý</div>
+                <div className="flex items-center justify-between gap-1">
+                  <span className="text-[10px] font-semibold text-blue-600 uppercase tracking-wider">Cửa hàng</span>
+                  <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full shrink-0 ${
+                    user.is_demo
+                      ? 'bg-sky-100 text-sky-700'
+                      : hasAI
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-slate-100 text-slate-700 border border-slate-200'
+                  }`}>
+                    {user.is_demo ? 'Mẫu + AI' : hasAI ? 'Gói AI' : 'Gói Free'}
+                  </span>
+                </div>
                 <div className="text-xs font-bold text-slate-900 truncate mt-0.5">🏪 {user.shop_name}</div>
                 <div className="text-[11px] text-slate-500 truncate">{user.email}</div>
               </div>
@@ -948,8 +972,10 @@
             <div className="p-2.5 m-2 rounded-2xl bg-gradient-to-br from-blue-50 to-white border border-blue-100 text-xs space-y-1.5 shrink-0">
               <div className="text-[11px] text-slate-600 leading-snug">
                 {user.is_demo
-                  ? '👀 Bạn đang xem bản mẫu riêng. Mọi thao tác không ảnh hưởng người khác.'
-                  : '🔒 Dữ liệu được lưu riêng cho tài khoản của bạn.'}
+                  ? '👀 Bạn đang xem bản mẫu riêng (có Trợ lý AI). Mọi thao tác không ảnh hưởng người khác.'
+                  : hasAI
+                  ? '🤖 Tài khoản đang sử dụng Gói AI, dữ liệu được lưu riêng cho bạn.'
+                  : '🔒 Tài khoản Gói Free, dữ liệu được lưu riêng cho bạn.'}
               </div>
               {user.is_demo && (
                 <button
@@ -982,7 +1008,7 @@
               </div>
 
               <div className="flex items-center gap-2 shrink-0">
-                {activeTab === 'ai' && (
+                {hasAI && activeTab === 'ai' && (
                   <label className="flex items-center gap-1.5 text-[11px] font-semibold bg-blue-50 text-blue-700 px-3 py-1.5 rounded-full cursor-pointer border border-blue-200">
                     <input type="checkbox" checked={showHowItWorks} onChange={e => setShowHowItWorks(e.target.checked)} className="accent-blue-600" />
                     <span>Hiện cách AI tính</span>
@@ -1002,6 +1028,7 @@
                   productsCount={products.length}
                   ordersCount={orders.length}
                   user={user}
+                  hasAI={hasAI}
                 />
               )}
               {activeTab === 'orders' && (
@@ -1029,7 +1056,7 @@
                   onDeleteExpense={handleDeleteExpense}
                 />
               )}
-              {activeTab === 'ai' && (
+              {hasAI && activeTab === 'ai' && (
                 <AIIntelligenceView
                   analytics={analytics}
                   showHowItWorks={showHowItWorks}
@@ -1040,7 +1067,7 @@
           </main>
 
           {/* THANH ĐIỀU HƯỚNG CỐ ĐỊNH DƯỚI CÙNG CHO ĐIỆN THOẠI (9:16) */}
-          <nav className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-blue-100 shadow-[0_-4px_20px_rgba(15,23,42,0.06)] grid grid-cols-5 px-1 pt-1.5 pb-[max(0.4rem,env(safe-area-inset-bottom))]">
+          <nav className={`md:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-blue-100 shadow-[0_-4px_20px_rgba(15,23,42,0.06)] grid ${hasAI ? 'grid-cols-5' : 'grid-cols-4'} px-1 pt-1.5 pb-[max(0.4rem,env(safe-area-inset-bottom))]`}>
             {navItems.map(item => {
               const isActive = activeTab === item.id;
               return (
@@ -1071,7 +1098,7 @@
     // ==========================================
     // 1. TRANG TỔNG QUAN (VỪA KHÍT 1 MÀN HÌNH Ở 100% & 110% ZOOM)
     // ==========================================
-    function DashboardView({ analytics, setActiveTab, productsCount, ordersCount, user }) {
+    function DashboardView({ analytics, setActiveTab, productsCount, ordersCount, user, hasAI }) {
       const { thisM, lastM, revChangePct, profitChangePct, lowStockProducts, lowMarginProducts } = analytics;
       const maxVal = Math.max(
         thisM.revenue, lastM.revenue,
@@ -1215,12 +1242,14 @@
                 </div>
               </div>
 
-              <button
-                onClick={() => setActiveTab('ai')}
-                className="w-full py-2 rounded-xl bg-gradient-to-r from-blue-600 to-sky-600 hover:from-blue-700 hover:to-sky-700 text-white text-xs sm:text-sm font-bold shadow-sm transition shrink-0"
-              >
-                Hỏi Trợ lý AI ngay ✨
-              </button>
+              {hasAI && (
+                <button
+                  onClick={() => setActiveTab('ai')}
+                  className="w-full py-2 rounded-xl bg-gradient-to-r from-blue-600 to-sky-600 hover:from-blue-700 hover:to-sky-700 text-white text-xs sm:text-sm font-bold shadow-sm transition shrink-0"
+                >
+                  Hỏi Trợ lý AI ngay ✨
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -1678,7 +1707,7 @@
     }
 
     // ==========================================
-    // 5. TRANG TRỢ LÝ AI (TỰ ĐỘNG CUỘN XUỐNG CÂU TRẢ LỜI)
+    // 5. TRANG TRỢ LÝ AI (CHỈ HIỂN THỊ CHO GÓI AI & BẢN MẪU)
     // ==========================================
     function AIIntelligenceView({ analytics, showHowItWorks, expenses }) {
       const { thisM, lastM, revChangePct, profitChangePct, materialDiff, shippingDiff, lowStockProducts, lowMarginProducts } = analytics;
