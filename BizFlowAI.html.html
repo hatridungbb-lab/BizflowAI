@@ -1473,12 +1473,33 @@ revenue += bankSales;
                   onDeleteExpense={handleDeleteExpense}
                 />
               )}
+                            {activeTab === 'bank' && (
+                <BankInboxView
+                  bankTx={bankTx}
+                  orders={orders}
+                  onClassify={handleClassifyBank}
+                  onUnclassify={handleUnclassifyBank}
+                />
+              )}
               {hasAI && activeTab === 'ai' && (
                 <AIIntelligenceView analytics={analytics} />
               )}
             </div>
           </main>
-
+          {bankAlert && (
+            <button
+              type="button"
+              onClick={() => { setActiveTab('bank'); setBankAlert(null); }}
+              className={`fixed top-2 left-3 right-3 md:left-auto md:right-5 md:max-w-sm z-50 text-left rounded-2xl p-3 shadow-2xl border-2 text-white ${
+                bankAlert.direction === 'in' ? 'bg-emerald-700 border-emerald-300' : 'bg-rose-700 border-rose-300'
+              }`}
+            >
+              <div className="text-sm font-extrabold">
+                {bankAlert.direction === 'in' ? '💰 Tiền vừa về' : '💸 Tiền vừa ra'}: {formatTien(bankAlert.amount)}
+              </div>
+              <div className="text-xs font-bold opacity-90">Chạm để phân loại →</div>
+            </button>
+          )}
           {/* THÔNG BÁO ĐÃ LƯU + NÚT HOÀN TÁC 10 GIÂY */}
           {toast && (
             <div className="fixed left-3 right-3 bottom-[68px] md:bottom-5 md:left-auto md:right-5 md:max-w-sm z-50">
@@ -2643,7 +2664,238 @@ revenue += bankSales;
         </div>
       );
     }
+    // ==========================================
+    // 4B. TRANG NGÂN HÀNG (PHÂN LOẠI GIAO DỊCH SEPAY)
+    // ==========================================
+    const BANK_BTN_IN = [
+      { action: 'sale', label: 'Bán hàng', icon: '🛒' },
+      { action: 'income_other', label: 'Thu khác', icon: '💵' },
+    ];
+    const BANK_BTN_OUT = [
+      { action: 'inventory', label: 'Nhập hàng', icon: '📦' },
+      { action: 'electricity', label: 'Điện nước', icon: '⚡' },
+      { action: 'rent', label: 'Thuê nhà', icon: '🏠' },
+      { action: 'ship', label: 'Tiền ship', icon: '🚚' },
+      { action: 'expense_other', label: 'Chi khác', icon: '📝' },
+    ];
 
+    function BankLinkBox() {
+      const [linked, setLinked] = useState(null);
+      const [claim, setClaim] = useState(null);
+      const [acc, setAcc] = useState('');
+      const [bank, setBank] = useState('');
+      const [saving, setSaving] = useState(false);
+      const [copied, setCopied] = useState(false);
+
+      const checkLinked = async () => {
+        const { data } = await sb.from('bank_links').select('account_number');
+        const ok = (data || []).length > 0;
+        setLinked(ok);
+        return ok;
+      };
+
+      useEffect(() => {
+        (async () => {
+          const ok = await checkLinked();
+          if (ok) return;
+          const { data } = await sb
+            .from('bank_link_claims')
+            .select('code, account_number')
+            .eq('status', 'pending')
+            .gt('expires_at', new Date().toISOString())
+            .order('created_at', { ascending: false })
+            .limit(1);
+          if (data && data[0]) setClaim(data[0]);
+        })();
+      }, []);
+
+      useEffect(() => {
+        if (!claim || linked) return;
+        const t = setInterval(checkLinked, 5000);
+        return () => clearInterval(t);
+      }, [claim, linked]);
+
+      if (linked === null || linked) return null;
+
+      const start = async (e) => {
+        e.preventDefault();
+        if (saving) return;
+        setSaving(true);
+        const { data, error } = await sb.rpc('start_bank_link', { p_account: acc, p_bank: bank });
+        setSaving(false);
+        if (error) { alert(error.message || 'Chưa tạo được mã, bạn thử lại nhé.'); return; }
+        setClaim({ code: data.code, account_number: acc });
+      };
+
+      const copyCode = async () => {
+        try { await navigator.clipboard.writeText(claim.code); setCopied(true); setTimeout(() => setCopied(false), 2000); } catch {}
+      };
+
+      if (claim) {
+        return (
+          <div className="bg-white p-3.5 rounded-2xl border-2 border-amber-300 space-y-2.5 shrink-0">
+            <div className="text-sm sm:text-base font-extrabold text-slate-900">
+              🔐 Xác minh tài khoản {claim.account_number}
+            </div>
+            <div className="text-xs sm:text-sm text-slate-700 leading-relaxed">
+              Mở app ngân hàng, chuyển <strong>1.000đ từ chính tài khoản này</strong> sang tài khoản nào cũng được
+              (kể cả tài khoản của bạn). Nội dung chuyển khoản chỉ ghi đúng mã sau:
+            </div>
+            <button
+              type="button"
+              onClick={copyCode}
+              className="w-full min-h-[52px] rounded-xl bg-amber-50 border-2 border-amber-300 text-2xl font-extrabold tracking-widest text-amber-800"
+            >
+              {claim.code}
+            </button>
+            <div className="text-xs font-bold text-slate-600 text-center">
+              {copied ? '✅ Đã chép mã' : 'Chạm vào mã để chép'} • ⏳ Đang chờ ngân hàng báo về...
+            </div>
+            <button
+              type="button"
+              onClick={() => setClaim(null)}
+              className="w-full min-h-[40px] rounded-xl border-2 border-slate-300 bg-slate-100 text-slate-800 text-xs sm:text-sm font-bold"
+            >
+              ← Đổi số tài khoản khác
+            </button>
+          </div>
+        );
+      }
+
+      return (
+        <form onSubmit={start} className="bg-white p-3.5 rounded-2xl border-2 border-blue-200 space-y-2.5 shrink-0">
+          <div className="text-sm sm:text-base font-extrabold text-slate-900">🏦 Liên kết tài khoản ngân hàng</div>
+          <input
+            required
+            inputMode="numeric"
+            value={acc}
+            onChange={e => setAcc(e.target.value.replace(/\D/g, ''))}
+            placeholder="Số tài khoản"
+            className="w-full min-h-[44px] px-3.5 py-2 border-2 border-slate-300 rounded-xl text-base font-bold"
+          />
+          <input
+            value={bank}
+            onChange={e => setBank(e.target.value)}
+            placeholder="Tên ngân hàng (ví dụ: MBBank)"
+            className="w-full min-h-[44px] px-3.5 py-2 border-2 border-slate-300 rounded-xl text-base"
+          />
+          <button
+            type="submit"
+            disabled={saving}
+            className="w-full min-h-[46px] bg-blue-700 hover:bg-blue-800 text-white rounded-xl text-sm sm:text-base font-extrabold disabled:opacity-50"
+          >
+            {saving ? 'Đang tạo mã...' : 'Lấy mã xác minh'}
+          </button>
+        </form>
+      );
+    }
+
+    function BankInboxView({ bankTx, orders, onClassify, onUnclassify }) {
+      const [tab, setTab] = useState('pending');
+      const [busyId, setBusyId] = useState(null);
+
+      const pending = bankTx.filter(t => t.status === 'pending');
+      const done = bankTx.filter(t => t.status !== 'pending');
+      const list = tab === 'pending' ? pending : done;
+
+      const fmtTime = (iso) => new Date(iso).toLocaleString('vi-VN', {
+        hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit'
+      });
+
+      const act = async (id, action) => {
+        if (busyId) return;
+        setBusyId(id);
+        try { await onClassify(id, action); } finally { setBusyId(null); }
+      };
+
+      const doneLabel = (t) => {
+        if (t.status === 'matched_order') return '✅ Đã thu cho đơn hàng';
+        if (t.status === 'ignored') return '🚫 Đã bỏ qua';
+        if (t.status === 'recorded') return `✅ ${t.category || 'Đã ghi tự động'}`;
+        return `✅ ${t.category || 'Đã phân loại'}`;
+      };
+
+      return (
+        <div className="h-full flex flex-col min-h-0 gap-2.5">
+          <BankLinkBox />
+
+          <div className="grid grid-cols-2 gap-2 bg-white p-1.5 rounded-2xl border-2 border-blue-100 shrink-0">
+            <button type="button" onClick={() => setTab('pending')}
+              className={`min-h-[42px] rounded-xl text-sm sm:text-base font-extrabold transition ${tab === 'pending' ? 'bg-blue-700 text-white shadow-sm' : 'text-slate-700 hover:bg-blue-50'}`}>
+              🔔 Chờ phân loại ({pending.length})
+            </button>
+            <button type="button" onClick={() => setTab('done')}
+              className={`min-h-[42px] rounded-xl text-sm sm:text-base font-extrabold transition ${tab === 'done' ? 'bg-blue-700 text-white shadow-sm' : 'text-slate-700 hover:bg-blue-50'}`}>
+              📖 Đã xử lý ({done.length})
+            </button>
+          </div>
+
+          <div className="flex-1 min-h-0 overflow-y-auto scrollbar-thin space-y-2.5 pr-0.5">
+            {list.length === 0 ? (
+              <div className="bg-white rounded-2xl p-6 border-2 border-blue-100 text-center text-sm sm:text-base text-slate-600">
+                {tab === 'pending' ? '🎉 Không còn giao dịch nào cần phân loại.' : 'Chưa có giao dịch nào.'}
+              </div>
+            ) : list.map(t => {
+              const isIn = t.direction === 'in';
+              const matchedOrder = t.linked_order_id ? orders.find(o => o.id === t.linked_order_id) : null;
+              const buttons = isIn ? BANK_BTN_IN : BANK_BTN_OUT;
+              return (
+                <div key={t.id} className={`bg-white rounded-2xl p-3.5 border-2 shadow-sm space-y-2.5 ${isIn ? 'border-emerald-300' : 'border-rose-300'}`}>
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <div className="text-xs sm:text-sm font-bold text-slate-600">
+                        {isIn ? '💰 Tiền vào' : '💸 Tiền ra'} • {fmtTime(t.occurred_at)}
+                      </div>
+                      <div className="text-xs sm:text-sm text-slate-700 mt-0.5 break-words">
+                        {t.content || '(không có nội dung)'}
+                      </div>
+                    </div>
+                    <div className={`text-lg sm:text-xl font-extrabold shrink-0 ${isIn ? 'text-emerald-700' : 'text-rose-700'}`}>
+                      {isIn ? '+' : '-'}{formatTien(t.amount)}
+                    </div>
+                  </div>
+
+                  {t.status === 'pending' ? (
+                    <>
+                      {isIn && matchedOrder && (
+                        <button type="button" disabled={busyId === t.id} onClick={() => act(t.id, 'order')}
+                          className="w-full min-h-[46px] rounded-xl bg-amber-100 border-2 border-amber-300 text-amber-800 text-sm font-extrabold disabled:opacity-50">
+                          🧾 Khách trả cho đơn "{matchedOrder.customer_name || 'Khách lẻ'}" (không tính thêm doanh thu)
+                        </button>
+                      )}
+                      <div className="grid grid-cols-3 gap-2">
+                        {buttons.map(b => (
+                          <button key={b.action} type="button" disabled={busyId === t.id} onClick={() => act(t.id, b.action)}
+                            className="min-h-[56px] p-1.5 rounded-xl border-2 border-blue-300 bg-blue-50 text-blue-900 flex flex-col items-center justify-center gap-0.5 hover:bg-blue-100 disabled:opacity-50">
+                            <span className="text-lg leading-none">{b.icon}</span>
+                            <span className="text-xs sm:text-sm font-extrabold leading-tight">{b.label}</span>
+                          </button>
+                        ))}
+                        <button type="button" disabled={busyId === t.id} onClick={() => act(t.id, 'ignore')}
+                          className="min-h-[56px] p-1.5 rounded-xl border-2 border-slate-300 bg-slate-100 text-slate-800 flex flex-col items-center justify-center gap-0.5 disabled:opacity-50">
+                          <span className="text-lg leading-none">🚫</span>
+                          <span className="text-xs sm:text-sm font-extrabold leading-tight">Bỏ qua</span>
+                        </button>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-xs sm:text-sm font-bold text-slate-700">{doneLabel(t)}</span>
+                      {t.status !== 'recorded' && (
+                        <button type="button" onClick={() => onUnclassify(t.id)}
+                          className="min-h-[38px] px-3 rounded-xl border border-amber-300 bg-amber-50 text-amber-800 text-xs sm:text-sm font-bold">
+                          ↩️ Hoàn tác
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      );
+    }
     // ==========================================
     // 5. TRANG HỎI AI (CHỈ CUỘN TIN NHẮN, Ô HỎI GHIM ĐÁY)
     // ==========================================
