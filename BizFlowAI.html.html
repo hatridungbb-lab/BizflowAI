@@ -1049,7 +1049,9 @@
             e => String(e.expense_date || '').slice(0, 10) === dateStr
           );
           const opex = dayTrans.filter(e => e.type === 'expense').reduce((s, e) => s + e.amount, 0);
-          const otherIncome = dayTrans.filter(e => e.type === 'income').reduce((s, e) => s + e.amount, 0);
+          const bankSales = dayTrans.filter(e => e.type === 'income' && e.category === 'Bán hàng (ngân hàng)').reduce((s, e) => s + e.amount, 0);
+const otherIncome = dayTrans.filter(e => e.type === 'income' && e.category !== 'Bán hàng (ngân hàng)').reduce((s, e) => s + e.amount, 0);
+revenue += bankSales;
           const netProfit = revenue - cogs - opex + otherIncome;
           return { revenue, cogs, opex, otherIncome, netProfit, profit: netProfit, completedCount: completedOrders.length };
         };
@@ -1071,7 +1073,9 @@
           const opex = monthExp.filter(e => e.type === 'expense').reduce((s, e) => s + e.amount, 0);
           const materialCost = monthExp.filter(e => e.type === 'expense' && (e.category.includes('Nguyên liệu') || e.category.includes('điện'))).reduce((s, e) => s + e.amount, 0);
           const shippingCost = monthExp.filter(e => e.type === 'expense' && (e.category.includes('giao') || e.category.includes('chuyển'))).reduce((s, e) => s + e.amount, 0);
-          const otherIncome = monthExp.filter(e => e.type === 'income').reduce((s, e) => s + e.amount, 0);
+          const bankSales = monthExp.filter(e => e.type === 'income' && e.category === 'Bán hàng (ngân hàng)').reduce((s, e) => s + e.amount, 0);
+const otherIncome = monthExp.filter(e => e.type === 'income' && e.category !== 'Bán hàng (ngân hàng)').reduce((s, e) => s + e.amount, 0);
+revenue += bankSales;
           const inventoryCashOut = monthExp.filter(e => e.type === 'inventory_purchase').reduce((s, e) => s + e.amount, 0);
 
           const grossProfit = revenue - cogs;
