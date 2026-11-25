@@ -1001,7 +1001,64 @@
       const [financePresetMode, setFinancePresetMode] = useState('expense_other');
       const [toast, setToast] = useState(null);
       const [confirmResetOpen, setConfirmResetOpen] = useState(false);
+      const [bankTx, setBankTx] = useState([]);
+const [bankAlert, setBankAlert] = useState(null);
 
+const loadBank = async () => {
+  const { data, error } = await sb
+    .from('bank_transactions')
+    .select('*')
+    .order('occurred_at', { ascending: false })
+    .limit(100);
+  if (!error) setBankTx((data || []).map(x => ({ ...x, amount: Number(x.amount) })));
+};
+
+useEffect(() => {
+  loadBank();
+  const ch = sb.channel('bank-tx-' + user.id)
+    .on('postgres_changes',
+      { event: '*', schema: 'public', table: 'bank_transactions', filter: `user_id=eq.${user.id}` },
+      (payload) => {
+        loadBank();
+        if (payload.eventType === 'INSERT' && payload.new?.status === 'pending') {
+          setBankAlert({ direction: payload.new.direction, amount: Number(payload.new.amount) });
+          try { navigator.vibrate && navigator.vibrate(200); } catch {}
+        }
+      })
+    .subscribe();
+  const poll = setInterval(loadBank, 30000); // dự phòng nếu realtime rớt
+  return () => { sb.removeChannel(ch); clearInterval(poll); };
+}, [user.id]);
+
+useEffect(() => {
+  if (!bankAlert) return;
+  const t = setTimeout(() => setBankAlert(null), 10000);
+  return () => clearTimeout(t);
+}, [bankAlert]);
+
+const pendingBankCount = bankTx.filter(t => t.status === 'pending').length;
+
+const handleClassifyBank = async (id, action) => {
+  const { error } = await sb.rpc('classify_bank_transaction', { p_id: id, p_action: action });
+  if (error) {
+    console.error(error);
+    alert(error.message || 'Chưa phân loại được, bạn thử lại nhé.');
+    return false;
+  }
+  await Promise.all([loadBank(), onReload()]);
+  showSaveToast('Đã phân loại giao dịch', async () => {
+    await sb.rpc('unclassify_bank_transaction', { p_id: id });
+    await Promise.all([loadBank(), onReload()]);
+    showSaveToast('Đã hoàn tác giao dịch');
+  });
+  return true;
+};
+
+const handleUnclassifyBank = async (id) => {
+  const { error } = await sb.rpc('unclassify_bank_transaction', { p_id: id });
+  if (error) { alert('Chưa hoàn tác được, bạn thử lại nhé.'); return; }
+  await Promise.all([loadBank(), onReload()]);
+};
       useEffect(() => {
         if (!hasAI && activeTab === 'ai') {
           setActiveTab('dashboard');
@@ -1257,6 +1314,7 @@ revenue += bankSales;
         { id: 'orders', label: 'Bán hàng', icon: '🧾', badge: analytics.thisM.pendingCount },
         { id: 'products', label: 'Hàng hóa', icon: '📦', badge: analytics.lowStockProducts.length, badgeColor: 'bg-rose-700' },
         { id: 'finance', label: 'Thu chi', icon: '💳' },
+        { id: 'bank', label: 'Ngân hàng', icon: '🏦', badge: pendingBankCount, badgeColor: 'bg-rose-700' },
         ...(hasAI ? [{ id: 'ai', label: 'Hỏi AI', icon: '🤖', highlight: true }] : []),
       ];
 
@@ -1447,7 +1505,10 @@ revenue += bankSales;
           )}
 
           {/* THANH ĐIỀU HƯỚNG DƯỚI TRÊN ĐIỆN THOẠI (KHÓA CỨNG 1 KHUNG) */}
-          <nav className={`md:hidden shrink-0 z-40 bg-white/95 backdrop-blur-md border-t-2 border-blue-100 shadow-[0_-4px_16px_rgba(15,23,42,0.06)] grid ${hasAI ? 'grid-cols-5' : 'grid-cols-4'} px-1 pt-1 pb-[max(0.25rem,env(safe-area-inset-bottom))]`}>
+          <nav
+  style={{ gridTemplateColumns: `repeat(${navItems.length}, minmax(0, 1fr))` }}
+  className="md:hidden shrink-0 z-40 bg-white/95 backdrop-blur-md border-t-2 border-blue-100 shadow-[0_-4px_16px_rgba(15,23,42,0.06)] grid px-1 pt-1 pb-[max(0.25rem,env(safe-area-inset-bottom))]"
+>
             {navItems.map(item => {
               const isActive = activeTab === item.id;
               return (
