@@ -998,7 +998,7 @@
     }) {
       const hasAI = Boolean(user?.has_ai);
       const [activeTab, setActiveTab] = useState('dashboard');
-      const [financePresetMode, setFinancePresetMode] = useState('expense_electricity');
+      const [financePresetMode, setFinancePresetMode] = useState('expense_other');
       const [toast, setToast] = useState(null);
       const [confirmResetOpen, setConfirmResetOpen] = useState(false);
 
@@ -1257,7 +1257,7 @@
       ];
 
       const openSpendQuick = () => {
-        setFinancePresetMode('inventory');
+        setFinancePresetMode('expense_other');
         setActiveTab('finance');
       };
 
