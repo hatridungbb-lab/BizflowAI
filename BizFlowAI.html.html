@@ -258,6 +258,28 @@
     const { useState, useMemo, useEffect, useRef } = React;
 
     // ==========================================
+    // CẤU HÌNH GÓI DỊCH VỤ
+    // ==========================================
+    const PLAN_INFO = {
+      free: {
+        id: 'free',
+        name: 'Gói Cơ bản',
+        priceLabel: '0đ / tháng',
+        shortBadge: 'Cơ bản 0đ',
+        mobileBadge: '0đ',
+        hasAI: false
+      },
+      ai_199k: {
+        id: 'ai_199k',
+        name: 'Gói AI',
+        priceLabel: '199.000đ / 1 tháng',
+        shortBadge: 'Gói AI 199k',
+        mobileBadge: 'AI 199k',
+        hasAI: true
+      }
+    };
+
+    // ==========================================
     // TIỆN ÍCH ĐỊNH DẠNG TIỀN, SỐ ĐIỆN THOẠI & NGÀY THÁNG
     // ==========================================
     const formatTien = (num) => {
@@ -293,6 +315,13 @@
       return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
     };
     const getMonthKey = (dateStr) => (dateStr || '').slice(0, 7);
+
+    const formatDateVi = (iso) => {
+      if (!iso) return '';
+      const d = new Date(iso);
+      if (Number.isNaN(d.getTime())) return '';
+      return d.toLocaleDateString('vi-VN');
+    };
 
     const currentDate = new Date();
     const THIS_MONTH = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}`;
@@ -358,6 +387,131 @@
                 {confirmLabel}
               </button>
             </div>
+          </div>
+        </div>
+      );
+    }
+
+    // ==========================================
+    // HỘP THOẠI XEM GÓI DỊCH VỤ (CƠ BẢN 0Đ & AI 199K/THÁNG)
+    // ==========================================
+    function PlanModal({ open, user, onClose, onRefreshPlan }) {
+      const [checking, setChecking] = useState(false);
+      if (!open || !user) return null;
+
+      const hasAI = Boolean(user.has_ai);
+      const isDemo = Boolean(user.is_demo);
+
+      const handleCheck = async () => {
+        if (checking || !onRefreshPlan) return;
+        setChecking(true);
+        try {
+          await onRefreshPlan();
+        } finally {
+          setChecking(false);
+        }
+      };
+
+      return (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white border-2 border-blue-200 rounded-2xl p-4 sm:p-5 max-w-md w-full shadow-2xl space-y-3.5 max-h-[90dvh] overflow-y-auto scrollbar-thin">
+            <div className="flex items-center justify-between gap-2">
+              <h3 className="text-lg font-extrabold text-slate-900">💎 Gói dịch vụ cửa hàng</h3>
+              <button
+                type="button"
+                onClick={onClose}
+                className="min-h-[36px] px-3 rounded-xl border border-slate-300 bg-slate-100 text-slate-800 text-sm font-bold"
+              >
+                Đóng
+              </button>
+            </div>
+
+            {isDemo ? (
+              <div className="p-3 rounded-xl bg-sky-100 border border-blue-200 text-sm font-bold text-slate-900">
+                👀 Bạn đang dùng <strong>Tài khoản Dữ liệu mẫu</strong>. Tài khoản mẫu được mở sẵn toàn bộ tính năng và khung <strong>Hỏi AI</strong> để trải nghiệm.
+              </div>
+            ) : (
+              <div className={`p-3 rounded-xl border-2 text-sm ${
+                hasAI ? 'bg-blue-50 border-blue-300 text-blue-900' : 'bg-slate-50 border-slate-300 text-slate-900'
+              }`}>
+                <div className="font-extrabold">
+                  Gói hiện tại: {hasAI ? 'Gói AI (199.000đ / 1 tháng)' : 'Gói Cơ bản (0đ)'}
+                </div>
+                {hasAI && user.plan_expires_at && (
+                  <div className="text-xs sm:text-sm font-bold mt-0.5">
+                    📅 Hạn dùng đến: {formatDateVi(user.plan_expires_at)}
+                  </div>
+                )}
+                {!hasAI && user.is_plan_expired && (
+                  <div className="text-xs sm:text-sm font-bold text-rose-700 mt-1">
+                    ⚠️ Gói AI của bạn đã hết hạn 1 tháng nên khung AI đang tạm ẩn.
+                  </div>
+                )}
+                {!hasAI && !user.is_plan_expired && (
+                  <div className="text-xs sm:text-sm text-slate-700 mt-0.5">
+                    Tài khoản 0đ chỉ hiển thị các mục quản lý bán hàng cơ bản, không hiển thị khung AI.
+                  </div>
+                )}
+              </div>
+            )}
+
+            <div className="space-y-2.5">
+              {/* GÓI CƠ BẢN 0 ĐỒNG */}
+              <div className={`p-3.5 rounded-2xl border-2 ${
+                !isDemo && !hasAI ? 'border-blue-700 bg-blue-50/50' : 'border-slate-200 bg-white'
+              }`}>
+                <div className="flex items-center justify-between gap-2">
+                  <div className="font-extrabold text-base text-slate-900">Gói Cơ bản</div>
+                  <div className="text-sm font-extrabold text-emerald-700">0đ / tháng</div>
+                </div>
+                <ul className="mt-1.5 text-xs sm:text-sm text-slate-700 space-y-1">
+                  <li>✅ Sổ bán hàng, hàng hóa, thu chi, ngân hàng</li>
+                  <li>⛔ Không hiển thị khung Trợ lý AI</li>
+                </ul>
+                {!isDemo && !hasAI && (
+                  <div className="mt-2 inline-block px-2.5 py-0.5 rounded-lg bg-slate-200 text-slate-900 text-xs font-extrabold">
+                    Đang dùng gói này
+                  </div>
+                )}
+              </div>
+
+              {/* GÓI AI 199K / 1 THÁNG */}
+              <div className={`p-3.5 rounded-2xl border-2 ${
+                !isDemo && hasAI ? 'border-blue-700 bg-blue-50' : 'border-blue-200 bg-white'
+              }`}>
+                <div className="flex items-center justify-between gap-2">
+                  <div className="font-extrabold text-base text-blue-800">🤖 Gói AI</div>
+                  <div className="text-sm font-extrabold text-blue-700">199.000đ / 1 tháng</div>
+                </div>
+                <ul className="mt-1.5 text-xs sm:text-sm text-slate-700 space-y-1">
+                  <li>✅ Toàn bộ tính năng của Gói Cơ bản 0đ</li>
+                  <li>✅ Mở khóa khung <strong>Hỏi AI</strong> xem tiền lãi & cảnh báo hàng tồn</li>
+                </ul>
+                {!isDemo && hasAI && (
+                  <div className="mt-2 inline-block px-2.5 py-0.5 rounded-lg bg-blue-700 text-white text-xs font-extrabold">
+                    Đang kích hoạt
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {!isDemo && (
+              <div className="space-y-2 pt-1">
+                {!hasAI && (
+                  <div className="p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-xs sm:text-sm text-amber-800 leading-relaxed">
+                    💡 Để mở gói <strong>AI 199k / 1 tháng</strong> cho tài khoản <strong>{user.phone}</strong>, hãy đăng ký kích hoạt gói với quản trị viên rồi bấm nút kiểm tra bên dưới.
+                  </div>
+                )}
+                <button
+                  type="button"
+                  onClick={handleCheck}
+                  disabled={checking}
+                  className="w-full min-h-[44px] px-4 py-2 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-sm sm:text-base font-extrabold disabled:opacity-50"
+                >
+                  {checking ? '⏳ Đang kiểm tra gói...' : '🔄 Cập nhật trạng thái gói'}
+                </button>
+              </div>
+            )}
           </div>
         </div>
       );
@@ -482,7 +636,14 @@
           }
 
           const isDemo = Boolean(prof.is_demo || authUser.is_anonymous || authUser.user_metadata?.is_demo);
-          const plan = isDemo ? 'ai_199k' : (prof.plan || authUser.user_metadata?.plan || 'free');
+          const rawPlan = isDemo ? 'ai_199k' : (prof.plan || authUser.user_metadata?.plan || 'free');
+          const planExpiresAt = isDemo
+            ? null
+            : (prof.plan_expires_at || prof.ai_expires_at || authUser.user_metadata?.plan_expires_at || null);
+          const isPlanExpired = !isDemo && rawPlan === 'ai_199k' && planExpiresAt
+            ? new Date(planExpiresAt).getTime() <= Date.now()
+            : false;
+          const plan = isPlanExpired ? 'free' : rawPlan;
           const hasAI = isDemo || plan === 'ai_199k';
 
           return {
@@ -491,11 +652,21 @@
             shop_name: prof.shop_name,
             is_demo: isDemo,
             plan,
+            plan_expires_at: planExpiresAt,
+            is_plan_expired: isPlanExpired,
             has_ai: hasAI
           };
         } catch (err) {
           console.error('Lỗi tải hồ sơ:', err);
           return null;
+        }
+      };
+
+      const refreshPlan = async () => {
+        const { data } = await sb.auth.getUser();
+        if (data?.user) {
+          const u = await loadProfile(data.user);
+          if (u) setCurrentUser(u);
         }
       };
 
@@ -692,6 +863,7 @@
           busy={busy}
           onResetSampleData={handleResetSampleData}
           onReload={loadData}
+          onRefreshPlan={refreshPlan}
           theme={theme}
           onToggleTheme={toggleTheme}
         />
@@ -816,7 +988,7 @@
                   Biết ngay <span className="text-blue-700">Hôm nay lãi bao nhiêu</span>
                 </h1>
                 <p className="text-xs text-slate-600">
-                  Chữ gọn dễ đọc • Đăng nhập bằng SĐT • Tự trừ kho
+                  Chữ gọn dễ đọc • Gói Cơ bản 0đ • Gói AI 199k/tháng
                 </p>
               </div>
 
@@ -880,7 +1052,9 @@
                     </div>
 
                     <div className="p-2.5 rounded-xl bg-blue-50 border border-blue-200 text-xs text-blue-900 leading-snug">
-                      📱 Không cần mật khẩu. Hệ thống sẽ gửi mã OTP về tin nhắn điện thoại.
+                      {mode === 'register'
+                        ? '🎁 Sổ mới dùng Gói Cơ bản 0đ (không có AI). Có thể nâng cấp Gói AI 199k/tháng bất kỳ lúc nào.'
+                        : '📱 Không cần mật khẩu. Hệ thống sẽ gửi mã OTP về tin nhắn điện thoại.'}
                     </div>
 
                     <button
@@ -955,7 +1129,7 @@
                     Biết ngay <span className="text-blue-700">Hôm nay lãi bao nhiêu</span> chỉ với vài lần chạm.
                   </h1>
                   <p className="text-base text-slate-700 leading-relaxed">
-                    Làm riêng cho tiệm tạp hóa và cửa hàng nhỏ. Đăng nhập bằng số điện thoại, bấm là tính tiền và tự trừ hàng trong kho.
+                    Gói Cơ bản <strong>0đ</strong> dùng trọn các tính năng bán hàng &amp; kho. Nâng cấp <strong>Gói AI 199k/tháng</strong> để mở khung Trợ lý AI phân tích lãi lỗ.
                   </p>
                 </div>
 
@@ -994,71 +1168,73 @@
     // ==========================================
     function WorkspaceApp({
       user, onLogout, products, orders, expenses,
-      busy, onResetSampleData, onReload, theme, onToggleTheme
+      busy, onResetSampleData, onReload, onRefreshPlan, theme, onToggleTheme
     }) {
       const hasAI = Boolean(user?.has_ai);
       const [activeTab, setActiveTab] = useState('dashboard');
       const [financePresetMode, setFinancePresetMode] = useState('expense_other');
       const [toast, setToast] = useState(null);
       const [confirmResetOpen, setConfirmResetOpen] = useState(false);
+      const [planModalOpen, setPlanModalOpen] = useState(false);
       const [bankTx, setBankTx] = useState([]);
-const [bankAlert, setBankAlert] = useState(null);
+      const [bankAlert, setBankAlert] = useState(null);
 
-const loadBank = async () => {
-  const { data, error } = await sb
-    .from('bank_transactions')
-    .select('*')
-    .order('occurred_at', { ascending: false })
-    .limit(100);
-  if (!error) setBankTx((data || []).map(x => ({ ...x, amount: Number(x.amount) })));
-};
+      const loadBank = async () => {
+        const { data, error } = await sb
+          .from('bank_transactions')
+          .select('*')
+          .order('occurred_at', { ascending: false })
+          .limit(100);
+        if (!error) setBankTx((data || []).map(x => ({ ...x, amount: Number(x.amount) })));
+      };
 
-useEffect(() => {
-  loadBank();
-  const ch = sb.channel('bank-tx-' + user.id)
-    .on('postgres_changes',
-      { event: '*', schema: 'public', table: 'bank_transactions', filter: `user_id=eq.${user.id}` },
-      (payload) => {
+      useEffect(() => {
         loadBank();
-        if (payload.eventType === 'INSERT' && payload.new?.status === 'pending') {
-          setBankAlert({ direction: payload.new.direction, amount: Number(payload.new.amount) });
-          try { navigator.vibrate && navigator.vibrate(200); } catch {}
+        const ch = sb.channel('bank-tx-' + user.id)
+          .on('postgres_changes',
+            { event: '*', schema: 'public', table: 'bank_transactions', filter: `user_id=eq.${user.id}` },
+            (payload) => {
+              loadBank();
+              if (payload.eventType === 'INSERT' && payload.new?.status === 'pending') {
+                setBankAlert({ direction: payload.new.direction, amount: Number(payload.new.amount) });
+                try { navigator.vibrate && navigator.vibrate(200); } catch {}
+              }
+            })
+          .subscribe();
+        const poll = setInterval(loadBank, 30000); // dự phòng nếu realtime rớt
+        return () => { sb.removeChannel(ch); clearInterval(poll); };
+      }, [user.id]);
+
+      useEffect(() => {
+        if (!bankAlert) return;
+        const t = setTimeout(() => setBankAlert(null), 10000);
+        return () => clearTimeout(t);
+      }, [bankAlert]);
+
+      const pendingBankCount = bankTx.filter(t => t.status === 'pending').length;
+
+      const handleClassifyBank = async (id, action) => {
+        const { error } = await sb.rpc('classify_bank_transaction', { p_id: id, p_action: action });
+        if (error) {
+          console.error(error);
+          alert(error.message || 'Chưa phân loại được, bạn thử lại nhé.');
+          return false;
         }
-      })
-    .subscribe();
-  const poll = setInterval(loadBank, 30000); // dự phòng nếu realtime rớt
-  return () => { sb.removeChannel(ch); clearInterval(poll); };
-}, [user.id]);
+        await Promise.all([loadBank(), onReload()]);
+        showSaveToast('Đã phân loại giao dịch', async () => {
+          await sb.rpc('unclassify_bank_transaction', { p_id: id });
+          await Promise.all([loadBank(), onReload()]);
+          showSaveToast('Đã hoàn tác giao dịch');
+        });
+        return true;
+      };
 
-useEffect(() => {
-  if (!bankAlert) return;
-  const t = setTimeout(() => setBankAlert(null), 10000);
-  return () => clearTimeout(t);
-}, [bankAlert]);
+      const handleUnclassifyBank = async (id) => {
+        const { error } = await sb.rpc('unclassify_bank_transaction', { p_id: id });
+        if (error) { alert('Chưa hoàn tác được, bạn thử lại nhé.'); return; }
+        await Promise.all([loadBank(), onReload()]);
+      };
 
-const pendingBankCount = bankTx.filter(t => t.status === 'pending').length;
-
-const handleClassifyBank = async (id, action) => {
-  const { error } = await sb.rpc('classify_bank_transaction', { p_id: id, p_action: action });
-  if (error) {
-    console.error(error);
-    alert(error.message || 'Chưa phân loại được, bạn thử lại nhé.');
-    return false;
-  }
-  await Promise.all([loadBank(), onReload()]);
-  showSaveToast('Đã phân loại giao dịch', async () => {
-    await sb.rpc('unclassify_bank_transaction', { p_id: id });
-    await Promise.all([loadBank(), onReload()]);
-    showSaveToast('Đã hoàn tác giao dịch');
-  });
-  return true;
-};
-
-const handleUnclassifyBank = async (id) => {
-  const { error } = await sb.rpc('unclassify_bank_transaction', { p_id: id });
-  if (error) { alert('Chưa hoàn tác được, bạn thử lại nhé.'); return; }
-  await Promise.all([loadBank(), onReload()]);
-};
       useEffect(() => {
         if (!hasAI && activeTab === 'ai') {
           setActiveTab('dashboard');
@@ -1107,8 +1283,8 @@ const handleUnclassifyBank = async (id) => {
           );
           const opex = dayTrans.filter(e => e.type === 'expense').reduce((s, e) => s + e.amount, 0);
           const bankSales = dayTrans.filter(e => e.type === 'income' && e.category === 'Bán hàng (ngân hàng)').reduce((s, e) => s + e.amount, 0);
-const otherIncome = dayTrans.filter(e => e.type === 'income' && e.category !== 'Bán hàng (ngân hàng)').reduce((s, e) => s + e.amount, 0);
-revenue += bankSales;
+          const otherIncome = dayTrans.filter(e => e.type === 'income' && e.category !== 'Bán hàng (ngân hàng)').reduce((s, e) => s + e.amount, 0);
+          revenue += bankSales;
           const netProfit = revenue - cogs - opex + otherIncome;
           return { revenue, cogs, opex, otherIncome, netProfit, profit: netProfit, completedCount: completedOrders.length };
         };
@@ -1131,8 +1307,8 @@ revenue += bankSales;
           const materialCost = monthExp.filter(e => e.type === 'expense' && (e.category.includes('Nguyên liệu') || e.category.includes('điện'))).reduce((s, e) => s + e.amount, 0);
           const shippingCost = monthExp.filter(e => e.type === 'expense' && (e.category.includes('giao') || e.category.includes('chuyển'))).reduce((s, e) => s + e.amount, 0);
           const bankSales = monthExp.filter(e => e.type === 'income' && e.category === 'Bán hàng (ngân hàng)').reduce((s, e) => s + e.amount, 0);
-const otherIncome = monthExp.filter(e => e.type === 'income' && e.category !== 'Bán hàng (ngân hàng)').reduce((s, e) => s + e.amount, 0);
-revenue += bankSales;
+          const otherIncome = monthExp.filter(e => e.type === 'income' && e.category !== 'Bán hàng (ngân hàng)').reduce((s, e) => s + e.amount, 0);
+          revenue += bankSales;
           const inventoryCashOut = monthExp.filter(e => e.type === 'inventory_purchase').reduce((s, e) => s + e.amount, 0);
 
           const grossProfit = revenue - cogs;
@@ -1323,15 +1499,40 @@ revenue += bankSales;
         setActiveTab('finance');
       };
 
+      const planBadgeText = user.is_demo
+        ? 'Bản mẫu'
+        : hasAI
+        ? PLAN_INFO.ai_199k.shortBadge
+        : PLAN_INFO.free.shortBadge;
+
+      const mobilePlanBadgeText = user.is_demo
+        ? 'Mẫu'
+        : hasAI
+        ? PLAN_INFO.ai_199k.mobileBadge
+        : PLAN_INFO.free.mobileBadge;
+
       return (
         <div className="h-[100dvh] w-full overflow-hidden flex flex-col md:flex-row">
           {/* THANH TRÊN CÙNG CHO ĐIỆN THOẠI (KHÓA CỐ ĐỊNH 1 KHUNG) */}
-          <div className="md:hidden shrink-0 z-30 bg-white/95 backdrop-blur-md border-b border-blue-100 px-3 py-1.5 flex items-center justify-between gap-2">
+          <div className="md:hidden shrink-0 z-30 bg-white/95 backdrop-blur-md border-b border-blue-100 px-3 py-1.5 flex items-center justify-between gap-1.5">
             <div className="min-w-0 flex items-center gap-1.5">
               <BizFlowLogo size="sm" />
-              <span className="text-xs font-bold text-blue-800 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-lg truncate max-w-[115px]">
+              <span className="text-xs font-bold text-blue-800 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-lg truncate max-w-[90px]">
                 {user.shop_name}
               </span>
+              <button
+                type="button"
+                onClick={() => setPlanModalOpen(true)}
+                className={`text-[11px] font-extrabold px-2 py-0.5 rounded-lg border shrink-0 ${
+                  user.is_demo
+                    ? 'bg-sky-100 text-sky-800 border-sky-200'
+                    : hasAI
+                    ? 'bg-blue-700 text-white border-blue-700'
+                    : 'bg-slate-200 text-slate-800 border-slate-300'
+                }`}
+              >
+                {mobilePlanBadgeText}
+              </button>
             </div>
             <div className="flex items-center gap-1.5 shrink-0">
               <ThemeToggleButton theme={theme} onToggle={onToggleTheme} compact={true} />
@@ -1361,17 +1562,29 @@ revenue += bankSales;
               <div className="mt-2.5 p-2.5 rounded-xl bg-blue-50 border border-blue-200">
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-xs font-bold text-blue-800">Cửa hàng</span>
-                  <span className={`text-xs font-bold px-2 py-0.5 rounded-full shrink-0 ${
-                    user.is_demo
-                      ? 'bg-sky-100 text-sky-800'
-                      : hasAI
-                      ? 'bg-blue-700 text-white'
-                      : 'bg-slate-200 text-slate-800'
-                  }`}>
-                    {user.is_demo ? 'Bản mẫu' : hasAI ? 'Gói AI' : 'Miễn phí'}
-                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setPlanModalOpen(true)}
+                    title="Xem chi tiết gói dịch vụ"
+                    className={`text-xs font-bold px-2 py-0.5 rounded-full shrink-0 transition hover:opacity-90 ${
+                      user.is_demo
+                        ? 'bg-sky-100 text-sky-800'
+                        : hasAI
+                        ? 'bg-blue-700 text-white'
+                        : 'bg-slate-200 text-slate-800'
+                    }`}
+                  >
+                    {planBadgeText}
+                  </button>
                 </div>
                 <div className="text-sm font-extrabold text-slate-900 truncate mt-1">🏪 {user.shop_name}</div>
+                <button
+                  type="button"
+                  onClick={() => setPlanModalOpen(true)}
+                  className="mt-1 text-[11px] font-bold text-blue-700 hover:underline"
+                >
+                  Xem gói dịch vụ →
+                </button>
               </div>
             </div>
 
@@ -1432,7 +1645,22 @@ revenue += bankSales;
                 </h1>
               </div>
 
-              <ThemeToggleButton theme={theme} onToggle={onToggleTheme} />
+              <div className="flex items-center gap-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setPlanModalOpen(true)}
+                  className={`min-h-[42px] px-3 py-1.5 rounded-xl border-2 text-xs sm:text-sm font-bold transition ${
+                    user.is_demo
+                      ? 'bg-sky-100 border-blue-200 text-sky-800'
+                      : hasAI
+                      ? 'bg-blue-700 border-blue-700 text-white'
+                      : 'bg-slate-100 border-slate-300 text-slate-800 hover:bg-slate-200'
+                  }`}
+                >
+                  {user.is_demo ? '👀 Bản mẫu (có AI)' : hasAI ? '🤖 Gói AI 199k/tháng' : 'Gói Cơ bản 0đ'}
+                </button>
+                <ThemeToggleButton theme={theme} onToggle={onToggleTheme} />
+              </div>
             </header>
 
             <div className="flex-1 min-h-0 w-full max-w-5xl mx-auto p-3 sm:p-5 flex flex-col overflow-hidden">
@@ -1473,7 +1701,7 @@ revenue += bankSales;
                   onDeleteExpense={handleDeleteExpense}
                 />
               )}
-                            {activeTab === 'bank' && (
+              {activeTab === 'bank' && (
                 <BankInboxView
                   bankTx={bankTx}
                   orders={orders}
@@ -1527,9 +1755,9 @@ revenue += bankSales;
 
           {/* THANH ĐIỀU HƯỚNG DƯỚI TRÊN ĐIỆN THOẠI (KHÓA CỨNG 1 KHUNG) */}
           <nav
-  style={{ gridTemplateColumns: `repeat(${navItems.length}, minmax(0, 1fr))` }}
-  className="md:hidden shrink-0 z-40 bg-white/95 backdrop-blur-md border-t-2 border-blue-100 shadow-[0_-4px_16px_rgba(15,23,42,0.06)] grid px-1 pt-1 pb-[max(0.25rem,env(safe-area-inset-bottom))]"
->
+            style={{ gridTemplateColumns: `repeat(${navItems.length}, minmax(0, 1fr))` }}
+            className="md:hidden shrink-0 z-40 bg-white/95 backdrop-blur-md border-t-2 border-blue-100 shadow-[0_-4px_16px_rgba(15,23,42,0.06)] grid px-1 pt-1 pb-[max(0.25rem,env(safe-area-inset-bottom))]"
+          >
             {navItems.map(item => {
               const isActive = activeTab === item.id;
               return (
@@ -1565,6 +1793,13 @@ revenue += bankSales;
               await onResetSampleData();
             }}
             onCancel={() => setConfirmResetOpen(false)}
+          />
+
+          <PlanModal
+            open={planModalOpen}
+            user={user}
+            onClose={() => setPlanModalOpen(false)}
+            onRefreshPlan={onRefreshPlan}
           />
         </div>
       );
@@ -1619,7 +1854,7 @@ revenue += bankSales;
             </div>
           </section>
 
-          {/* 3 NÚT HÀNH ĐỘNG NHANH GỌN ĐẸP */}
+          {/* NÚT HÀNH ĐỘNG NHANH GỌN ĐẸP */}
           <section className={`grid ${hasAI ? 'grid-cols-3' : 'grid-cols-2'} gap-2.5 sm:gap-3`}>
             <button
               onClick={() => setActiveTab('orders')}
@@ -1688,7 +1923,7 @@ revenue += bankSales;
               onClick={() => setShowReport(!showReport)}
               className="w-full min-h-[44px] px-4 py-2.5 flex items-center justify-between gap-2 text-left text-sm sm:text-base font-extrabold text-blue-800 hover:bg-blue-50"
             >
-              <span>📊 Xem báo cáo tháng này & tháng trước</span>
+              <span>📊 Xem báo cáo tháng này &amp; tháng trước</span>
               <span>{showReport ? '▲' : '▼'}</span>
             </button>
 
@@ -2664,6 +2899,7 @@ revenue += bankSales;
         </div>
       );
     }
+
     // ==========================================
     // 4B. TRANG NGÂN HÀNG (PHÂN LOẠI GIAO DỊCH SEPAY)
     // ==========================================
@@ -2896,6 +3132,7 @@ revenue += bankSales;
         </div>
       );
     }
+
     // ==========================================
     // 5. TRANG HỎI AI (CHỈ CUỘN TIN NHẮN, Ô HỎI GHIM ĐÁY)
     // ==========================================
