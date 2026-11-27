@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>BizFlow AI - Sổ Bán Hàng & Tiền Lãi Cửa Hàng</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231d4ed8'/%3E%3Cpath d='M18 46V18h14c7 0 11 4 11 9.5 0 3.6-2 6.2-5 7.2 4 1 6.5 4 6.5 8.3 0 6-4.8 9-12 9H18z' fill='white'/%3E%3C/svg%3E" />
+  <title>BizFlow AI - Quản Lý Bán Hàng & Lợi Nhuận</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23ef4444'/%3E%3Cstop offset='55%25' stop-color='%237c3aed'/%3E%3Cstop offset='100%25' stop-color='%232563eb'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='white'/%3E%3Cpath d='M16 50V14h18c9 0 14 4.5 14 11.5 0 4.5-2.5 7.5-6.5 8.8 5 1.3 8 4.8 8 10 0 7.2-5.8 11.7-15 11.7H16z' fill='url(%23g)'/%3E%3Cpath d='M36 28l16-12-3 12-4-4-11 7z' fill='%23ef4444'/%3E%3C/svg%3E" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = { darkMode: 'class' };
@@ -25,9 +25,9 @@
     }
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      font-size: 15px;
-      line-height: 1.45;
-      background-color: #f8fbff;
+      font-size: 17px;
+      line-height: 1.5;
+      background-color: #f8fafc;
       color: #0f172a;
       transition: background-color 0.2s ease, color 0.2s ease;
     }
@@ -35,35 +35,44 @@
       touch-action: manipulation;
     }
     input, select, textarea {
-      font-size: 16px;
+      font-size: 17px;
     }
     @media (max-width: 767px) {
       input, select, textarea {
-        font-size: 16px !important;
+        font-size: 17px !important;
       }
     }
     .bg-business-grid {
-      background-color: #f8fbff;
+      background-color: #f8fafc;
       background-image:
         radial-gradient(#cbd5e1 1px, transparent 1px),
-        radial-gradient(circle at 85% 10%, rgba(37, 99, 235, 0.07), transparent 40%),
-        radial-gradient(circle at 10% 90%, rgba(14, 165, 233, 0.07), transparent 40%);
+        radial-gradient(circle at 85% 10%, rgba(37, 99, 235, 0.06), transparent 42%),
+        radial-gradient(circle at 10% 90%, rgba(239, 68, 68, 0.05), transparent 42%);
       background-size: 24px 24px, 100% 100%, 100% 100%;
     }
     .bg-business-hero {
       background-color: #ffffff;
       background-image:
-        linear-gradient(to right, rgba(37, 99, 235, 0.05) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(37, 99, 235, 0.05) 1px, transparent 1px),
-        radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.14), transparent 50%),
-        radial-gradient(circle at 15% 80%, rgba(14, 165, 233, 0.12), transparent 45%);
+        linear-gradient(to right, rgba(37, 99, 235, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(37, 99, 235, 0.04) 1px, transparent 1px),
+        radial-gradient(circle at 82% 18%, rgba(37, 99, 235, 0.12), transparent 48%),
+        radial-gradient(circle at 12% 82%, rgba(239, 68, 68, 0.09), transparent 45%);
       background-size: 36px 36px, 36px 36px, 100% 100%, 100% 100%;
     }
-    .scrollbar-thin::-webkit-scrollbar { width: 5px; height: 5px; }
-    .scrollbar-thin::-webkit-scrollbar-thumb { background: #bfdbfe; border-radius: 3px; }
+    .brand-gradient-btn {
+      background: linear-gradient(135deg, #dc2626 0%, #7c3aed 48%, #1d4ed8 100%);
+    }
+    .brand-gradient-btn:hover {
+      filter: brightness(1.06);
+    }
+    .brand-accent-bar {
+      background: linear-gradient(90deg, #ef4444 0%, #8b5cf6 50%, #2563eb 100%);
+    }
+    .scrollbar-thin::-webkit-scrollbar { width: 6px; height: 6px; }
+    .scrollbar-thin::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
 
     /* ======================================================
-       CHẾ ĐỘ NỀN TỐI (ĐEN XÁM + CHỮ TRẮNG & XANH DƯƠNG)
+       CHẾ ĐỘ NỀN TỐI (ĐEN XÁM + CHỮ TRẮNG & XANH / ĐỎ NHẤN)
        ====================================================== */
     html.dark body {
       background-color: #0f1115;
@@ -74,16 +83,16 @@
       background-image:
         radial-gradient(#262b35 1px, transparent 1px),
         radial-gradient(circle at 85% 10%, rgba(37, 99, 235, 0.12), transparent 42%),
-        radial-gradient(circle at 10% 90%, rgba(14, 165, 233, 0.10), transparent 42%);
+        radial-gradient(circle at 10% 90%, rgba(239, 68, 68, 0.08), transparent 42%);
       background-size: 24px 24px, 100% 100%, 100% 100%;
     }
     html.dark .bg-business-hero {
       background-color: #111318;
       background-image:
-        linear-gradient(to right, rgba(59, 130, 246, 0.07) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(59, 130, 246, 0.07) 1px, transparent 1px),
-        radial-gradient(circle at 80% 20%, rgba(37, 99, 235, 0.16), transparent 50%),
-        radial-gradient(circle at 15% 80%, rgba(14, 165, 233, 0.12), transparent 45%);
+        linear-gradient(to right, rgba(59, 130, 246, 0.06) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(59, 130, 246, 0.06) 1px, transparent 1px),
+        radial-gradient(circle at 80% 20%, rgba(37, 99, 235, 0.15), transparent 50%),
+        radial-gradient(circle at 15% 80%, rgba(239, 68, 68, 0.10), transparent 45%);
       background-size: 36px 36px, 36px 36px, 100% 100%, 100% 100%;
     }
     html.dark .scrollbar-thin::-webkit-scrollbar-thumb {
@@ -161,14 +170,13 @@
       color: #38bdf8 !important;
     }
 
-    /* Giữ chữ trắng trên các nút nền đậm */
     html.dark .bg-blue-700,
     html.dark .bg-blue-600,
     html.dark .bg-emerald-700,
     html.dark .bg-rose-700,
+    html.dark .bg-red-600,
     html.dark .bg-slate-900,
-    html.dark .bg-gradient-to-r.from-blue-700,
-    html.dark .bg-gradient-to-r.from-blue-600 {
+    html.dark .brand-gradient-btn {
       color: #ffffff !important;
     }
 
@@ -191,17 +199,22 @@
     html.dark .bg-rose-50\/80,
     html.dark .bg-rose-50\/70,
     html.dark .bg-rose-50\/40,
-    html.dark .bg-rose-100 {
-      background-color: rgba(244, 63, 94, 0.16) !important;
+    html.dark .bg-rose-100,
+    html.dark .bg-red-50 {
+      background-color: rgba(239, 68, 68, 0.15) !important;
     }
     html.dark .border-rose-300,
-    html.dark .border-rose-200 {
-      border-color: rgba(244, 63, 94, 0.45) !important;
+    html.dark .border-rose-200,
+    html.dark .border-red-200,
+    html.dark .border-red-300 {
+      border-color: rgba(239, 68, 68, 0.45) !important;
     }
     html.dark .text-rose-900,
     html.dark .text-rose-800,
     html.dark .text-rose-700,
-    html.dark .text-rose-600 {
+    html.dark .text-rose-600,
+    html.dark .text-red-700,
+    html.dark .text-red-600 {
       color: #fda4af !important;
     }
 
@@ -246,7 +259,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    // ===== CẤU HÌNH SUPABASE (GIỮ NGUYÊN) =====
+    // ===== CẤU HÌNH SUPABASE =====
     const SUPABASE_URL = "https://xofriivockwiycdnnfvx.supabase.co";
     const SUPABASE_KEY = "sb_publishable_Q6ogosVTXKRpzbZwJcyZmw_yKzEwKYO";
     window.sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -271,8 +284,8 @@
       },
       ai_199k: {
         id: 'ai_199k',
-        name: 'Gói AI',
-        priceLabel: '199.000đ / 1 tháng',
+        name: 'Gói AI Thông minh',
+        priceLabel: '199.000đ / tháng',
         shortBadge: 'Gói AI 199k',
         mobileBadge: 'AI 199k',
         hasAI: true
@@ -280,7 +293,7 @@
     };
 
     // ==========================================
-    // TIỆN ÍCH ĐỊNH DẠNG TIỀN, SỐ ĐIỆN THOẠI & NGÀY THÁNG
+    // TIỆN ÍCH ĐỊNH DẠNG TIỀN, SĐT & NGÀY THÁNG
     // ==========================================
     const formatTien = (num) => {
       const rounded = Math.round(num || 0);
@@ -329,13 +342,13 @@
     const LAST_MONTH = `${prevDate.getFullYear()}-${String(prevDate.getMonth() + 1).padStart(2, '0')}`;
 
     const ORDER_STATUS_LABEL = {
-      completed: 'Đã bán',
-      pending: 'Chờ giao',
+      completed: 'Đã hoàn tất',
+      pending: 'Chờ giao hàng',
       cancelled: 'Đã hủy'
     };
 
     // ==========================================
-    // Ô NHẬP TIỀN GỌN ĐẸP (50.000, CHỈ GÕ SỐ)
+    // Ô NHẬP TIỀN CHỮ TO, DỄ NHÌN
     // ==========================================
     function MoneyInput({ value, onChange, placeholder = 'Nhập số tiền', required = false, className = '' }) {
       const handleChange = (e) => {
@@ -352,9 +365,9 @@
             value={formatNumberInput(value)}
             onChange={handleChange}
             placeholder={placeholder}
-            className={`w-full min-h-[44px] px-3.5 py-2 pr-9 border-2 border-slate-300 rounded-xl text-base font-bold focus:outline-none focus:border-blue-700 bg-white ${className}`}
+            className={`w-full min-h-[50px] px-4 py-2.5 pr-10 border-2 border-slate-300 rounded-2xl text-lg font-bold focus:outline-none focus:border-blue-700 bg-white ${className}`}
           />
-          <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm font-bold text-slate-500">đ</span>
+          <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-base font-bold text-slate-500">đ</span>
         </div>
       );
     }
@@ -362,26 +375,26 @@
     // ==========================================
     // HỘP THOẠI XÁC NHẬN
     // ==========================================
-    function ConfirmModal({ open, title, message, confirmLabel = 'Đồng ý', cancelLabel = 'Quay lại', danger = false, onConfirm, onCancel }) {
+    function ConfirmModal({ open, title, message, confirmLabel = 'Xác nhận', cancelLabel = 'Quay lại', danger = false, onConfirm, onCancel }) {
       if (!open) return null;
       return (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white border-2 border-blue-200 rounded-2xl p-4 sm:p-5 max-w-sm w-full shadow-2xl space-y-3">
-            <h3 className="text-lg font-extrabold text-slate-900 leading-snug">{title}</h3>
-            <p className="text-sm sm:text-base text-slate-700 leading-relaxed">{message}</p>
-            <div className="grid grid-cols-2 gap-2.5 pt-1">
+          <div className="bg-white border-2 border-blue-200 rounded-2xl p-5 max-w-md w-full shadow-2xl space-y-4">
+            <h3 className="text-xl font-extrabold text-slate-900 leading-snug">{title}</h3>
+            <p className="text-base text-slate-700 leading-relaxed">{message}</p>
+            <div className="grid grid-cols-2 gap-3 pt-1">
               <button
                 type="button"
                 onClick={onCancel}
-                className="min-h-[44px] px-3 py-2 rounded-xl border-2 border-slate-300 bg-slate-100 text-slate-900 text-sm sm:text-base font-bold"
+                className="min-h-[48px] px-4 py-2.5 rounded-xl border-2 border-slate-300 bg-slate-100 text-slate-900 text-base font-bold"
               >
                 {cancelLabel}
               </button>
               <button
                 type="button"
                 onClick={onConfirm}
-                className={`min-h-[44px] px-3 py-2 rounded-xl text-white text-sm sm:text-base font-bold shadow-md ${
-                  danger ? 'bg-rose-700 hover:bg-rose-800' : 'bg-blue-700 hover:bg-blue-800'
+                className={`min-h-[48px] px-4 py-2.5 rounded-xl text-white text-base font-bold shadow-md ${
+                  danger ? 'bg-red-600 hover:bg-red-700' : 'bg-blue-700 hover:bg-blue-800'
                 }`}
               >
                 {confirmLabel}
@@ -393,10 +406,11 @@
     }
 
     // ==========================================
-    // HỘP THOẠI XEM GÓI DỊCH VỤ (CƠ BẢN 0Đ & AI 199K/THÁNG)
+    // HỘP THOẠI XEM & NÂNG CẤP GÓI DỊCH VỤ
     // ==========================================
     function PlanModal({ open, user, onClose, onRefreshPlan }) {
       const [checking, setChecking] = useState(false);
+      const [upgradeRequested, setUpgradeRequested] = useState(false);
       if (!open || !user) return null;
 
       const hasAI = Boolean(user.has_ai);
@@ -412,83 +426,92 @@
         }
       };
 
+      const handleRequestUpgrade = async () => {
+        setUpgradeRequested(true);
+        try {
+          await sb.auth.updateUser({ data: { requested_plan: 'ai_199k' } });
+        } catch {}
+      };
+
       return (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white border-2 border-blue-200 rounded-2xl p-4 sm:p-5 max-w-md w-full shadow-2xl space-y-3.5 max-h-[90dvh] overflow-y-auto scrollbar-thin">
+          <div className="bg-white border-2 border-blue-200 rounded-2xl p-5 max-w-lg w-full shadow-2xl space-y-4 max-h-[90dvh] overflow-y-auto scrollbar-thin">
             <div className="flex items-center justify-between gap-2">
-              <h3 className="text-lg font-extrabold text-slate-900">💎 Gói dịch vụ cửa hàng</h3>
+              <h3 className="text-xl font-extrabold text-slate-900">Gói dịch vụ BizFlow AI</h3>
               <button
                 type="button"
                 onClick={onClose}
-                className="min-h-[36px] px-3 rounded-xl border border-slate-300 bg-slate-100 text-slate-800 text-sm font-bold"
+                className="min-h-[42px] px-4 rounded-xl border-2 border-slate-300 bg-slate-100 text-slate-800 text-base font-bold"
               >
                 Đóng
               </button>
             </div>
 
             {isDemo ? (
-              <div className="p-3 rounded-xl bg-sky-100 border border-blue-200 text-sm font-bold text-slate-900">
-                👀 Bạn đang dùng <strong>Tài khoản Dữ liệu mẫu</strong>. Tài khoản mẫu được mở sẵn toàn bộ tính năng và khung <strong>Hỏi AI</strong> để trải nghiệm.
+              <div className="p-4 rounded-2xl bg-sky-100 border border-blue-200 text-base font-semibold text-slate-900 leading-relaxed">
+                Quý khách đang sử dụng <strong>Tài khoản Trải nghiệm</strong> với đầy đủ tính năng và Trợ lý AI.
               </div>
             ) : (
-              <div className={`p-3 rounded-xl border-2 text-sm ${
+              <div className={`p-4 rounded-2xl border-2 text-base ${
                 hasAI ? 'bg-blue-50 border-blue-300 text-blue-900' : 'bg-slate-50 border-slate-300 text-slate-900'
               }`}>
-                <div className="font-extrabold">
-                  Gói hiện tại: {hasAI ? 'Gói AI (199.000đ / 1 tháng)' : 'Gói Cơ bản (0đ)'}
+                <div className="font-extrabold text-lg">
+                  Đang sử dụng: {hasAI ? 'Gói AI Thông minh (199.000đ / tháng)' : 'Gói Cơ bản (Miễn phí 0đ)'}
                 </div>
                 {hasAI && user.plan_expires_at && (
-                  <div className="text-xs sm:text-sm font-bold mt-0.5">
-                    📅 Hạn dùng đến: {formatDateVi(user.plan_expires_at)}
+                  <div className="text-sm sm:text-base font-bold mt-1">
+                    Thời hạn sử dụng đến: {formatDateVi(user.plan_expires_at)}
                   </div>
                 )}
                 {!hasAI && user.is_plan_expired && (
-                  <div className="text-xs sm:text-sm font-bold text-rose-700 mt-1">
-                    ⚠️ Gói AI của bạn đã hết hạn 1 tháng nên khung AI đang tạm ẩn.
+                  <div className="text-sm sm:text-base font-bold text-red-600 mt-1">
+                    Gói AI đã hết hạn. Quý khách vui lòng gia hạn để tiếp tục sử dụng Trợ lý AI.
                   </div>
                 )}
                 {!hasAI && !user.is_plan_expired && (
-                  <div className="text-xs sm:text-sm text-slate-700 mt-0.5">
-                    Tài khoản 0đ chỉ hiển thị các mục quản lý bán hàng cơ bản, không hiển thị khung AI.
+                  <div className="text-sm sm:text-base text-slate-700 mt-1">
+                    Gói Cơ bản bao gồm đầy đủ nghiệp vụ bán hàng, kho và thu chi. Nâng cấp lên Gói AI để có trợ lý phân tích lợi nhuận tự động.
                   </div>
                 )}
               </div>
             )}
 
-            <div className="space-y-2.5">
-              {/* GÓI CƠ BẢN 0 ĐỒNG */}
-              <div className={`p-3.5 rounded-2xl border-2 ${
+            <div className="space-y-3">
+              {/* GÓI CƠ BẢN 0Đ */}
+              <div className={`p-4 rounded-2xl border-2 ${
                 !isDemo && !hasAI ? 'border-blue-700 bg-blue-50/50' : 'border-slate-200 bg-white'
               }`}>
                 <div className="flex items-center justify-between gap-2">
-                  <div className="font-extrabold text-base text-slate-900">Gói Cơ bản</div>
-                  <div className="text-sm font-extrabold text-emerald-700">0đ / tháng</div>
+                  <div className="font-extrabold text-lg text-slate-900">Gói Cơ bản</div>
+                  <div className="text-base font-extrabold text-emerald-700">0đ / tháng</div>
                 </div>
-                <ul className="mt-1.5 text-xs sm:text-sm text-slate-700 space-y-1">
-                  <li>✅ Sổ bán hàng, hàng hóa, thu chi, ngân hàng</li>
-                  <li>⛔ Không hiển thị khung Trợ lý AI</li>
+                <ul className="mt-2 text-base text-slate-700 space-y-1.5">
+                  <li>✓ Ghi nhận đơn hàng, quản lý kho, sổ thu chi &amp; ngân hàng</li>
+                  <li>— Chưa bao gồm Trợ lý AI phân tích chuyên sâu</li>
                 </ul>
                 {!isDemo && !hasAI && (
-                  <div className="mt-2 inline-block px-2.5 py-0.5 rounded-lg bg-slate-200 text-slate-900 text-xs font-extrabold">
-                    Đang dùng gói này
+                  <div className="mt-2.5 inline-block px-3 py-1 rounded-lg bg-slate-200 text-slate-900 text-sm font-extrabold">
+                    Gói hiện tại
                   </div>
                 )}
               </div>
 
-              {/* GÓI AI 199K / 1 THÁNG */}
-              <div className={`p-3.5 rounded-2xl border-2 ${
-                !isDemo && hasAI ? 'border-blue-700 bg-blue-50' : 'border-blue-200 bg-white'
+              {/* GÓI AI 199K / THÁNG */}
+              <div className={`p-4 rounded-2xl border-2 ${
+                !isDemo && hasAI ? 'border-blue-700 bg-blue-50' : 'border-red-300 bg-red-50/30'
               }`}>
                 <div className="flex items-center justify-between gap-2">
-                  <div className="font-extrabold text-base text-blue-800">🤖 Gói AI</div>
-                  <div className="text-sm font-extrabold text-blue-700">199.000đ / 1 tháng</div>
+                  <div className="font-extrabold text-lg text-slate-900 flex items-center gap-2">
+                    <span>Gói AI Thông minh</span>
+                  </div>
+                  <div className="text-base font-extrabold text-red-600">199.000đ / tháng</div>
                 </div>
-                <ul className="mt-1.5 text-xs sm:text-sm text-slate-700 space-y-1">
-                  <li>✅ Toàn bộ tính năng của Gói Cơ bản 0đ</li>
-                  <li>✅ Mở khóa khung <strong>Hỏi AI</strong> xem tiền lãi & cảnh báo hàng tồn</li>
+                <ul className="mt-2 text-base text-slate-700 space-y-1.5">
+                  <li>✓ Toàn bộ tính năng của Gói Cơ bản</li>
+                  <li>✓ Mở khóa <strong>Trợ lý AI</strong>: phân tích lãi lỗ, cảnh báo tồn kho &amp; dòng tiền</li>
                 </ul>
                 {!isDemo && hasAI && (
-                  <div className="mt-2 inline-block px-2.5 py-0.5 rounded-lg bg-blue-700 text-white text-xs font-extrabold">
+                  <div className="mt-2.5 inline-block px-3 py-1 rounded-lg bg-blue-700 text-white text-sm font-extrabold">
                     Đang kích hoạt
                   </div>
                 )}
@@ -496,19 +519,31 @@
             </div>
 
             {!isDemo && (
-              <div className="space-y-2 pt-1">
+              <div className="space-y-2.5 pt-1">
                 {!hasAI && (
-                  <div className="p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-xs sm:text-sm text-amber-800 leading-relaxed">
-                    💡 Để mở gói <strong>AI 199k / 1 tháng</strong> cho tài khoản <strong>{user.phone}</strong>, hãy đăng ký kích hoạt gói với quản trị viên rồi bấm nút kiểm tra bên dưới.
-                  </div>
+                  <>
+                    {!upgradeRequested ? (
+                      <button
+                        type="button"
+                        onClick={handleRequestUpgrade}
+                        className="w-full min-h-[50px] px-4 py-2.5 rounded-xl brand-gradient-btn text-white text-base font-extrabold shadow-md"
+                      >
+                        Nâng cấp lên Gói AI (199.000đ/tháng) →
+                      </button>
+                    ) : (
+                      <div className="p-3.5 rounded-xl bg-amber-50 border-2 border-amber-300 text-sm sm:text-base text-amber-900 leading-relaxed">
+                        Đã ghi nhận yêu cầu nâng cấp cho số <strong>{user.phone}</strong>. Sau khi hoàn tất thanh toán với bộ phận hỗ trợ, quý khách bấm nút bên dưới để kích hoạt ngay.
+                      </div>
+                    )}
+                  </>
                 )}
                 <button
                   type="button"
                   onClick={handleCheck}
                   disabled={checking}
-                  className="w-full min-h-[44px] px-4 py-2 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-sm sm:text-base font-extrabold disabled:opacity-50"
+                  className="w-full min-h-[48px] px-4 py-2 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-base font-extrabold disabled:opacity-50"
                 >
-                  {checking ? '⏳ Đang kiểm tra gói...' : '🔄 Cập nhật trạng thái gói'}
+                  {checking ? 'Đang kiểm tra trạng thái...' : 'Cập nhật trạng thái gói'}
                 </button>
               </div>
             )}
@@ -526,13 +561,13 @@
         <button
           type="button"
           onClick={onToggle}
-          title={isDark ? 'Chuyển sang nền sáng' : 'Chuyển sang nền tối'}
-          className={`min-h-[38px] sm:min-h-[42px] inline-flex items-center justify-center gap-1.5 rounded-xl border-2 text-xs sm:text-sm font-bold transition shrink-0 ${
-            compact ? 'px-2.5 py-1.5' : 'px-3 py-1.5'
+          title={isDark ? 'Chuyển sang giao diện sáng' : 'Chuyển sang giao diện tối'}
+          className={`min-h-[42px] sm:min-h-[44px] inline-flex items-center justify-center gap-1.5 rounded-xl border-2 text-sm font-bold transition shrink-0 ${
+            compact ? 'px-3 py-1.5' : 'px-3.5 py-1.5'
           } ${
             isDark
               ? 'bg-slate-800 border-slate-600 text-sky-400 hover:bg-slate-700'
-              : 'bg-blue-50 border-blue-200 text-blue-800 hover:bg-blue-100'
+              : 'bg-white border-slate-300 text-slate-800 hover:bg-slate-100'
           }`}
         >
           <span>{isDark ? '☀️' : '🌙'}</span>
@@ -542,49 +577,106 @@
     }
 
     // ==========================================
-    // LOGO BIZFLOW AI
+    // LOGO BIZFLOW AI (ĐỒNG BỘ THEO ẢNH MẪU ĐỎ - TÍM - XANH)
     // ==========================================
     function BizFlowLogo({ size = 'md', showTagline = false }) {
       const uid = React.useId().replace(/:/g, '');
-      const blueId = `bfBlue-${uid}`;
-      const arrowId = `bfArrow-${uid}`;
-      const iconSizes = { sm: 'w-7 h-7', md: 'w-8 h-8', lg: 'w-12 h-12' };
-      const textSizes = { sm: 'text-base sm:text-lg', md: 'text-lg sm:text-xl', lg: 'text-2xl' };
+      const mainGrad = `bfMain-${uid}`;
+      const bar1 = `bfBar1-${uid}`;
+      const bar2 = `bfBar2-${uid}`;
+      const bar3 = `bfBar3-${uid}`;
+      const aiGrad = `bfAi-${uid}`;
+
+      const iconSizes = { sm: 'w-9 h-8', md: 'w-11 h-10', lg: 'w-14 h-12' };
+      const textSizes = { sm: 'text-lg sm:text-xl', md: 'text-xl sm:text-2xl', lg: 'text-2xl sm:text-3xl' };
 
       return (
-        <div className="flex items-center gap-2 select-none min-w-0">
-          <svg viewBox="0 0 120 110" className={`${iconSizes[size]} shrink-0 drop-shadow-sm`} fill="none">
+        <div className="flex items-center gap-2.5 select-none min-w-0">
+          <svg viewBox="0 0 140 115" className={`${iconSizes[size]} shrink-0 drop-shadow-sm`} fill="none">
             <defs>
-              <linearGradient id={blueId} x1="15" y1="10" x2="105" y2="100" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" stopColor="#0ea5e9" />
-                <stop offset="50%" stopColor="#2563eb" />
-                <stop offset="100%" stopColor="#4338ca" />
+              <linearGradient id={mainGrad} x1="18" y1="12" x2="112" y2="102" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stopColor="#ef4444" />
+                <stop offset="45%" stopColor="#9333ea" />
+                <stop offset="100%" stopColor="#0284c7" />
               </linearGradient>
-              <linearGradient id={arrowId} x1="15" y1="85" x2="112" y2="18" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" stopColor="#38bdf8" />
-                <stop offset="100%" stopColor="#1d4ed8" />
+              <linearGradient id={bar1} x1="0" y1="100" x2="0" y2="68" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stopColor="#dc2626" />
+                <stop offset="100%" stopColor="#f87171" />
+              </linearGradient>
+              <linearGradient id={bar2} x1="0" y1="100" x2="0" y2="56" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stopColor="#7c3aed" />
+                <stop offset="100%" stopColor="#3b82f6" />
+              </linearGradient>
+              <linearGradient id={bar3} x1="0" y1="100" x2="0" y2="45" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stopColor="#1d4ed8" />
+                <stop offset="100%" stopColor="#38bdf8" />
+              </linearGradient>
+              <linearGradient id={aiGrad} x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#ef4444" />
+                <stop offset="55%" stopColor="#7c3aed" />
+                <stop offset="100%" stopColor="#0ea5e9" />
               </linearGradient>
             </defs>
+
+            {/* Khối chữ B chuyển sắc Đỏ -> Tím -> Xanh */}
             <path
-              d="M28 14 H66 C85 14 96 24 96 38 C96 47 90 54 81 58 C93 61 100 71 100 83 C100 98 87 104 68 104 H22 L28 14 Z M47 31 L45 48 H64 C71 48 76 44 76 39 C76 34 71 31 64 31 H47 Z"
-              fill={`url(#${blueId})`}
+              d="M36 12 H82 C102 12 112 22 110 37 C108 46 101 53 91 56 C105 60 112 71 109 85 C106 100 92 106 72 106 H24 L36 12 Z M56 29 L52 46 H77 C85 46 90 42 91 37 C92 32 87 29 79 29 H56 Z"
+              fill={`url(#${mainGrad})`}
             />
-            <path d="M16 86 C34 62 58 50 86 42 C60 56 38 72 22 96 Z" fill="#ffffff" />
-            <rect x="40" y="76" width="9" height="18" rx="2" fill="#ffffff" />
-            <rect x="54" y="68" width="9" height="26" rx="2" fill="#ffffff" />
-            <rect x="68" y="59" width="9" height="35" rx="2" fill="#ffffff" />
-            <path d="M56 54 C74 47 90 36 104 23" stroke={`url(#${arrowId})`} strokeWidth="7" strokeLinecap="round" />
-            <path d="M92 20 L111 16 L107 35 Z" fill="#2563eb" />
+
+            {/* Khoảng cắt trắng tạo đường lượn & nền cho 3 cột */}
+            <path
+              d="M16 92 C36 58 64 46 96 42 C72 58 58 76 54 106 H18 Z"
+              fill="#ffffff"
+              fillOpacity="0.96"
+            />
+            <path
+              d="M46 66 C66 56 84 62 84 82 C84 95 75 103 60 106 H42 Z"
+              fill="#ffffff"
+              fillOpacity="0.96"
+            />
+
+            {/* 3 cột biểu đồ tăng trưởng (Đỏ - Tím - Xanh) */}
+            <rect x="44" y="74" width="11" height="28" rx="2" fill={`url(#${bar1})`} />
+            <rect x="60" y="62" width="11" height="40" rx="2" fill={`url(#${bar2})`} />
+            <rect x="76" y="49" width="11" height="53" rx="2" fill={`url(#${bar3})`} />
+
+            {/* Phần bụng dưới bên phải của chữ B */}
+            <path
+              d="M91 56 C104 60 110 70 108 83 C106 96 96 104 82 106 L87 56 Z"
+              fill="#0284c7"
+            />
+
+            {/* Mũi tên đỏ vươn lên */}
+            <path
+              d="M58 56 C80 51 98 41 114 24"
+              stroke="#dc2626"
+              strokeWidth="8"
+              strokeLinecap="round"
+            />
+            <path d="M101 20 L125 14 L119 38 Z" fill="#dc2626" />
           </svg>
 
           <div className="min-w-0">
-            <div className={`font-extrabold tracking-tight leading-none truncate ${textSizes[size]}`}>
+            <div className={`font-black tracking-tight leading-none truncate ${textSizes[size]}`}>
               <span className="text-slate-900">BizFlow</span>{' '}
-              <span className="text-blue-700">AI</span>
+              <span
+                style={{
+                  background: 'linear-gradient(90deg, #ef4444 0%, #6366f1 55%, #0ea5e9 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent'
+                }}
+              >
+                AI
+              </span>
             </div>
             {showTagline && (
-              <div className="text-xs font-medium text-slate-600 mt-0.5 hidden sm:block">
-                Sổ ghi bán hàng & tính tiền lãi cho cửa hàng
+              <div className="hidden sm:flex items-center gap-2 mt-1">
+                <span className="w-5 h-0.5 bg-red-500 rounded-full"></span>
+                <span className="text-xs font-semibold text-slate-600 tracking-wide">
+                  Turn Business Data Into Business Intelligence
+                </span>
+                <span className="w-5 h-0.5 bg-blue-600 rounded-full"></span>
               </div>
             )}
           </div>
@@ -625,7 +717,7 @@
             .maybeSingle();
 
           if (!prof || error) {
-            const shopName = authUser.user_metadata?.shop_name || 'Cửa hàng của bạn';
+            const shopName = authUser.user_metadata?.shop_name || 'Cửa hàng của quý khách';
             const isDemo = Boolean(authUser.user_metadata?.is_demo || authUser.is_anonymous);
             const { data: ensured, error: ensureErr } = await sb.rpc('ensure_profile', {
               p_shop_name: shopName,
@@ -648,7 +740,7 @@
 
           return {
             id: authUser.id,
-            phone: authUser.phone || authUser.email || 'Tài khoản xem thử',
+            phone: authUser.phone || authUser.email || 'Tài khoản trải nghiệm',
             shop_name: prof.shop_name,
             is_demo: isDemo,
             plan,
@@ -733,9 +825,10 @@
         return () => sub.subscription.unsubscribe();
       }, []);
 
-      const handleSendOtp = async ({ phone, shop_name, isRegister }) => {
+      const handleSendOtp = async ({ phone, shop_name, isRegister, selectedPlan }) => {
+        const chosenPlan = selectedPlan === 'ai_199k' ? 'ai_199k' : 'free';
         const options = isRegister
-          ? { shouldCreateUser: true, data: { shop_name, is_demo: false, plan: 'free' } }
+          ? { shouldCreateUser: true, data: { shop_name, is_demo: false, plan: chosenPlan } }
           : { shouldCreateUser: false };
 
         const { error } = await sb.auth.signInWithOtp({ phone, options });
@@ -743,17 +836,18 @@
           console.error('Lỗi gửi OTP:', error);
           const msg = (error.message || '').toLowerCase();
           if (!isRegister && (msg.includes('signups not allowed') || msg.includes('not found') || msg.includes('user'))) {
-            return { error: 'Số điện thoại này chưa có sổ. Bạn bấm sang tab "Tạo sổ mới" nhé!' };
+            return { error: 'Số điện thoại này chưa được đăng ký. Vui lòng chọn mục "Tạo tài khoản mới".' };
           }
           if (msg.includes('rate') || msg.includes('limit') || msg.includes('seconds')) {
-            return { error: 'Bạn vừa yêu cầu gửi mã rồi, vui lòng đợi một lát rồi thử lại nhé.' };
+            return { error: 'Mã xác nhận vừa được gửi. Vui lòng chờ ít phút trước khi yêu cầu lại.' };
           }
-          return { error: 'Chưa gửi được mã OTP, bạn kiểm tra lại số điện thoại nhé.' };
+          return { error: 'Không thể gửi mã OTP. Vui lòng kiểm tra lại số điện thoại.' };
         }
         return { ok: true };
       };
 
-      const handleVerifyOtp = async ({ phone, token, shop_name, isRegister }) => {
+      const handleVerifyOtp = async ({ phone, token, shop_name, isRegister, selectedPlan }) => {
+        const chosenPlan = selectedPlan === 'ai_199k' ? 'ai_199k' : 'free';
         const { data, error } = await sb.auth.verifyOtp({
           phone,
           token,
@@ -761,14 +855,16 @@
         });
         if (error) {
           console.error('Lỗi xác nhận OTP:', error);
-          return { error: 'Mã OTP chưa đúng hoặc đã hết hạn, bạn kiểm tra lại nhé!' };
+          return { error: 'Mã OTP chưa chính xác hoặc đã hết hạn. Vui lòng kiểm tra lại.' };
         }
         const authUser = data?.session?.user || data?.user;
         if (!authUser) {
-          return { error: 'Chưa đăng nhập được, bạn thử gửi lại mã OTP nhé.' };
+          return { error: 'Đăng nhập chưa thành công. Vui lòng gửi lại mã OTP.' };
         }
-        if (isRegister && shop_name && !authUser.user_metadata?.shop_name) {
-          await sb.auth.updateUser({ data: { shop_name, is_demo: false, plan: 'free' } }).catch(() => {});
+        if (isRegister && shop_name) {
+          await sb.auth.updateUser({
+            data: { shop_name, is_demo: false, plan: chosenPlan }
+          }).catch(() => {});
         }
         await finishLogin(authUser);
         return { ok: true };
@@ -784,7 +880,7 @@
         try {
           let authData = null;
           const anonRes = await sb.auth.signInAnonymously({
-            options: { data: { shop_name: 'Tiệm Tạp Hóa Mẫu', is_demo: true, plan: 'ai_199k' } }
+            options: { data: { shop_name: 'Cửa Hàng Trải Nghiệm', is_demo: true, plan: 'ai_199k' } }
           });
 
           if (!anonRes.error && anonRes.data?.session) {
@@ -794,11 +890,11 @@
             const signUpRes = await sb.auth.signUp({
               email: `demo.${randId}@demo.bizflowai.vn`,
               password: `Demo#${randId}88`,
-              options: { data: { shop_name: `Cửa hàng Mẫu #${randId.toUpperCase()}`, is_demo: true, plan: 'ai_199k' } }
+              options: { data: { shop_name: `Cửa Hàng Mẫu #${randId.toUpperCase()}`, is_demo: true, plan: 'ai_199k' } }
             });
             if (signUpRes.error || !signUpRes.data?.session) {
               console.error('Lỗi mở bản mẫu:', anonRes.error, signUpRes.error);
-              alert('Chưa mở được bản mẫu, bạn thử lại nhé!');
+              alert('Không thể mở bản trải nghiệm lúc này. Vui lòng thử lại.');
               return;
             }
             authData = signUpRes.data;
@@ -809,7 +905,7 @@
           await loadData();
         } catch (err) {
           console.error('Lỗi bản mẫu:', err);
-          alert('Chưa mở được bản mẫu, bạn thử lại nhé!');
+          alert('Không thể mở bản trải nghiệm lúc này. Vui lòng thử lại.');
         } finally {
           setBusy(false);
         }
@@ -822,7 +918,7 @@
           const { error } = await sb.rpc('seed_sample_data', { p_reset: true });
           if (error) {
             console.error('Lỗi làm mới dữ liệu mẫu:', error);
-            alert('Chưa làm mới được dữ liệu mẫu, bạn thử lại nhé!');
+            alert('Không thể khôi phục dữ liệu mẫu. Vui lòng thử lại.');
           } else {
             await loadData();
           }
@@ -833,9 +929,9 @@
 
       if (loading) {
         return (
-          <div className="h-[100dvh] flex flex-col items-center justify-center gap-3 bg-business-grid px-4">
+          <div className="h-[100dvh] flex flex-col items-center justify-center gap-4 bg-business-grid px-4">
             <BizFlowLogo size="lg" />
-            <div className="text-base text-blue-800 font-bold">Đang mở sổ cửa hàng cho bạn...</div>
+            <div className="text-lg text-slate-800 font-bold">Đang tải dữ liệu cửa hàng...</div>
           </div>
         );
       }
@@ -871,12 +967,13 @@
     }
 
     // ==========================================
-    // MÀN HÌNH ĐĂNG NHẬP & ĐĂNG KÝ BẰNG SĐT + OTP (FIT MÀN HÌNH)
+    // MÀN HÌNH ĐĂNG NHẬP & TẠO TÀI KHOẢN (CÓ CHỌN GÓI CƠ BẢN / GÓI AI)
     // ==========================================
     function AuthPage({ onSendOtp, onVerifyOtp, onQuickDemo, demoLoading, theme, onToggleTheme }) {
       const [mode, setMode] = useState('login');
-      const [step, setStep] = useState('phone'); // 'phone' | 'otp'
+      const [step, setStep] = useState('phone');
       const [shopName, setShopName] = useState('');
+      const [selectedPlan, setSelectedPlan] = useState('free');
       const [phoneInput, setPhoneInput] = useState('');
       const [normalizedPhone, setNormalizedPhone] = useState('');
       const [otp, setOtp] = useState('');
@@ -905,13 +1002,13 @@
         setInfo('');
 
         if (mode === 'register' && !shopName.trim()) {
-          setError('Bạn vui lòng nhập tên cửa hàng nhé.');
+          setError('Vui lòng nhập tên cửa hàng.');
           return;
         }
 
         const formatted = normalizePhone(phoneInput);
         if (!isValidPhone(formatted)) {
-          setError('Số điện thoại chưa đúng, bạn nhập lại nhé (ví dụ: 0912 345 678).');
+          setError('Số điện thoại chưa hợp lệ. Vui lòng nhập lại (ví dụ: 0912 345 678).');
           return;
         }
 
@@ -920,7 +1017,8 @@
           const res = await onSendOtp({
             phone: formatted,
             shop_name: shopName.trim(),
-            isRegister: mode === 'register'
+            isRegister: mode === 'register',
+            selectedPlan
           });
           if (res.error) {
             setError(res.error);
@@ -929,7 +1027,7 @@
             setStep('otp');
             setOtp('');
             setCountdown(60);
-            setInfo(`Đã gửi mã OTP qua tin nhắn tới số ${phoneInput.trim()}.`);
+            setInfo(`Mã xác nhận đã được gửi qua SMS tới số ${phoneInput.trim()}.`);
           }
         } finally {
           setSubmitting(false);
@@ -942,7 +1040,7 @@
 
         const cleanOtp = otp.replace(/\D/g, '');
         if (cleanOtp.length < 4) {
-          setError('Bạn hãy nhập đủ mã số OTP nhận được trong tin nhắn nhé.');
+          setError('Vui lòng nhập đầy đủ mã OTP trong tin nhắn.');
           return;
         }
 
@@ -952,7 +1050,8 @@
             phone: normalizedPhone,
             token: cleanOtp,
             shop_name: shopName.trim(),
-            isRegister: mode === 'register'
+            isRegister: mode === 'register',
+            selectedPlan
           });
           if (res.error) setError(res.error);
         } finally {
@@ -962,84 +1061,129 @@
 
       return (
         <div className="h-[100dvh] w-full bg-business-hero flex flex-col overflow-hidden">
-          {/* THANH TRÊN CỐ ĐỊNH 1 HÀNG */}
-          <header className="w-full border-b border-blue-100 bg-white/95 backdrop-blur-md shrink-0 z-10">
-            <div className="max-w-5xl w-full mx-auto px-3 sm:px-4 py-2 flex items-center justify-between gap-2">
+          <div className="h-1 w-full brand-accent-bar shrink-0"></div>
+
+          <header className="w-full border-b border-slate-200 bg-white/95 backdrop-blur-md shrink-0 z-10">
+            <div className="max-w-5xl w-full mx-auto px-3 sm:px-5 py-2.5 flex items-center justify-between gap-2">
               <BizFlowLogo size="sm" showTagline={true} />
-              <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+              <div className="flex items-center gap-2 shrink-0">
                 <ThemeToggleButton theme={theme} onToggle={onToggleTheme} compact={true} />
                 <button
                   onClick={onQuickDemo}
                   disabled={demoLoading}
-                  className="min-h-[38px] sm:min-h-[42px] px-2.5 sm:px-3.5 py-1.5 rounded-xl bg-blue-50 text-blue-800 border-2 border-blue-200 text-xs sm:text-sm font-bold hover:bg-blue-100 transition disabled:opacity-50 whitespace-nowrap"
+                  className="min-h-[42px] px-3.5 py-1.5 rounded-xl bg-blue-50 text-blue-800 border-2 border-blue-200 text-sm sm:text-base font-bold hover:bg-blue-100 transition disabled:opacity-50 whitespace-nowrap"
                 >
-                  {demoLoading ? '⏳ Đang mở...' : '👀 Xem bản mẫu'}
+                  {demoLoading ? 'Đang mở...' : 'Dùng thử ngay'}
                 </button>
               </div>
             </div>
           </header>
 
-          {/* NỘI DUNG VỪA KHÍT MÀN HÌNH */}
-          <main className="flex-1 min-h-0 overflow-y-auto flex items-center py-2.5 sm:py-5">
-            <div className="max-w-5xl w-full mx-auto px-3 sm:px-4 grid grid-cols-1 lg:grid-cols-12 gap-3 lg:gap-6 items-center my-auto">
-              {/* TIÊU ĐỀ NGẮN GỌN */}
+          <main className="flex-1 min-h-0 overflow-y-auto flex items-center py-3 sm:py-6">
+            <div className="max-w-5xl w-full mx-auto px-3 sm:px-5 grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-7 items-center my-auto">
               <div className="lg:hidden text-center space-y-1">
-                <h1 className="text-lg font-extrabold text-slate-900 leading-snug">
-                  Biết ngay <span className="text-blue-700">Hôm nay lãi bao nhiêu</span>
+                <h1 className="text-xl font-black text-slate-900 leading-snug">
+                  Quản lý bán hàng &amp; <span className="text-red-600">lợi nhuận mỗi ngày</span>
                 </h1>
-                <p className="text-xs text-slate-600">
-                  Chữ gọn dễ đọc • Gói Cơ bản 0đ • Gói AI 199k/tháng
+                <p className="text-sm text-slate-600">
+                  Giao diện tối giản • Dễ thao tác • Chữ lớn rõ ràng
                 </p>
               </div>
 
-              {/* KHUNG ĐĂNG NHẬP / TẠO SỔ */}
-              <div className="lg:order-2 lg:col-span-6 bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-5 shadow-lg border-2 border-blue-100 min-w-0">
-                <div className="grid grid-cols-2 gap-1.5 bg-blue-50/80 p-1 rounded-xl mb-3.5">
+              {/* KHUNG ĐĂNG NHẬP / TẠO TÀI KHOẢN */}
+              <div className="lg:order-2 lg:col-span-6 bg-white rounded-3xl p-4 sm:p-6 shadow-xl border-2 border-slate-200 min-w-0">
+                <div className="grid grid-cols-2 gap-1.5 bg-slate-100 p-1.5 rounded-2xl mb-4">
                   <button
                     type="button"
                     onClick={() => switchMode('login')}
-                    className={`min-h-[40px] py-1.5 text-sm sm:text-base font-bold rounded-lg transition ${mode === 'login' ? 'bg-white text-blue-800 shadow-sm' : 'text-slate-600'}`}
+                    className={`min-h-[44px] py-2 text-base font-extrabold rounded-xl transition ${mode === 'login' ? 'bg-white text-blue-800 shadow-sm' : 'text-slate-600'}`}
                   >
                     Đăng nhập
                   </button>
                   <button
                     type="button"
                     onClick={() => switchMode('register')}
-                    className={`min-h-[40px] py-1.5 text-sm sm:text-base font-bold rounded-lg transition ${mode === 'register' ? 'bg-white text-blue-800 shadow-sm' : 'text-slate-600'}`}
+                    className={`min-h-[44px] py-2 text-base font-extrabold rounded-xl transition ${mode === 'register' ? 'bg-white text-red-600 shadow-sm' : 'text-slate-600'}`}
                   >
-                    Tạo sổ mới
+                    Tạo tài khoản
                   </button>
                 </div>
 
                 {error && (
-                  <div className="mb-3 p-2.5 rounded-xl bg-rose-50 border border-rose-300 text-rose-800 text-xs sm:text-sm font-bold">
+                  <div className="mb-3 p-3 rounded-xl bg-red-50 border border-red-300 text-red-700 text-sm sm:text-base font-bold">
                     {error}
                   </div>
                 )}
 
                 {info && (
-                  <div className="mb-3 p-2.5 rounded-xl bg-emerald-50 border border-emerald-300 text-emerald-800 text-xs sm:text-sm font-bold">
-                    📩 {info}
+                  <div className="mb-3 p-3 rounded-xl bg-emerald-50 border border-emerald-300 text-emerald-800 text-sm sm:text-base font-bold">
+                    {info}
                   </div>
                 )}
 
                 {step === 'phone' ? (
-                  <form onSubmit={sendOtpSubmit} className="space-y-3">
+                  <form onSubmit={sendOtpSubmit} className="space-y-3.5">
                     {mode === 'register' && (
-                      <div>
-                        <label className="block text-xs sm:text-sm font-bold text-slate-800 mb-1">Tên cửa hàng của bạn</label>
-                        <input
-                          required
-                          value={shopName}
-                          onChange={e => setShopName(e.target.value)}
-                          placeholder="Ví dụ: Tiệm Tạp Hóa Cô Ba"
-                          className="w-full min-h-[44px] px-3.5 py-2 border-2 border-slate-300 rounded-xl text-base focus:outline-none focus:border-blue-700"
-                        />
-                      </div>
+                      <>
+                        <div>
+                          <label className="block text-sm sm:text-base font-bold text-slate-800 mb-1.5">
+                            Tên cửa hàng
+                          </label>
+                          <input
+                            required
+                            value={shopName}
+                            onChange={e => setShopName(e.target.value)}
+                            placeholder="Ví dụ: Cửa Hàng Minh Tâm"
+                            className="w-full min-h-[48px] px-4 py-2 border-2 border-slate-300 rounded-2xl text-base focus:outline-none focus:border-blue-700"
+                          />
+                        </div>
+
+                        {/* CHỌN GÓI CƠ BẢN HOẶC GÓI AI KHI TẠO TÀI KHOẢN */}
+                        <div>
+                          <label className="block text-sm sm:text-base font-bold text-slate-800 mb-1.5">
+                            Chọn gói sử dụng
+                          </label>
+                          <div className="grid grid-cols-2 gap-2.5">
+                            <button
+                              type="button"
+                              onClick={() => setSelectedPlan('free')}
+                              className={`p-3 rounded-2xl border-2 text-left transition ${
+                                selectedPlan === 'free'
+                                  ? 'border-blue-700 bg-blue-50 shadow-sm'
+                                  : 'border-slate-300 bg-white hover:border-blue-400'
+                              }`}
+                            >
+                              <div className="text-sm sm:text-base font-extrabold text-slate-900">Gói Cơ bản</div>
+                              <div className="text-sm font-extrabold text-emerald-700 mt-0.5">0đ / tháng</div>
+                              <div className="text-xs sm:text-sm text-slate-600 mt-1 leading-snug">
+                                Bán hàng, kho &amp; thu chi
+                              </div>
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => setSelectedPlan('ai_199k')}
+                              className={`p-3 rounded-2xl border-2 text-left transition ${
+                                selectedPlan === 'ai_199k'
+                                  ? 'border-red-600 bg-red-50/70 shadow-sm'
+                                  : 'border-slate-300 bg-white hover:border-red-400'
+                              }`}
+                            >
+                              <div className="text-sm sm:text-base font-extrabold text-slate-900">Gói AI</div>
+                              <div className="text-sm font-extrabold text-red-600 mt-0.5">199.000đ / tháng</div>
+                              <div className="text-xs sm:text-sm text-slate-600 mt-1 leading-snug">
+                                Đầy đủ + Trợ lý AI
+                              </div>
+                            </button>
+                          </div>
+                        </div>
+                      </>
                     )}
 
                     <div>
-                      <label className="block text-xs sm:text-sm font-bold text-slate-800 mb-1">Số điện thoại của bạn</label>
+                      <label className="block text-sm sm:text-base font-bold text-slate-800 mb-1.5">
+                        Số điện thoại
+                      </label>
                       <input
                         required
                         type="tel"
@@ -1047,29 +1191,31 @@
                         value={phoneInput}
                         onChange={e => setPhoneInput(e.target.value)}
                         placeholder="Ví dụ: 0912 345 678"
-                        className="w-full min-h-[44px] px-3.5 py-2 border-2 border-slate-300 rounded-xl text-base font-bold focus:outline-none focus:border-blue-700"
+                        className="w-full min-h-[48px] px-4 py-2 border-2 border-slate-300 rounded-2xl text-lg font-bold focus:outline-none focus:border-blue-700"
                       />
                     </div>
 
-                    <div className="p-2.5 rounded-xl bg-blue-50 border border-blue-200 text-xs text-blue-900 leading-snug">
+                    <div className="p-3 rounded-xl bg-blue-50 border border-blue-200 text-sm text-slate-800 leading-relaxed">
                       {mode === 'register'
-                        ? '🎁 Sổ mới dùng Gói Cơ bản 0đ (không có AI). Có thể nâng cấp Gói AI 199k/tháng bất kỳ lúc nào.'
-                        : '📱 Không cần mật khẩu. Hệ thống sẽ gửi mã OTP về tin nhắn điện thoại.'}
+                        ? selectedPlan === 'ai_199k'
+                          ? 'Gói AI mở khóa Trợ lý phân tích lợi nhuận và cảnh báo tồn kho thông minh.'
+                          : 'Gói Cơ bản hoàn toàn miễn phí. Quý khách có thể nâng cấp Gói AI bất kỳ lúc nào.'
+                        : 'Đăng nhập nhanh bằng mã OTP qua tin nhắn điện thoại, không cần nhớ mật khẩu.'}
                     </div>
 
                     <button
                       type="submit"
                       disabled={submitting}
-                      className="w-full min-h-[46px] py-2.5 bg-blue-700 hover:bg-blue-800 text-white text-sm sm:text-base font-extrabold rounded-xl shadow-md transition disabled:opacity-50"
+                      className="w-full min-h-[52px] py-3 brand-gradient-btn text-white text-base sm:text-lg font-extrabold rounded-2xl shadow-md transition disabled:opacity-50"
                     >
-                      {submitting ? 'Đang gửi mã OTP...' : 'Gửi mã OTP →'}
+                      {submitting ? 'Đang gửi mã xác nhận...' : 'Nhận mã OTP →'}
                     </button>
                   </form>
                 ) : (
-                  <form onSubmit={verifyOtpSubmit} className="space-y-3">
+                  <form onSubmit={verifyOtpSubmit} className="space-y-3.5">
                     <div>
-                      <label className="block text-xs sm:text-sm font-bold text-slate-800 mb-1">
-                        Nhập mã OTP đã gửi về {phoneInput}
+                      <label className="block text-sm sm:text-base font-bold text-slate-800 mb-1.5">
+                        Nhập mã OTP đã gửi tới {phoneInput}
                       </label>
                       <input
                         required
@@ -1079,31 +1225,31 @@
                         autoFocus
                         value={otp}
                         onChange={e => setOtp(e.target.value.replace(/\D/g, ''))}
-                        placeholder="Nhập 6 số (ví dụ: 123456)"
-                        className="w-full min-h-[48px] px-3.5 py-2 border-2 border-blue-500 rounded-xl text-xl font-extrabold tracking-widest text-center focus:outline-none focus:border-blue-700"
+                        placeholder="Nhập 6 chữ số"
+                        className="w-full min-h-[54px] px-4 py-2 border-2 border-blue-600 rounded-2xl text-2xl font-extrabold tracking-widest text-center focus:outline-none focus:border-blue-800"
                       />
                     </div>
 
                     <button
                       type="submit"
                       disabled={submitting}
-                      className="w-full min-h-[46px] py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white text-sm sm:text-base font-extrabold rounded-xl shadow-md transition disabled:opacity-50"
+                      className="w-full min-h-[52px] py-3 bg-emerald-700 hover:bg-emerald-800 text-white text-base sm:text-lg font-extrabold rounded-2xl shadow-md transition disabled:opacity-50"
                     >
                       {submitting
-                        ? 'Đang kiểm tra...'
+                        ? 'Đang xác thực...'
                         : mode === 'register'
-                        ? 'Xác nhận & Tạo cửa hàng →'
-                        : 'Xác nhận & Mở sổ →'}
+                        ? 'Hoàn tất tạo tài khoản →'
+                        : 'Xác nhận đăng nhập →'}
                     </button>
 
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="grid grid-cols-2 gap-2.5">
                       <button
                         type="button"
                         onClick={() => sendOtpSubmit()}
                         disabled={submitting || countdown > 0}
-                        className="min-h-[42px] px-2.5 py-1.5 rounded-xl border-2 border-blue-200 bg-blue-50 text-blue-800 text-xs sm:text-sm font-bold disabled:opacity-50"
+                        className="min-h-[46px] px-3 py-2 rounded-xl border-2 border-blue-200 bg-blue-50 text-blue-800 text-sm sm:text-base font-bold disabled:opacity-50"
                       >
-                        {countdown > 0 ? `Gửi lại (${countdown}s)` : '🔄 Gửi lại mã'}
+                        {countdown > 0 ? `Gửi lại (${countdown}s)` : 'Gửi lại mã'}
                       </button>
                       <button
                         type="button"
@@ -1113,7 +1259,7 @@
                           setError('');
                           setInfo('');
                         }}
-                        className="min-h-[42px] px-2.5 py-1.5 rounded-xl border-2 border-slate-300 bg-slate-100 text-slate-800 text-xs sm:text-sm font-bold"
+                        className="min-h-[46px] px-3 py-2 rounded-xl border-2 border-slate-300 bg-slate-100 text-slate-800 text-sm sm:text-base font-bold"
                       >
                         ← Đổi số khác
                       </button>
@@ -1122,37 +1268,37 @@
                 )}
               </div>
 
-              {/* PHẦN GIỚI THIỆU GỌN NHẸ */}
-              <div className="lg:order-1 lg:col-span-6 space-y-3 min-w-0">
-                <div className="hidden lg:block space-y-2.5">
-                  <h1 className="text-2xl xl:text-3xl font-extrabold text-slate-900 leading-snug">
-                    Biết ngay <span className="text-blue-700">Hôm nay lãi bao nhiêu</span> chỉ với vài lần chạm.
+              {/* PHẦN GIỚI THIỆU SÚC TÍCH */}
+              <div className="lg:order-1 lg:col-span-6 space-y-4 min-w-0">
+                <div className="hidden lg:block space-y-3">
+                  <h1 className="text-3xl xl:text-4xl font-black text-slate-900 leading-tight">
+                    Nắm trọn <span className="text-red-600">lợi nhuận thực tế</span> chỉ với vài thao tác.
                   </h1>
-                  <p className="text-base text-slate-700 leading-relaxed">
-                    Gói Cơ bản <strong>0đ</strong> dùng trọn các tính năng bán hàng &amp; kho. Nâng cấp <strong>Gói AI 199k/tháng</strong> để mở khung Trợ lý AI phân tích lãi lỗ.
+                  <p className="text-lg text-slate-700 leading-relaxed">
+                    Thiết kế tối giản, chữ lớn dễ đọc. Gói Cơ bản <strong>0đ</strong> đáp ứng trọn vẹn nhu cầu bán hàng; <strong>Gói AI</strong> đồng hành phân tích dữ liệu kinh doanh thông minh.
                   </p>
                 </div>
 
-                <div className="grid grid-cols-3 lg:grid-cols-1 gap-2 sm:gap-2.5">
-                  <div className="bg-white p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl border border-blue-100 flex flex-col lg:flex-row items-center lg:items-start text-center lg:text-left gap-1.5 lg:gap-3">
-                    <span className="text-lg sm:text-xl shrink-0">🧾</span>
+                <div className="grid grid-cols-3 lg:grid-cols-1 gap-2.5 sm:gap-3">
+                  <div className="bg-white p-3 sm:p-4 rounded-2xl border-2 border-slate-200 flex flex-col lg:flex-row items-center lg:items-start text-center lg:text-left gap-2 lg:gap-3.5">
+                    <span className="text-2xl shrink-0">🧾</span>
                     <div>
-                      <div className="font-extrabold text-[11px] sm:text-sm lg:text-base text-slate-900 leading-tight">Chạm là ra đơn</div>
-                      <div className="hidden lg:block text-sm text-slate-700 mt-0.5">Bấm chọn món khách mua, tự cộng tiền và trừ hàng còn lại.</div>
+                      <div className="font-extrabold text-xs sm:text-base lg:text-lg text-slate-900 leading-tight">Lên đơn nhanh</div>
+                      <div className="hidden lg:block text-base text-slate-700 mt-0.5">Chọn sản phẩm, hệ thống tự động tính tiền và trừ tồn kho.</div>
                     </div>
                   </div>
-                  <div className="bg-white p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl border border-blue-100 flex flex-col lg:flex-row items-center lg:items-start text-center lg:text-left gap-1.5 lg:gap-3">
-                    <span className="text-lg sm:text-xl shrink-0">💰</span>
+                  <div className="bg-white p-3 sm:p-4 rounded-2xl border-2 border-slate-200 flex flex-col lg:flex-row items-center lg:items-start text-center lg:text-left gap-2 lg:gap-3.5">
+                    <span className="text-2xl shrink-0">📊</span>
                     <div>
-                      <div className="font-extrabold text-[11px] sm:text-sm lg:text-base text-slate-900 leading-tight">Rõ tiền lãi ngày</div>
-                      <div className="hidden lg:block text-sm text-slate-700 mt-0.5">Thấy ngay hôm nay bán được bao nhiêu và thực sự lãi mấy đồng.</div>
+                      <div className="font-extrabold text-xs sm:text-base lg:text-lg text-slate-900 leading-tight">Minh bạch lãi lỗ</div>
+                      <div className="hidden lg:block text-base text-slate-700 mt-0.5">Theo dõi chính xác doanh thu, chi phí và lợi nhuận từng ngày.</div>
                     </div>
                   </div>
-                  <div className="bg-white p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl border border-blue-100 flex flex-col lg:flex-row items-center lg:items-start text-center lg:text-left gap-1.5 lg:gap-3">
-                    <span className="text-lg sm:text-xl shrink-0">📦</span>
+                  <div className="bg-white p-3 sm:p-4 rounded-2xl border-2 border-slate-200 flex flex-col lg:flex-row items-center lg:items-start text-center lg:text-left gap-2 lg:gap-3.5">
+                    <span className="text-2xl shrink-0">📦</span>
                     <div>
-                      <div className="font-extrabold text-[11px] sm:text-sm lg:text-base text-slate-900 leading-tight">Nhắc sắp hết</div>
-                      <div className="hidden lg:block text-sm text-slate-700 mt-0.5">Tự động đếm kho và báo ngay món nào sắp hết để nhập kịp.</div>
+                      <div className="font-extrabold text-xs sm:text-base lg:text-lg text-slate-900 leading-tight">Cảnh báo tồn kho</div>
+                      <div className="hidden lg:block text-base text-slate-700 mt-0.5">Nhắc nhở kịp thời các mặt hàng sắp hết để chủ động nhập hàng.</div>
                     </div>
                   </div>
                 </div>
@@ -1164,7 +1310,7 @@
     }
 
     // ==========================================
-    // KHÔNG GIAN LÀM VIỆC CHÍNH (KHÓA CỨNG 1 KHUNG 100dvh)
+    // KHÔNG GIAN LÀM VIỆC CHÍNH
     // ==========================================
     function WorkspaceApp({
       user, onLogout, products, orders, expenses,
@@ -1201,7 +1347,7 @@
               }
             })
           .subscribe();
-        const poll = setInterval(loadBank, 30000); // dự phòng nếu realtime rớt
+        const poll = setInterval(loadBank, 30000);
         return () => { sb.removeChannel(ch); clearInterval(poll); };
       }, [user.id]);
 
@@ -1217,11 +1363,11 @@
         const { error } = await sb.rpc('classify_bank_transaction', { p_id: id, p_action: action });
         if (error) {
           console.error(error);
-          alert(error.message || 'Chưa phân loại được, bạn thử lại nhé.');
+          alert(error.message || 'Không thể phân loại giao dịch. Vui lòng thử lại.');
           return false;
         }
         await Promise.all([loadBank(), onReload()]);
-        showSaveToast('Đã phân loại giao dịch', async () => {
+        showSaveToast('Đã phân loại giao dịch ngân hàng', async () => {
           await sb.rpc('unclassify_bank_transaction', { p_id: id });
           await Promise.all([loadBank(), onReload()]);
           showSaveToast('Đã hoàn tác giao dịch');
@@ -1231,7 +1377,7 @@
 
       const handleUnclassifyBank = async (id) => {
         const { error } = await sb.rpc('unclassify_bank_transaction', { p_id: id });
-        if (error) { alert('Chưa hoàn tác được, bạn thử lại nhé.'); return; }
+        if (error) { alert('Không thể hoàn tác giao dịch. Vui lòng thử lại.'); return; }
         await Promise.all([loadBank(), onReload()]);
       };
 
@@ -1241,7 +1387,6 @@
         }
       }, [hasAI, activeTab]);
 
-      // Đếm ngược thông báo Hoàn tác 10 giây
       useEffect(() => {
         if (!toast || toast.secondsLeft <= 0) return;
         const timer = setInterval(() => {
@@ -1357,11 +1502,11 @@
         const { error } = await sb.from('products').insert(p);
         if (error) {
           console.error('Lỗi thêm hàng:', error);
-          alert('Chưa lưu được món hàng, bạn thử lại nhé.');
+          alert('Không thể lưu sản phẩm. Vui lòng thử lại.');
           return false;
         }
         await onReload();
-        showSaveToast(`Đã lưu "${p.name}" vào hàng hóa`);
+        showSaveToast(`Đã thêm "${p.name}" vào danh mục`);
         return true;
       };
 
@@ -1369,7 +1514,7 @@
         const { error } = await sb.from('products').update(rest).eq('id', id);
         if (error) {
           console.error('Lỗi sửa hàng:', error);
-          alert('Chưa sửa được món hàng, bạn thử lại nhé.');
+          alert('Không thể cập nhật sản phẩm. Vui lòng thử lại.');
           return false;
         }
         await onReload();
@@ -1381,7 +1526,7 @@
         const { error } = await sb.from('products').delete().eq('id', p.id);
         if (error) {
           console.error('Lỗi xóa hàng:', error);
-          alert('Chưa xóa được món này, bạn thử lại nhé.');
+          alert('Không thể xóa sản phẩm này. Vui lòng thử lại.');
           return false;
         }
         await onReload();
@@ -1401,22 +1546,22 @@
           if (error.message && (error.message.includes('chỉ còn') || error.message.includes('không đủ'))) {
             alert(error.message);
           } else {
-            alert('Chưa lưu được đơn hàng, bạn thử lại nhé.');
+            alert('Không thể lưu đơn hàng. Vui lòng thử lại.');
           }
           return false;
         }
         await onReload();
         showSaveToast(
-          `Đã lưu đơn ${formatTien(totalAmount)}`,
+          `Đã ghi nhận đơn hàng ${formatTien(totalAmount)}`,
           orderId ? async () => {
             const { error: undoErr } = await sb.rpc('set_order_status', { p_order_id: orderId, p_status: 'cancelled' });
             if (undoErr) {
               console.error('Lỗi hoàn tác đơn:', undoErr);
-              alert('Chưa hoàn tác được đơn vừa ghi, bạn thử lại nhé.');
+              alert('Không thể hoàn tác đơn hàng. Vui lòng thử lại.');
               return;
             }
             await onReload();
-            showSaveToast('Đã hoàn tác đơn hàng vừa ghi');
+            showSaveToast('Đã hoàn tác đơn hàng vừa tạo');
           } : null
         );
         return true;
@@ -1427,14 +1572,14 @@
         if (error) {
           console.error('Lỗi đổi trạng thái đơn:', error);
           if (error.message && error.message.includes('không đủ')) {
-            alert('Trong kho hiện không đủ hàng để chuyển sang Đã bán.');
+            alert('Số lượng tồn kho hiện không đủ để hoàn tất đơn hàng này.');
           } else {
-            alert('Chưa đổi được trạng thái đơn, bạn thử lại nhé.');
+            alert('Không thể cập nhật trạng thái đơn. Vui lòng thử lại.');
           }
           return false;
         }
         await onReload();
-        showSaveToast(`Đã chuyển đơn sang "${ORDER_STATUS_LABEL[newStatus]}"`);
+        showSaveToast(`Đã chuyển trạng thái sang "${ORDER_STATUS_LABEL[newStatus]}"`);
         return true;
       };
 
@@ -1453,21 +1598,21 @@
 
         if (error) {
           console.error('Lỗi lưu thu chi:', error);
-          alert('Chưa lưu được khoản vừa ghi, bạn thử lại nhé.');
+          alert('Không thể lưu giao dịch. Vui lòng thử lại.');
           return false;
         }
         await onReload();
         showSaveToast(
-          `Đã lưu ${e.category}: ${formatTien(e.amount)}`,
+          `Đã ghi ${e.category}: ${formatTien(e.amount)}`,
           inserted?.id ? async () => {
             const { error: undoErr } = await sb.from('transactions').delete().eq('id', inserted.id);
             if (undoErr) {
               console.error('Lỗi hoàn tác thu chi:', undoErr);
-              alert('Chưa hoàn tác được khoản vừa ghi, bạn thử lại nhé.');
+              alert('Không thể hoàn tác giao dịch. Vui lòng thử lại.');
               return;
             }
             await onReload();
-            showSaveToast('Đã hoàn tác khoản vừa ghi');
+            showSaveToast('Đã hoàn tác giao dịch vừa ghi');
           } : null
         );
         return true;
@@ -1477,7 +1622,7 @@
         const { error } = await sb.from('transactions').delete().eq('id', id);
         if (error) {
           console.error('Lỗi xóa thu chi:', error);
-          alert('Chưa xóa được dòng này, bạn thử lại nhé.');
+          alert('Không thể xóa giao dịch. Vui lòng thử lại.');
           return false;
         }
         await onReload();
@@ -1488,10 +1633,10 @@
       const navItems = [
         { id: 'dashboard', label: 'Trang chủ', icon: '🏠' },
         { id: 'orders', label: 'Bán hàng', icon: '🧾', badge: analytics.thisM.pendingCount },
-        { id: 'products', label: 'Hàng hóa', icon: '📦', badge: analytics.lowStockProducts.length, badgeColor: 'bg-rose-700' },
+        { id: 'products', label: 'Hàng hóa', icon: '📦', badge: analytics.lowStockProducts.length, badgeColor: 'bg-red-600' },
         { id: 'finance', label: 'Thu chi', icon: '💳' },
-        { id: 'bank', label: 'Ngân hàng', icon: '🏦', badge: pendingBankCount, badgeColor: 'bg-rose-700' },
-        ...(hasAI ? [{ id: 'ai', label: 'Hỏi AI', icon: '🤖', highlight: true }] : []),
+        { id: 'bank', label: 'Ngân hàng', icon: '🏦', badge: pendingBankCount, badgeColor: 'bg-red-600' },
+        ...(hasAI ? [{ id: 'ai', label: 'Trợ lý AI', icon: '🤖', highlight: true }] : []),
       ];
 
       const openSpendQuick = () => {
@@ -1500,7 +1645,7 @@
       };
 
       const planBadgeText = user.is_demo
-        ? 'Bản mẫu'
+        ? 'Trải nghiệm'
         : hasAI
         ? PLAN_INFO.ai_199k.shortBadge
         : PLAN_INFO.free.shortBadge;
@@ -1509,26 +1654,23 @@
         ? 'Mẫu'
         : hasAI
         ? PLAN_INFO.ai_199k.mobileBadge
-        : PLAN_INFO.free.mobileBadge;
+        : 'Nâng cấp AI';
 
       return (
         <div className="h-[100dvh] w-full overflow-hidden flex flex-col md:flex-row">
-          {/* THANH TRÊN CÙNG CHO ĐIỆN THOẠI (KHÓA CỐ ĐỊNH 1 KHUNG) */}
-          <div className="md:hidden shrink-0 z-30 bg-white/95 backdrop-blur-md border-b border-blue-100 px-3 py-1.5 flex items-center justify-between gap-1.5">
-            <div className="min-w-0 flex items-center gap-1.5">
+          {/* THANH TRÊN CÙNG CHO ĐIỆN THOẠI */}
+          <div className="md:hidden shrink-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200 px-3 py-2 flex items-center justify-between gap-2">
+            <div className="min-w-0 flex items-center gap-2">
               <BizFlowLogo size="sm" />
-              <span className="text-xs font-bold text-blue-800 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-lg truncate max-w-[90px]">
-                {user.shop_name}
-              </span>
               <button
                 type="button"
                 onClick={() => setPlanModalOpen(true)}
-                className={`text-[11px] font-extrabold px-2 py-0.5 rounded-lg border shrink-0 ${
+                className={`text-xs font-extrabold px-2.5 py-1 rounded-lg border shrink-0 ${
                   user.is_demo
                     ? 'bg-sky-100 text-sky-800 border-sky-200'
                     : hasAI
                     ? 'bg-blue-700 text-white border-blue-700'
-                    : 'bg-slate-200 text-slate-800 border-slate-300'
+                    : 'brand-gradient-btn text-white border-transparent'
                 }`}
               >
                 {mobilePlanBadgeText}
@@ -1540,33 +1682,33 @@
                 <button
                   onClick={() => setConfirmResetOpen(true)}
                   disabled={busy}
-                  title="Làm mới dữ liệu mẫu"
-                  className="min-h-[38px] px-2.5 rounded-xl bg-blue-50 border-2 border-blue-200 text-blue-800 text-xs font-bold disabled:opacity-50"
+                  title="Khôi phục dữ liệu mẫu"
+                  className="min-h-[42px] px-3 rounded-xl bg-blue-50 border-2 border-blue-200 text-blue-800 text-sm font-bold disabled:opacity-50"
                 >
                   🔄
                 </button>
               )}
               <button
                 onClick={onLogout}
-                className="min-h-[38px] px-2.5 rounded-xl bg-slate-100 border border-slate-300 text-slate-900 text-xs font-bold"
+                className="min-h-[42px] px-3 rounded-xl bg-slate-100 border-2 border-slate-300 text-slate-900 text-sm font-bold"
               >
                 Thoát
               </button>
             </div>
           </div>
 
-          {/* THANH ĐIỀU HƯỚNG TRÁI TRÊN MÁY TÍNH (LUÔN NẰM TRONG 1 KHUNG) */}
-          <aside className="hidden md:flex md:w-60 lg:w-64 h-full bg-white border-r border-blue-100 flex-col shrink-0 shadow-sm overflow-hidden">
-            <div className="p-3.5 border-b border-blue-100 bg-gradient-to-br from-white to-blue-50/60 shrink-0">
+          {/* THANH ĐIỀU HƯỚNG TRÁI TRÊN MÁY TÍNH */}
+          <aside className="hidden md:flex md:w-64 lg:w-72 h-full bg-white border-r border-slate-200 flex-col shrink-0 shadow-sm overflow-hidden">
+            <div className="h-1 w-full brand-accent-bar shrink-0"></div>
+            <div className="p-4 border-b border-slate-200 bg-gradient-to-br from-white to-blue-50/40 shrink-0">
               <BizFlowLogo size="md" />
-              <div className="mt-2.5 p-2.5 rounded-xl bg-blue-50 border border-blue-200">
+              <div className="mt-3 p-3 rounded-2xl bg-slate-50 border-2 border-slate-200">
                 <div className="flex items-center justify-between gap-2">
-                  <span className="text-xs font-bold text-blue-800">Cửa hàng</span>
+                  <span className="text-xs font-bold text-slate-600">Cửa hàng</span>
                   <button
                     type="button"
                     onClick={() => setPlanModalOpen(true)}
-                    title="Xem chi tiết gói dịch vụ"
-                    className={`text-xs font-bold px-2 py-0.5 rounded-full shrink-0 transition hover:opacity-90 ${
+                    className={`text-xs font-extrabold px-2.5 py-0.5 rounded-full shrink-0 transition ${
                       user.is_demo
                         ? 'bg-sky-100 text-sky-800'
                         : hasAI
@@ -1577,38 +1719,48 @@
                     {planBadgeText}
                   </button>
                 </div>
-                <div className="text-sm font-extrabold text-slate-900 truncate mt-1">🏪 {user.shop_name}</div>
-                <button
-                  type="button"
-                  onClick={() => setPlanModalOpen(true)}
-                  className="mt-1 text-[11px] font-bold text-blue-700 hover:underline"
-                >
-                  Xem gói dịch vụ →
-                </button>
+                <div className="text-base font-extrabold text-slate-900 truncate mt-1">{user.shop_name}</div>
+                {!hasAI && !user.is_demo ? (
+                  <button
+                    type="button"
+                    onClick={() => setPlanModalOpen(true)}
+                    className="mt-2 w-full min-h-[38px] rounded-xl brand-gradient-btn text-white text-sm font-extrabold shadow-sm"
+                  >
+                    Nâng cấp Gói AI →
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setPlanModalOpen(true)}
+                    className="mt-1.5 text-xs font-bold text-blue-700 hover:underline"
+                  >
+                    Thông tin gói dịch vụ →
+                  </button>
+                )}
               </div>
             </div>
 
-            <nav className="flex-1 min-h-0 p-2.5 space-y-1.5 overflow-hidden flex flex-col justify-start">
+            <nav className="flex-1 min-h-0 p-3 space-y-1.5 overflow-y-auto scrollbar-thin flex flex-col justify-start">
               {navItems.map(item => {
                 const isActive = activeTab === item.id;
                 return (
                   <button
                     key={item.id}
                     onClick={() => setActiveTab(item.id)}
-                    className={`w-full min-h-[44px] flex items-center justify-between px-3.5 py-2 rounded-xl text-sm lg:text-base font-bold transition shrink-0 ${
+                    className={`w-full min-h-[50px] flex items-center justify-between px-4 py-2.5 rounded-2xl text-base font-bold transition shrink-0 ${
                       isActive
                         ? 'bg-blue-700 text-white shadow-sm'
                         : item.highlight
-                        ? 'text-blue-800 bg-blue-50 border border-blue-200 hover:bg-blue-100'
+                        ? 'text-red-700 bg-red-50 border-2 border-red-200 hover:bg-red-100'
                         : 'text-slate-800 hover:bg-blue-50'
                     }`}
                   >
-                    <span className="flex items-center gap-2.5 min-w-0">
-                      <span className="text-lg">{item.icon}</span>
+                    <span className="flex items-center gap-3 min-w-0">
+                      <span className="text-xl">{item.icon}</span>
                       <span className="truncate">{item.label}</span>
                     </span>
                     {item.badge > 0 && (
-                      <span className={`px-2 py-0.5 text-xs font-extrabold rounded-full text-white shrink-0 ${isActive ? 'bg-white/25' : (item.badgeColor || 'bg-amber-600')}`}>
+                      <span className={`px-2.5 py-0.5 text-xs font-extrabold rounded-full text-white shrink-0 ${isActive ? 'bg-white/25' : (item.badgeColor || 'bg-amber-600')}`}>
                         {item.badge}
                       </span>
                     )}
@@ -1617,47 +1769,47 @@
               })}
             </nav>
 
-            <div className="p-2.5 m-2.5 rounded-xl bg-blue-50/70 border border-blue-200 space-y-2 shrink-0">
+            <div className="p-3 m-3 rounded-2xl bg-slate-50 border border-slate-200 space-y-2 shrink-0">
               {user.is_demo && (
                 <button
                   onClick={() => setConfirmResetOpen(true)}
                   disabled={busy}
-                  className="w-full min-h-[40px] rounded-xl bg-white border border-blue-200 text-blue-800 text-xs sm:text-sm font-bold hover:bg-blue-50 disabled:opacity-50"
+                  className="w-full min-h-[44px] rounded-xl bg-white border-2 border-blue-200 text-blue-800 text-sm font-bold hover:bg-blue-50 disabled:opacity-50"
                 >
-                  🔄 Làm mới dữ liệu mẫu
+                  🔄 Khôi phục dữ liệu mẫu
                 </button>
               )}
               <button
                 onClick={onLogout}
-                className="w-full min-h-[40px] rounded-xl bg-slate-100 border border-slate-300 hover:bg-rose-50 text-slate-900 hover:text-rose-700 text-xs sm:text-sm font-bold transition"
+                className="w-full min-h-[44px] rounded-xl bg-slate-100 border-2 border-slate-300 hover:bg-red-50 text-slate-900 hover:text-red-700 text-sm font-bold transition"
               >
                 Đăng xuất
               </button>
             </div>
           </aside>
 
-          {/* NỘI DUNG CHÍNH (CUỘN BÊN TRONG, KHÔNG LÀM TRÔI KHUNG MENU) */}
+          {/* NỘI DUNG CHÍNH */}
           <main className="flex-1 min-w-0 min-h-0 flex flex-col bg-business-grid overflow-hidden">
-            <header className="hidden md:flex bg-white/95 backdrop-blur-md border-b border-blue-100 px-5 py-2.5 items-center justify-between gap-3 shrink-0">
+            <header className="hidden md:flex bg-white/95 backdrop-blur-md border-b border-slate-200 px-6 py-3 items-center justify-between gap-3 shrink-0">
               <div className="min-w-0">
-                <h1 className="text-xl font-extrabold text-slate-900 truncate">
+                <h1 className="text-2xl font-black text-slate-900 truncate">
                   {navItems.find(n => n.id === activeTab)?.icon} {navItems.find(n => n.id === activeTab)?.label}
                 </h1>
               </div>
 
-              <div className="flex items-center gap-2 shrink-0">
+              <div className="flex items-center gap-2.5 shrink-0">
                 <button
                   type="button"
                   onClick={() => setPlanModalOpen(true)}
-                  className={`min-h-[42px] px-3 py-1.5 rounded-xl border-2 text-xs sm:text-sm font-bold transition ${
+                  className={`min-h-[44px] px-4 py-2 rounded-xl border-2 text-sm font-extrabold transition ${
                     user.is_demo
                       ? 'bg-sky-100 border-blue-200 text-sky-800'
                       : hasAI
                       ? 'bg-blue-700 border-blue-700 text-white'
-                      : 'bg-slate-100 border-slate-300 text-slate-800 hover:bg-slate-200'
+                      : 'brand-gradient-btn border-transparent text-white shadow-sm'
                   }`}
                 >
-                  {user.is_demo ? '👀 Bản mẫu (có AI)' : hasAI ? '🤖 Gói AI 199k/tháng' : 'Gói Cơ bản 0đ'}
+                  {user.is_demo ? 'Bản trải nghiệm (có AI)' : hasAI ? 'Gói AI • 199k/tháng' : 'Nâng cấp Gói AI'}
                 </button>
                 <ThemeToggleButton theme={theme} onToggle={onToggleTheme} />
               </div>
@@ -1673,6 +1825,7 @@
                   ordersCount={orders.length}
                   user={user}
                   hasAI={hasAI}
+                  onOpenUpgrade={() => setPlanModalOpen(true)}
                 />
               )}
               {activeTab === 'orders' && (
@@ -1714,27 +1867,28 @@
               )}
             </div>
           </main>
+
           {bankAlert && (
             <button
               type="button"
               onClick={() => { setActiveTab('bank'); setBankAlert(null); }}
-              className={`fixed top-2 left-3 right-3 md:left-auto md:right-5 md:max-w-sm z-50 text-left rounded-2xl p-3 shadow-2xl border-2 text-white ${
-                bankAlert.direction === 'in' ? 'bg-emerald-700 border-emerald-300' : 'bg-rose-700 border-rose-300'
+              className={`fixed top-2 left-3 right-3 md:left-auto md:right-5 md:max-w-sm z-50 text-left rounded-2xl p-3.5 shadow-2xl border-2 text-white ${
+                bankAlert.direction === 'in' ? 'bg-emerald-700 border-emerald-300' : 'bg-red-600 border-red-300'
               }`}
             >
-              <div className="text-sm font-extrabold">
-                {bankAlert.direction === 'in' ? '💰 Tiền vừa về' : '💸 Tiền vừa ra'}: {formatTien(bankAlert.amount)}
+              <div className="text-base font-extrabold">
+                {bankAlert.direction === 'in' ? 'Tiền vừa về' : 'Tiền vừa chi'}: {formatTien(bankAlert.amount)}
               </div>
-              <div className="text-xs font-bold opacity-90">Chạm để phân loại →</div>
+              <div className="text-sm font-bold opacity-95">Chạm để phân loại ngay →</div>
             </button>
           )}
-          {/* THÔNG BÁO ĐÃ LƯU + NÚT HOÀN TÁC 10 GIÂY */}
+
           {toast && (
-            <div className="fixed left-3 right-3 bottom-[68px] md:bottom-5 md:left-auto md:right-5 md:max-w-sm z-50">
-              <div className="bg-slate-900 text-white border-2 border-emerald-400 rounded-2xl p-3 shadow-2xl flex items-center justify-between gap-2.5">
+            <div className="fixed left-3 right-3 bottom-[76px] md:bottom-5 md:left-auto md:right-5 md:max-w-md z-50">
+              <div className="bg-slate-900 text-white border-2 border-emerald-400 rounded-2xl p-3.5 shadow-2xl flex items-center justify-between gap-3">
                 <div className="min-w-0">
-                  <div className="text-sm font-extrabold text-emerald-300">✅ Đã lưu</div>
-                  <div className="text-xs sm:text-sm text-white truncate">{toast.message}</div>
+                  <div className="text-base font-extrabold text-emerald-300">Đã lưu</div>
+                  <div className="text-sm text-white truncate">{toast.message}</div>
                 </div>
                 {toast.undoAction && (
                   <button
@@ -1744,7 +1898,7 @@
                       setToast(null);
                       await fn();
                     }}
-                    className="min-h-[38px] px-3 py-1.5 rounded-xl bg-amber-400 text-slate-950 text-xs sm:text-sm font-extrabold shrink-0 hover:bg-amber-300"
+                    className="min-h-[42px] px-3.5 py-1.5 rounded-xl bg-amber-400 text-slate-950 text-sm font-extrabold shrink-0 hover:bg-amber-300"
                   >
                     Hoàn tác ({toast.secondsLeft}s)
                   </button>
@@ -1753,10 +1907,10 @@
             </div>
           )}
 
-          {/* THANH ĐIỀU HƯỚNG DƯỚI TRÊN ĐIỆN THOẠI (KHÓA CỨNG 1 KHUNG) */}
+          {/* THANH ĐIỀU HƯỚNG DƯỚI TRÊN ĐIỆN THOẠI */}
           <nav
             style={{ gridTemplateColumns: `repeat(${navItems.length}, minmax(0, 1fr))` }}
-            className="md:hidden shrink-0 z-40 bg-white/95 backdrop-blur-md border-t-2 border-blue-100 shadow-[0_-4px_16px_rgba(15,23,42,0.06)] grid px-1 pt-1 pb-[max(0.25rem,env(safe-area-inset-bottom))]"
+            className="md:hidden shrink-0 z-40 bg-white/95 backdrop-blur-md border-t-2 border-slate-200 shadow-[0_-4px_16px_rgba(15,23,42,0.06)] grid px-1 pt-1.5 pb-[max(0.35rem,env(safe-area-inset-bottom))]"
           >
             {navItems.map(item => {
               const isActive = activeTab === item.id;
@@ -1764,16 +1918,16 @@
                 <button
                   key={item.id}
                   onClick={() => setActiveTab(item.id)}
-                  className={`relative min-h-[50px] flex flex-col items-center justify-center py-1 rounded-xl transition ${
-                    isActive ? 'text-blue-700 bg-blue-50 font-extrabold' : 'text-slate-700 font-semibold'
+                  className={`relative min-h-[56px] flex flex-col items-center justify-center py-1 rounded-xl transition ${
+                    isActive ? 'text-blue-700 bg-blue-50 font-extrabold' : 'text-slate-700 font-bold'
                   }`}
                 >
-                  <span className="text-lg leading-none">{item.icon}</span>
-                  <span className="text-[11px] mt-0.5 leading-tight whitespace-nowrap truncate max-w-full px-0.5">
+                  <span className="text-xl leading-none">{item.icon}</span>
+                  <span className="text-xs mt-1 leading-tight whitespace-nowrap truncate max-w-full px-0.5">
                     {item.label}
                   </span>
                   {item.badge > 0 && (
-                    <span className={`absolute top-0.5 right-1.5 min-w-[16px] h-4 px-1 flex items-center justify-center text-[10px] font-extrabold rounded-full text-white ${item.badgeColor || 'bg-amber-600'}`}>
+                    <span className={`absolute top-1 right-1.5 min-w-[18px] h-4 px-1 flex items-center justify-center text-[11px] font-extrabold rounded-full text-white ${item.badgeColor || 'bg-amber-600'}`}>
                       {item.badge}
                     </span>
                   )}
@@ -1784,9 +1938,9 @@
 
           <ConfirmModal
             open={confirmResetOpen}
-            title="Làm mới dữ liệu mẫu?"
-            message="Mọi đơn hàng và số liệu bạn vừa bấm thử sẽ quay lại như lúc ban đầu."
-            confirmLabel="Làm mới ngay"
+            title="Khôi phục dữ liệu mẫu?"
+            message="Toàn bộ đơn hàng và số liệu thử nghiệm vừa thao tác sẽ được đưa về trạng thái ban đầu."
+            confirmLabel="Khôi phục"
             cancelLabel="Giữ nguyên"
             onConfirm={async () => {
               setConfirmResetOpen(false);
@@ -1806,27 +1960,35 @@
     }
 
     // ==========================================
-    // 1. TRANG CHỦ (FIT GỌN TRONG 1 MÀN HÌNH)
+    // 1. TRANG CHỦ (TỐI GIẢN, CHỮ TO, CÓ NÂNG CẤP AI CHO GÓI FREE)
     // ==========================================
-    function DashboardView({ analytics, setActiveTab, onOpenSpend, productsCount, ordersCount, user, hasAI }) {
+    function DashboardView({ analytics, setActiveTab, onOpenSpend, productsCount, ordersCount, user, hasAI, onOpenUpgrade }) {
       const { todayStats, thisM, lastM, lowStockProducts } = analytics;
       const [showReport, setShowReport] = useState(false);
 
       if (productsCount === 0 && ordersCount === 0) {
         return (
           <div className="h-full flex items-center justify-center">
-            <div className="bg-white border-2 border-blue-200 rounded-2xl p-5 sm:p-6 shadow-sm max-w-md w-full text-center space-y-4">
-              <div className="text-4xl">🏪</div>
-              <h2 className="text-xl font-extrabold text-slate-900">Chào {user.shop_name}!</h2>
-              <p className="text-sm sm:text-base text-slate-700 leading-relaxed">
-                Sổ của bạn hiện chưa có mặt hàng nào. Thêm vài món hay bán rồi bấm <strong>Bán hàng</strong> là dùng được ngay.
+            <div className="bg-white border-2 border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm max-w-md w-full text-center space-y-5">
+              <div className="text-5xl">🏪</div>
+              <h2 className="text-2xl font-black text-slate-900">Chào mừng {user.shop_name}</h2>
+              <p className="text-base sm:text-lg text-slate-700 leading-relaxed">
+                Cửa hàng hiện chưa có mặt hàng nào. Quý khách chỉ cần thêm vài sản phẩm hay bán để bắt đầu lên đơn ngay.
               </p>
               <button
                 onClick={() => setActiveTab('products')}
-                className="w-full min-h-[46px] px-5 py-2.5 bg-blue-700 hover:bg-blue-800 text-white rounded-xl text-base font-extrabold shadow-md"
+                className="w-full min-h-[54px] px-6 py-3 bg-blue-700 hover:bg-blue-800 text-white rounded-2xl text-lg font-extrabold shadow-md"
               >
-                ➕ Thêm món hàng đầu tiên
+                + Thêm sản phẩm đầu tiên
               </button>
+              {!hasAI && !user.is_demo && (
+                <button
+                  onClick={onOpenUpgrade}
+                  className="w-full min-h-[50px] px-5 py-2.5 brand-gradient-btn text-white rounded-2xl text-base font-extrabold shadow-sm"
+                >
+                  Nâng cấp Gói AI Thông minh →
+                </button>
+              )}
             </div>
           </div>
         );
@@ -1837,135 +1999,156 @@
       const topAlerts = lowStockProducts.slice(0, 3);
 
       return (
-        <div className="h-full overflow-y-auto scrollbar-thin space-y-3 sm:space-y-4 pr-0.5">
-          {/* CON SỐ CHÍNH: HÔM NAY LÃI */}
-          <section className={`rounded-2xl p-4 sm:p-5 border-2 shadow-sm bg-white ${
-            isTodayProfit ? 'border-emerald-300' : 'border-rose-300'
+        <div className="h-full overflow-y-auto scrollbar-thin space-y-4 pr-0.5">
+          {/* LỢI NHUẬN HÔM NAY */}
+          <section className={`rounded-3xl p-5 sm:p-6 border-2 shadow-sm bg-white ${
+            isTodayProfit ? 'border-emerald-300' : 'border-red-300'
           }`}>
-            <div className="text-sm sm:text-base font-bold text-slate-700">Hôm nay lãi</div>
-            <div className={`text-3xl sm:text-4xl font-extrabold tracking-tight mt-1 leading-tight ${
-              isTodayProfit ? 'text-emerald-700' : 'text-rose-700'
+            <div className="text-base sm:text-lg font-bold text-slate-700">Lợi nhuận hôm nay</div>
+            <div className={`text-4xl sm:text-5xl font-black tracking-tight mt-1.5 leading-tight ${
+              isTodayProfit ? 'text-emerald-700' : 'text-red-600'
             }`}>
               {formatTien(todayNetProfit)}
             </div>
-            <div className="mt-3 pt-2.5 border-t border-slate-200 grid grid-cols-2 gap-2 text-xs sm:text-base text-slate-800">
-              <div>Hôm nay bán: <strong className="block sm:inline">{formatTien(todayStats.revenue)}</strong></div>
-              <div>Tháng này lãi: <strong className={`block sm:inline ${thisM.netProfit >= 0 ? 'text-emerald-700' : 'text-rose-700'}`}>{formatTien(thisM.netProfit)}</strong></div>
+            <div className="mt-4 pt-3.5 border-t border-slate-200 grid grid-cols-2 gap-3 text-base sm:text-lg text-slate-800">
+              <div>Doanh thu hôm nay: <strong className="block sm:inline text-slate-900">{formatTien(todayStats.revenue)}</strong></div>
+              <div>Lợi nhuận tháng này: <strong className={`block sm:inline ${thisM.netProfit >= 0 ? 'text-emerald-700' : 'text-red-600'}`}>{formatTien(thisM.netProfit)}</strong></div>
             </div>
           </section>
 
-          {/* NÚT HÀNH ĐỘNG NHANH GỌN ĐẸP */}
-          <section className={`grid ${hasAI ? 'grid-cols-3' : 'grid-cols-2'} gap-2.5 sm:gap-3`}>
+          {/* THẺ NÂNG CẤP GÓI AI DÀNH RIÊNG CHO GÓI CƠ BẢN (FREE) */}
+          {!hasAI && !user.is_demo && (
+            <section className="bg-white rounded-2xl p-4 sm:p-5 border-2 border-red-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="space-y-0.5">
+                <div className="text-base sm:text-lg font-extrabold text-slate-900">
+                  Mở khóa Trợ lý AI phân tích lãi lỗ
+                </div>
+                <div className="text-sm sm:text-base text-slate-600">
+                  Tự động giải đáp doanh thu, dòng tiền và cảnh báo hàng tồn.
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={onOpenUpgrade}
+                className="min-h-[48px] px-5 py-2.5 rounded-xl brand-gradient-btn text-white text-base font-extrabold shadow-md shrink-0"
+              >
+                Nâng cấp Gói AI →
+              </button>
+            </section>
+          )}
+
+          {/* CÁC NÚT THAO TÁC CHÍNH TO RÕ */}
+          <section className={`grid ${hasAI ? 'grid-cols-3' : 'grid-cols-2'} gap-3`}>
             <button
               onClick={() => setActiveTab('orders')}
-              className="min-h-[60px] sm:min-h-[64px] p-2.5 sm:p-4 rounded-2xl bg-blue-700 hover:bg-blue-800 text-white shadow-sm flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2.5 text-xs sm:text-base font-extrabold transition"
+              className="min-h-[72px] p-3 sm:p-4 rounded-2xl bg-blue-700 hover:bg-blue-800 text-white shadow-sm flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-3 text-base sm:text-lg font-extrabold transition"
             >
-              <span className="text-xl">🧾</span>
+              <span className="text-2xl">🧾</span>
               <span>Bán hàng</span>
             </button>
 
             <button
               onClick={onOpenSpend}
-              className="min-h-[60px] sm:min-h-[64px] p-2.5 sm:p-4 rounded-2xl bg-white hover:bg-blue-50 text-slate-900 border-2 border-blue-300 shadow-sm flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2.5 text-xs sm:text-base font-extrabold transition"
+              className="min-h-[72px] p-3 sm:p-4 rounded-2xl bg-white hover:bg-red-50 text-slate-900 border-2 border-red-300 shadow-sm flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-3 text-base sm:text-lg font-extrabold transition"
             >
-              <span className="text-xl">💸</span>
-              <span>Chi tiền</span>
+              <span className="text-2xl">💸</span>
+              <span>Ghi chi tiêu</span>
             </button>
 
             {hasAI && (
               <button
                 onClick={() => setActiveTab('ai')}
-                className="min-h-[60px] sm:min-h-[64px] p-2.5 sm:p-4 rounded-2xl bg-blue-50 hover:bg-blue-100 text-blue-900 border-2 border-blue-300 shadow-sm flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2.5 text-xs sm:text-base font-extrabold transition"
+                className="min-h-[72px] p-3 sm:p-4 rounded-2xl brand-gradient-btn text-white shadow-sm flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-3 text-base sm:text-lg font-extrabold transition"
               >
-                <span className="text-xl">🤖</span>
-                <span>Hỏi AI</span>
+                <span className="text-2xl">🤖</span>
+                <span>Trợ lý AI</span>
               </button>
             )}
           </section>
 
-          {/* KHỐI VIỆC CẦN CHÚ Ý */}
-          <section className="bg-white rounded-2xl p-3.5 sm:p-4 border-2 border-blue-100 shadow-sm space-y-2">
+          {/* CẢNH BÁO TỒN KHO */}
+          <section className="bg-white rounded-2xl p-4 sm:p-5 border-2 border-slate-200 shadow-sm space-y-2.5">
             <div className="flex items-center justify-between gap-2">
-              <h2 className="text-base sm:text-lg font-extrabold text-slate-900">🔔 Việc cần chú ý</h2>
+              <h2 className="text-lg font-extrabold text-slate-900">Hàng cần lưu ý</h2>
               {lowStockProducts.length > 3 && (
                 <button
                   onClick={() => setActiveTab('products')}
-                  className="text-xs sm:text-sm font-bold text-blue-700 underline"
+                  className="text-sm sm:text-base font-bold text-blue-700 underline"
                 >
-                  Xem hết ({lowStockProducts.length})
+                  Xem tất cả ({lowStockProducts.length})
                 </button>
               )}
             </div>
 
             {topAlerts.length === 0 ? (
-              <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-sm font-bold text-emerald-800">
-                ✅ Hàng trong kho hiện đang đủ bán.
+              <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-base font-bold text-emerald-800">
+                Lượng hàng trong kho hiện đang ổn định.
               </div>
             ) : (
-              <div className="space-y-1.5">
+              <div className="space-y-2">
                 {topAlerts.map(p => (
                   <div
                     key={p.id}
-                    className="px-3 py-2 rounded-xl bg-rose-50 border border-rose-200 flex items-center justify-between gap-2 text-sm sm:text-base"
+                    className="px-4 py-3 rounded-xl bg-red-50 border border-red-200 flex items-center justify-between gap-2 text-base"
                   >
-                    <span className="font-bold text-rose-900 truncate">{p.name}</span>
-                    <span className="font-extrabold text-rose-700 shrink-0">Còn {p.stock}</span>
+                    <span className="font-bold text-slate-900 truncate">{p.name}</span>
+                    <span className="font-extrabold text-red-700 shrink-0">Còn {p.stock}</span>
                   </div>
                 ))}
               </div>
             )}
           </section>
 
-          {/* MỤC XEM BÁO CÁO THU GỌN */}
-          <section className="bg-white rounded-2xl border-2 border-blue-100 shadow-sm overflow-hidden">
+          {/* BÁO CÁO TỔNG HỢP THU GỌN */}
+          <section className="bg-white rounded-2xl border-2 border-slate-200 shadow-sm overflow-hidden">
             <button
               type="button"
               onClick={() => setShowReport(!showReport)}
-              className="w-full min-h-[44px] px-4 py-2.5 flex items-center justify-between gap-2 text-left text-sm sm:text-base font-extrabold text-blue-800 hover:bg-blue-50"
+              className="w-full min-h-[52px] px-4 py-3 flex items-center justify-between gap-2 text-left text-base sm:text-lg font-extrabold text-blue-800 hover:bg-blue-50"
             >
               <span>📊 Xem báo cáo tháng này &amp; tháng trước</span>
               <span>{showReport ? '▲' : '▼'}</span>
             </button>
 
             {showReport && (
-              <div className="p-3.5 pt-2 border-t border-blue-100 grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm sm:text-base">
-                <div className="p-3 rounded-xl bg-blue-50 border border-blue-200 space-y-1.5">
+              <div className="p-4 pt-2 border-t border-slate-200 grid grid-cols-1 sm:grid-cols-2 gap-3.5 text-base">
+                <div className="p-4 rounded-2xl bg-blue-50 border border-blue-200 space-y-2">
                   <div className="font-extrabold text-blue-900">Tháng này ({thisM.monthKey})</div>
                   <div className="text-slate-800 flex justify-between gap-2">
-                    <span>Tiền bán được:</span>
+                    <span>Doanh thu:</span>
                     <strong>{formatTien(thisM.revenue)}</strong>
                   </div>
                   <div className="text-slate-800 flex justify-between gap-2">
-                    <span>Giá vốn hàng bán:</span>
+                    <span>Tiền vốn hàng:</span>
                     <strong>{formatTien(thisM.cogs)}</strong>
                   </div>
                   <div className="text-slate-800 flex justify-between gap-2">
                     <span>Chi phí cửa hàng:</span>
                     <strong>{formatTien(thisM.opex)}</strong>
                   </div>
-                  <div className="pt-1.5 border-t border-blue-200 font-extrabold flex justify-between gap-2">
-                    <span>Tiền lãi:</span>
-                    <span className={thisM.netProfit >= 0 ? 'text-emerald-700' : 'text-rose-700'}>{formatTien(thisM.netProfit)}</span>
+                  <div className="pt-2 border-t border-blue-200 font-extrabold flex justify-between gap-2">
+                    <span>Lợi nhuận thực tế:</span>
+                    <span className={thisM.netProfit >= 0 ? 'text-emerald-700' : 'text-red-600'}>{formatTien(thisM.netProfit)}</span>
                   </div>
                 </div>
 
-                <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5">
+                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
                   <div className="font-extrabold text-slate-900">Tháng trước ({lastM.monthKey})</div>
                   <div className="text-slate-800 flex justify-between gap-2">
-                    <span>Tiền bán được:</span>
+                    <span>Doanh thu:</span>
                     <strong>{formatTien(lastM.revenue)}</strong>
                   </div>
                   <div className="text-slate-800 flex justify-between gap-2">
-                    <span>Giá vốn hàng bán:</span>
+                    <span>Tiền vốn hàng:</span>
                     <strong>{formatTien(lastM.cogs)}</strong>
                   </div>
                   <div className="text-slate-800 flex justify-between gap-2">
                     <span>Chi phí cửa hàng:</span>
                     <strong>{formatTien(lastM.opex)}</strong>
                   </div>
-                  <div className="pt-1.5 border-t border-slate-200 font-extrabold flex justify-between gap-2">
-                    <span>Tiền lãi:</span>
-                    <span className={lastM.netProfit >= 0 ? 'text-emerald-700' : 'text-rose-700'}>{formatTien(lastM.netProfit)}</span>
+                  <div className="pt-2 border-t border-slate-200 font-extrabold flex justify-between gap-2">
+                    <span>Lợi nhuận thực tế:</span>
+                    <span className={lastM.netProfit >= 0 ? 'text-emerald-700' : 'text-red-600'}>{formatTien(lastM.netProfit)}</span>
                   </div>
                 </div>
               </div>
@@ -1976,7 +2159,7 @@
     }
 
     // ==========================================
-    // 2. TRANG BÁN HÀNG (DANH SÁCH CUỘN GIỮA, GIỎ GHIM ĐÁY)
+    // 2. TRANG BÁN HÀNG
     // ==========================================
     function OrdersView({ orders, products, onCreateOrder, onChangeStatus, goToProducts }) {
       const [subTab, setSubTab] = useState('sell');
@@ -2008,7 +2191,7 @@
         setFriendlyWarn('');
         const currentQty = cart.find(c => c.product_id === prod.id)?.quantity || 0;
         if (status === 'completed' && currentQty + 1 > prod.stock) {
-          setFriendlyWarn(`Món "${prod.name}" chỉ còn ${prod.stock} trong kho, bạn không thể bán thêm được nữa nhé!`);
+          setFriendlyWarn(`Sản phẩm "${prod.name}" hiện chỉ còn ${prod.stock} trong kho.`);
           return;
         }
         if (currentQty > 0) {
@@ -2029,7 +2212,7 @@
           return;
         }
         if (delta > 0 && status === 'completed' && prod && nextQty > prod.stock) {
-          setFriendlyWarn(`Món "${prod.name}" chỉ còn ${prod.stock} trong kho thôi bạn nhé!`);
+          setFriendlyWarn(`Sản phẩm "${prod.name}" hiện chỉ còn ${prod.stock} trong kho.`);
           return;
         }
         setCart(cart.map(c => c.product_id === productId ? { ...c, quantity: nextQty } : c));
@@ -2043,7 +2226,7 @@
           for (const c of cart) {
             const prod = products.find(p => p.id === c.product_id);
             if (prod && c.quantity > prod.stock) {
-              setFriendlyWarn(`Món "${prod.name}" chỉ còn ${prod.stock} trong kho, bạn giảm bớt xuống nhé!`);
+              setFriendlyWarn(`Sản phẩm "${prod.name}" chỉ còn ${prod.stock} trong kho. Vui lòng điều chỉnh số lượng.`);
               return;
             }
           }
@@ -2071,39 +2254,38 @@
       };
 
       return (
-        <div className="h-full flex flex-col min-h-0 gap-2.5">
-          {/* CHỌN VIỆC: BÁN HÀNG HAY XEM ĐƠN ĐÃ BÁN */}
-          <div className="grid grid-cols-2 gap-2 bg-white p-1.5 rounded-2xl border-2 border-blue-100 shrink-0">
+        <div className="h-full flex flex-col min-h-0 gap-3">
+          <div className="grid grid-cols-2 gap-2 bg-white p-1.5 rounded-2xl border-2 border-slate-200 shrink-0">
             <button
               type="button"
               onClick={() => setSubTab('sell')}
-              className={`min-h-[42px] rounded-xl text-sm sm:text-base font-extrabold transition ${
+              className={`min-h-[48px] rounded-xl text-base font-extrabold transition ${
                 subTab === 'sell' ? 'bg-blue-700 text-white shadow-sm' : 'text-slate-700 hover:bg-blue-50'
               }`}
             >
-              🛒 Tính tiền bán
+              Lên đơn bán hàng
             </button>
             <button
               type="button"
               onClick={() => setSubTab('list')}
-              className={`min-h-[42px] rounded-xl text-sm sm:text-base font-extrabold transition ${
+              className={`min-h-[48px] rounded-xl text-base font-extrabold transition ${
                 subTab === 'list' ? 'bg-blue-700 text-white shadow-sm' : 'text-slate-700 hover:bg-blue-50'
               }`}
             >
-              📋 Đơn đã ghi ({orders.length})
+              Đơn đã lưu ({orders.length})
             </button>
           </div>
 
           {subTab === 'sell' && (
             <>
               {products.length === 0 ? (
-                <div className="bg-white rounded-2xl p-5 border-2 border-blue-100 text-center space-y-3">
-                  <div className="text-sm sm:text-base text-slate-700">Bạn chưa có món hàng nào để bán. Hãy thêm món hàng trước nhé!</div>
+                <div className="bg-white rounded-2xl p-6 border-2 border-slate-200 text-center space-y-4">
+                  <div className="text-base text-slate-700">Chưa có sản phẩm nào để lên đơn. Vui lòng thêm sản phẩm trước.</div>
                   <button
                     onClick={goToProducts}
-                    className="min-h-[44px] px-5 py-2 bg-blue-700 text-white rounded-xl text-sm sm:text-base font-extrabold"
+                    className="min-h-[48px] px-6 py-2.5 bg-blue-700 text-white rounded-xl text-base font-extrabold"
                   >
-                    ➕ Đi tới Hàng hóa
+                    + Thêm hàng hóa ngay
                   </button>
                 </div>
               ) : (
@@ -2112,20 +2294,19 @@
                     <input
                       value={search}
                       onChange={e => setSearch(e.target.value)}
-                      placeholder="🔍 Gõ tên món để tìm nhanh..."
-                      className="w-full min-h-[42px] px-3.5 py-2 bg-white border-2 border-slate-300 rounded-xl text-base focus:outline-none focus:border-blue-700 shrink-0"
+                      placeholder="Tìm nhanh tên sản phẩm..."
+                      className="w-full min-h-[46px] px-4 py-2 bg-white border-2 border-slate-300 rounded-2xl text-base focus:outline-none focus:border-blue-700 shrink-0"
                     />
                   )}
 
                   {friendlyWarn && (
-                    <div className="p-2.5 rounded-xl bg-rose-50 border border-rose-300 text-rose-800 text-xs sm:text-sm font-bold shrink-0">
-                      ⚠️ {friendlyWarn}
+                    <div className="p-3 rounded-xl bg-red-50 border border-red-300 text-red-700 text-sm sm:text-base font-bold shrink-0">
+                      {friendlyWarn}
                     </div>
                   )}
 
-                  {/* KHU VỰC CUỘN CHỌN MÓN */}
-                  <div className="flex-1 min-h-0 overflow-y-auto scrollbar-thin space-y-2.5 pr-0.5 pt-1">
-                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5">
+                  <div className="flex-1 min-h-0 overflow-y-auto scrollbar-thin space-y-3 pr-0.5 pt-1">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                       {filteredProducts.map(p => {
                         const inCartQty = cart.find(c => c.product_id === p.id)?.quantity || 0;
                         const outOfStock = status === 'completed' && p.stock <= 0;
@@ -2134,25 +2315,25 @@
                             key={p.id}
                             type="button"
                             onClick={() => addOne(p)}
-                            className={`relative min-h-[82px] p-3 rounded-2xl border-2 text-left flex flex-col justify-between transition shadow-sm ${
+                            className={`relative min-h-[96px] p-3.5 rounded-2xl border-2 text-left flex flex-col justify-between transition shadow-sm ${
                               outOfStock
                                 ? 'bg-slate-100 border-slate-300 opacity-75'
                                 : inCartQty > 0
                                 ? 'bg-blue-50 border-blue-700 shadow-md'
-                                : 'bg-white border-blue-200 hover:border-blue-600'
+                                : 'bg-white border-slate-200 hover:border-blue-600'
                             }`}
                           >
                             {inCartQty > 0 && (
-                              <span className="absolute -top-2 -right-2 min-w-[24px] h-6 px-1.5 rounded-full bg-blue-700 text-white text-xs font-extrabold flex items-center justify-center shadow">
+                              <span className="absolute -top-2 -right-2 min-w-[28px] h-7 px-2 rounded-full bg-red-600 text-white text-sm font-extrabold flex items-center justify-center shadow">
                                 {inCartQty}
                               </span>
                             )}
-                            <div className="text-sm sm:text-base font-extrabold text-slate-900 leading-tight line-clamp-2 pr-2">
+                            <div className="text-base font-extrabold text-slate-900 leading-snug line-clamp-2 pr-2">
                               {p.name}
                             </div>
-                            <div className="mt-1.5 flex items-end justify-between gap-1.5">
-                              <span className="text-sm sm:text-base font-extrabold text-blue-700">{formatTien(p.selling_price)}</span>
-                              <span className={`text-xs font-bold ${p.stock <= p.low_stock_threshold ? 'text-rose-700' : 'text-slate-600'}`}>
+                            <div className="mt-2 flex items-end justify-between gap-1.5">
+                              <span className="text-base font-extrabold text-blue-700">{formatTien(p.selling_price)}</span>
+                              <span className={`text-sm font-bold ${p.stock <= p.low_stock_threshold ? 'text-red-600' : 'text-slate-600'}`}>
                                 Còn {p.stock}
                               </span>
                             </div>
@@ -2161,46 +2342,45 @@
                       })}
                     </div>
 
-                    {/* TÙY CHỌN THU GỌN */}
-                    <div className="bg-white rounded-xl border border-blue-100 overflow-hidden">
+                    <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
                       <button
                         type="button"
                         onClick={() => setShowOptions(!showOptions)}
-                        className="w-full min-h-[40px] px-3.5 py-2 flex items-center justify-between text-xs sm:text-sm font-bold text-blue-800"
+                        className="w-full min-h-[46px] px-4 py-2 flex items-center justify-between text-sm sm:text-base font-bold text-blue-800"
                       >
-                        <span>⚙️ Tùy chọn (Tên khách, ngày bán, chờ giao)</span>
+                        <span>Thông tin thêm (Tên khách, ngày bán, chờ giao)</span>
                         <span>{showOptions ? '▲' : '▼'}</span>
                       </button>
                       {showOptions && (
-                        <div className="p-3 pt-1.5 border-t border-blue-100 space-y-2.5">
+                        <div className="p-4 pt-2 border-t border-slate-200 space-y-3">
                           <div>
-                            <label className="block text-xs font-bold text-slate-800 mb-1">Tên khách mua (không bắt buộc)</label>
+                            <label className="block text-sm font-bold text-slate-800 mb-1">Tên khách hàng (không bắt buộc)</label>
                             <input
                               value={customerName}
                               onChange={e => setCustomerName(e.target.value)}
                               placeholder="Mặc định: Khách lẻ"
-                              className="w-full min-h-[42px] px-3 py-1.5 border-2 border-slate-300 rounded-xl text-base"
+                              className="w-full min-h-[46px] px-3.5 py-2 border-2 border-slate-300 rounded-xl text-base"
                             />
                           </div>
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div>
-                              <label className="block text-xs font-bold text-slate-800 mb-1">Ngày bán</label>
+                              <label className="block text-sm font-bold text-slate-800 mb-1">Ngày bán</label>
                               <input
                                 type="date"
                                 value={orderDate}
                                 onChange={e => setOrderDate(e.target.value)}
-                                className="w-full min-h-[42px] px-3 py-1.5 border-2 border-slate-300 rounded-xl text-base"
+                                className="w-full min-h-[46px] px-3.5 py-2 border-2 border-slate-300 rounded-xl text-base"
                               />
                             </div>
                             <div>
-                              <label className="block text-xs font-bold text-slate-800 mb-1">Trạng thái đơn</label>
+                              <label className="block text-sm font-bold text-slate-800 mb-1">Trạng thái đơn</label>
                               <select
                                 value={status}
                                 onChange={e => setStatus(e.target.value)}
-                                className="w-full min-h-[42px] px-3 py-1.5 border-2 border-slate-300 rounded-xl text-sm font-bold"
+                                className="w-full min-h-[46px] px-3.5 py-2 border-2 border-slate-300 rounded-xl text-base font-bold"
                               >
-                                <option value="completed">Đã bán (Thu tiền ngay)</option>
-                                <option value="pending">Chờ giao (Chưa thu tiền)</option>
+                                <option value="completed">Đã hoàn tất (Thu tiền ngay)</option>
+                                <option value="pending">Chờ giao hàng (Chưa thu tiền)</option>
                               </select>
                             </div>
                           </div>
@@ -2209,37 +2389,37 @@
                     </div>
                   </div>
 
-                  {/* GIỎ HÀNG GHIM CỐ ĐỊNH Ở ĐÁY KHUNG */}
-                  <div className="shrink-0 bg-white border-2 border-blue-700 rounded-2xl p-2.5 sm:p-3 shadow-lg space-y-2">
+                  {/* GIỎ HÀNG GHIM ĐÁY */}
+                  <div className="shrink-0 bg-white border-2 border-blue-700 rounded-2xl p-3 sm:p-3.5 shadow-lg space-y-2.5">
                     {cart.length === 0 ? (
-                      <div className="text-center text-xs sm:text-sm font-bold text-slate-600 py-1">
-                        👆 Chạm vào món ở trên để thêm vào đơn
+                      <div className="text-center text-base font-bold text-slate-600 py-1.5">
+                        Chạm vào sản phẩm phía trên để thêm vào đơn hàng
                       </div>
                     ) : (
                       <>
-                        <div className="max-h-24 overflow-y-auto scrollbar-thin space-y-1.5 pr-1">
+                        <div className="max-h-28 overflow-y-auto scrollbar-thin space-y-2 pr-1">
                           {cart.map(item => {
                             const prod = products.find(p => p.id === item.product_id);
                             if (!prod) return null;
                             return (
-                              <div key={item.product_id} className="flex items-center justify-between gap-2 bg-blue-50/80 px-2.5 py-1.5 rounded-xl">
+                              <div key={item.product_id} className="flex items-center justify-between gap-2 bg-blue-50/80 px-3 py-2 rounded-xl">
                                 <div className="min-w-0 flex-1">
-                                  <div className="text-xs sm:text-sm font-extrabold text-slate-900 truncate">{prod.name}</div>
-                                  <div className="text-xs font-bold text-blue-700">{formatTien(prod.selling_price * item.quantity)}</div>
+                                  <div className="text-sm sm:text-base font-extrabold text-slate-900 truncate">{prod.name}</div>
+                                  <div className="text-sm font-bold text-blue-700">{formatTien(prod.selling_price * item.quantity)}</div>
                                 </div>
-                                <div className="flex items-center gap-1.5 shrink-0">
+                                <div className="flex items-center gap-2 shrink-0">
                                   <button
                                     type="button"
                                     onClick={() => changeCartQty(item.product_id, -1)}
-                                    className="w-8 h-8 rounded-lg bg-white border border-slate-300 text-base font-extrabold text-slate-900 flex items-center justify-center"
+                                    className="w-10 h-10 rounded-xl bg-white border-2 border-slate-300 text-lg font-extrabold text-slate-900 flex items-center justify-center"
                                   >
                                     −
                                   </button>
-                                  <span className="min-w-[20px] text-center text-sm font-extrabold text-slate-900">{item.quantity}</span>
+                                  <span className="min-w-[24px] text-center text-base font-extrabold text-slate-900">{item.quantity}</span>
                                   <button
                                     type="button"
                                     onClick={() => changeCartQty(item.product_id, 1)}
-                                    className="w-8 h-8 rounded-lg bg-blue-700 text-base font-extrabold text-white flex items-center justify-center"
+                                    className="w-10 h-10 rounded-xl bg-blue-700 text-lg font-extrabold text-white flex items-center justify-center"
                                   >
                                     +
                                   </button>
@@ -2253,13 +2433,13 @@
                           type="button"
                           onClick={submitOrder}
                           disabled={saving}
-                          className="w-full min-h-[46px] py-2 px-4 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-sm sm:text-base font-extrabold shadow-md transition disabled:opacity-50"
+                          className="w-full min-h-[52px] py-2.5 px-5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-base sm:text-lg font-extrabold shadow-md transition disabled:opacity-50"
                         >
                           {saving
-                            ? 'Đang lưu đơn...'
+                            ? 'Đang lưu đơn hàng...'
                             : status === 'pending'
-                            ? `Lưu đơn chờ giao (${totalQty} món) - ${formatTien(totalAmount)}`
-                            : `Xong - Thu ${formatTien(totalAmount)}`}
+                            ? `Lưu đơn chờ giao (${totalQty} món) • ${formatTien(totalAmount)}`
+                            : `Hoàn tất • Thu ${formatTien(totalAmount)}`}
                         </button>
                       </>
                     )}
@@ -2270,29 +2450,29 @@
           )}
 
           {subTab === 'list' && (
-            <div className="flex-1 min-h-0 overflow-y-auto scrollbar-thin space-y-2.5 pr-0.5">
+            <div className="flex-1 min-h-0 overflow-y-auto scrollbar-thin space-y-3 pr-0.5">
               {orders.length === 0 ? (
-                <div className="bg-white rounded-2xl p-6 border-2 border-blue-100 text-center text-sm sm:text-base text-slate-600">
-                  Chưa có đơn hàng nào được ghi.
+                <div className="bg-white rounded-2xl p-6 border-2 border-slate-200 text-center text-base text-slate-600">
+                  Chưa có đơn hàng nào được ghi nhận.
                 </div>
               ) : (
                 orders.map(o => {
                   const totalRev = o.items.reduce((s, i) => s + i.quantity * i.unit_price, 0);
                   return (
-                    <div key={o.id} className="bg-white rounded-2xl p-3.5 sm:p-4 border-2 border-blue-100 shadow-sm space-y-2.5">
+                    <div key={o.id} className="bg-white rounded-2xl p-4 border-2 border-slate-200 shadow-sm space-y-3">
                       <div className="flex flex-wrap items-start justify-between gap-2">
                         <div>
-                          <div className="text-base sm:text-lg font-extrabold text-slate-900">{o.customer_name || 'Khách lẻ'}</div>
-                          <div className="text-xs sm:text-sm text-slate-600">Ngày: {o.order_date}</div>
+                          <div className="text-lg font-extrabold text-slate-900">{o.customer_name || 'Khách lẻ'}</div>
+                          <div className="text-sm text-slate-600">Ngày: {o.order_date}</div>
                         </div>
-                        <div className={`text-lg sm:text-xl font-extrabold ${o.status === 'cancelled' ? 'line-through text-slate-500' : 'text-blue-700'}`}>
+                        <div className={`text-xl font-black ${o.status === 'cancelled' ? 'line-through text-slate-500' : 'text-blue-700'}`}>
                           {formatTien(totalRev)}
                         </div>
                       </div>
 
-                      <div className="bg-blue-50/70 rounded-xl p-2.5 space-y-1">
+                      <div className="bg-slate-50 rounded-xl p-3 space-y-1.5">
                         {o.items.map((it, idx) => (
-                          <div key={idx} className="text-xs sm:text-sm text-slate-800 flex justify-between gap-2">
+                          <div key={idx} className="text-sm sm:text-base text-slate-800 flex justify-between gap-2">
                             <span>{it.name} × <strong>{it.quantity}</strong></span>
                             <span className="font-bold">{formatTien(it.quantity * it.unit_price)}</span>
                           </div>
@@ -2300,11 +2480,11 @@
                       </div>
 
                       <div className="flex items-center justify-between gap-2">
-                        <span className="text-xs sm:text-sm font-bold text-slate-700">Trạng thái:</span>
+                        <span className="text-sm sm:text-base font-bold text-slate-700">Trạng thái:</span>
                         <select
                           value={o.status}
                           onChange={e => onChangeStatus(o.id, e.target.value)}
-                          className={`min-h-[40px] px-3 py-1.5 border-2 rounded-xl text-xs sm:text-sm font-extrabold ${
+                          className={`min-h-[44px] px-3.5 py-1.5 border-2 rounded-xl text-sm sm:text-base font-extrabold ${
                             o.status === 'completed' ? 'bg-emerald-50 border-emerald-300 text-emerald-800' :
                             o.status === 'pending' ? 'bg-amber-50 border-amber-300 text-amber-800' :
                             'bg-slate-100 border-slate-300 text-slate-700'
@@ -2326,7 +2506,7 @@
     }
 
     // ==========================================
-    // 3. TRANG HÀNG HÓA (GỌN ĐẸP + CẢNH BÁO GIÁ BÁN < GIÁ NHẬP)
+    // 3. TRANG HÀNG HÓA
     // ==========================================
     function ProductsView({ products, onAddProduct, onUpdateProduct, onDeleteProduct }) {
       const [form, setForm] = useState({ name: '', cost_price: '', selling_price: '', stock: '', low_stock_threshold: '10' });
@@ -2365,8 +2545,8 @@
         const stockNum = parseDigits(form.stock);
         const thresholdNum = form.low_stock_threshold === '' ? 10 : parseDigits(form.low_stock_threshold);
 
-        if (!form.name.trim()) return alert('Bạn hãy nhập tên món hàng nhé.');
-        if (!form.cost_price || !form.selling_price) return alert('Bạn hãy nhập đủ giá nhập và giá bán nhé.');
+        if (!form.name.trim()) return alert('Vui lòng nhập tên sản phẩm.');
+        if (!form.cost_price || !form.selling_price) return alert('Vui lòng nhập đầy đủ giá nhập và giá bán.');
 
         const payload = {
           name: form.name.trim(),
@@ -2379,8 +2559,8 @@
         if (sellNum < costNum) {
           setPendingConfirm({
             payload,
-            title: '⚠️ Giá bán thấp hơn giá nhập!',
-            message: `Bạn đang nhập giá bán (${formatTien(sellNum)}) thấp hơn giá nhập (${formatTien(costNum)}). Bán món "${payload.name}" sẽ bị lỗ ${formatTien(costNum - sellNum)} mỗi món. Bạn vẫn muốn lưu chứ?`,
+            title: 'Lưu ý: Giá bán thấp hơn giá nhập',
+            message: `Giá bán (${formatTien(sellNum)}) đang thấp hơn giá nhập (${formatTien(costNum)}). Bán sản phẩm "${payload.name}" sẽ lỗ ${formatTien(costNum - sellNum)} mỗi đơn vị. Quý khách vẫn muốn lưu?`,
             danger: true
           });
           return;
@@ -2389,8 +2569,8 @@
         if (sellNum >= 10000000 || costNum >= 10000000) {
           setPendingConfirm({
             payload,
-            title: 'Kiểm tra lại giá tiền',
-            message: `Bạn nhập giá bán ${formatTien(sellNum)} và giá nhập ${formatTien(costNum)}, đúng không?`,
+            title: 'Xác nhận lại mức giá',
+            message: `Quý khách đã nhập giá bán ${formatTien(sellNum)} và giá nhập ${formatTien(costNum)}. Thông tin này đã chính xác chưa?`,
             danger: false
           });
           return;
@@ -2413,25 +2593,25 @@
       return (
         <div ref={scrollRef} className="h-full overflow-y-auto scrollbar-thin space-y-4 pr-0.5">
           {/* FORM THÊM / SỬA HÀNG HÓA */}
-          <div className="bg-white p-4 sm:p-5 rounded-2xl border-2 border-blue-100 shadow-sm">
-            <h2 className="text-base sm:text-lg font-extrabold text-slate-900 mb-3">
-              {editingId ? '✏️ Sửa món hàng' : '➕ Thêm món hàng mới'}
+          <div className="bg-white p-4 sm:p-5 rounded-2xl border-2 border-slate-200 shadow-sm">
+            <h2 className="text-lg font-extrabold text-slate-900 mb-3.5">
+              {editingId ? 'Cập nhật thông tin sản phẩm' : 'Thêm sản phẩm mới'}
             </h2>
-            <form onSubmit={handleSubmit} className="space-y-3">
+            <form onSubmit={handleSubmit} className="space-y-3.5">
               <div>
-                <label className="block text-xs sm:text-sm font-bold text-slate-800 mb-1">1. Tên món hàng (bắt buộc)</label>
+                <label className="block text-sm sm:text-base font-bold text-slate-800 mb-1.5">1. Tên sản phẩm</label>
                 <input
                   required
-                  placeholder="Ví dụ: Nước suối Aquafina"
+                  placeholder="Ví dụ: Nước suối Aquafina 500ml"
                   value={form.name}
                   onChange={e => setForm({ ...form, name: e.target.value })}
-                  className="w-full min-h-[44px] px-3.5 py-2 border-2 border-slate-300 rounded-xl text-base focus:outline-none focus:border-blue-700"
+                  className="w-full min-h-[48px] px-4 py-2 border-2 border-slate-300 rounded-2xl text-base focus:outline-none focus:border-blue-700"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs sm:text-sm font-bold text-slate-800 mb-1">2. Giá nhập</label>
+                  <label className="block text-sm sm:text-base font-bold text-slate-800 mb-1.5">2. Giá nhập</label>
                   <MoneyInput
                     required
                     placeholder="3.500"
@@ -2440,56 +2620,55 @@
                   />
                 </div>
                 <div>
-                  <label className="block text-xs sm:text-sm font-bold text-slate-800 mb-1">3. Giá bán</label>
+                  <label className="block text-sm sm:text-base font-bold text-slate-800 mb-1.5">3. Giá bán</label>
                   <MoneyInput
                     required
                     placeholder="5.000"
                     value={form.selling_price}
                     onChange={val => setForm({ ...form, selling_price: val })}
-                    className={isFormSellingAtLoss ? 'border-rose-500 focus:border-rose-600' : ''}
+                    className={isFormSellingAtLoss ? 'border-red-500 focus:border-red-600' : ''}
                   />
                 </div>
               </div>
 
               {isFormSellingAtLoss && (
-                <div className="p-3 rounded-xl bg-rose-50 border border-rose-300 text-rose-800 text-xs sm:text-sm font-extrabold leading-snug">
-                  ⚠️ Cảnh báo: Giá bán ({formatTien(formSellNum)}) đang thấp hơn giá nhập ({formatTien(formCostNum)}). Bán giá này sẽ bị lỗ {formatTien(formCostNum - formSellNum)} mỗi món!
+                <div className="p-3.5 rounded-xl bg-red-50 border border-red-300 text-red-700 text-sm sm:text-base font-extrabold leading-snug">
+                  Lưu ý: Giá bán ({formatTien(formSellNum)}) đang thấp hơn giá nhập ({formatTien(formCostNum)}), chênh lệch lỗ {formatTien(formCostNum - formSellNum)} mỗi sản phẩm.
                 </div>
               )}
 
               <div>
-                <label className="block text-xs sm:text-sm font-bold text-slate-800 mb-1">Đang có trong kho (cái / chai / gói)</label>
+                <label className="block text-sm sm:text-base font-bold text-slate-800 mb-1.5">Số lượng hiện có trong kho</label>
                 <input
                   type="text"
                   inputMode="numeric"
                   placeholder="Ví dụ: 24"
                   value={form.stock}
                   onChange={e => setForm({ ...form, stock: e.target.value.replace(/\D/g, '') })}
-                  className="w-full min-h-[44px] px-3.5 py-2 border-2 border-slate-300 rounded-xl text-base font-bold focus:outline-none focus:border-blue-700"
+                  className="w-full min-h-[48px] px-4 py-2 border-2 border-slate-300 rounded-2xl text-lg font-bold focus:outline-none focus:border-blue-700"
                 />
               </div>
 
-              {/* NGƯỠNG BÁO SẮP HẾT TRONG TÙY CHỌN */}
-              <div className="rounded-xl border border-blue-200 bg-blue-50/50 overflow-hidden">
+              <div className="rounded-2xl border border-slate-200 bg-slate-50 overflow-hidden">
                 <button
                   type="button"
                   onClick={() => setShowOptions(!showOptions)}
-                  className="w-full min-h-[40px] px-3.5 py-2 flex items-center justify-between text-xs sm:text-sm font-bold text-blue-800"
+                  className="w-full min-h-[46px] px-4 py-2 flex items-center justify-between text-sm sm:text-base font-bold text-blue-800"
                 >
-                  <span>⚙️ Tùy chọn (Mức báo sắp hết hàng)</span>
+                  <span>Tùy chọn nâng cao (Mức cảnh báo sắp hết)</span>
                   <span>{showOptions ? '▲' : '▼'}</span>
                 </button>
                 {showOptions && (
-                  <div className="p-3 pt-1.5 border-t border-blue-100">
-                    <label className="block text-xs sm:text-sm font-bold text-slate-800 mb-1">
-                      Nhắc khi kho còn ít hơn (mặc định 10)
+                  <div className="p-4 pt-2 border-t border-slate-200">
+                    <label className="block text-sm sm:text-base font-bold text-slate-800 mb-1.5">
+                      Cảnh báo khi tồn kho dưới (mặc định 10)
                     </label>
                     <input
                       type="text"
                       inputMode="numeric"
                       value={form.low_stock_threshold}
                       onChange={e => setForm({ ...form, low_stock_threshold: e.target.value.replace(/\D/g, '') })}
-                      className="w-full min-h-[42px] px-3 py-1.5 border-2 border-slate-300 rounded-xl text-base font-bold bg-white"
+                      className="w-full min-h-[46px] px-3.5 py-2 border-2 border-slate-300 rounded-xl text-base font-bold bg-white"
                     />
                   </div>
                 )}
@@ -2498,9 +2677,9 @@
               <div className="flex flex-col sm:flex-row gap-2.5 pt-1">
                 <button
                   type="submit"
-                  className="flex-1 min-h-[46px] py-2.5 px-5 bg-blue-700 hover:bg-blue-800 text-white rounded-xl text-sm sm:text-base font-extrabold shadow-md"
+                  className="flex-1 min-h-[50px] py-2.5 px-5 bg-blue-700 hover:bg-blue-800 text-white rounded-2xl text-base font-extrabold shadow-md"
                 >
-                  {editingId ? 'Lưu lại thay đổi' : 'Lưu món hàng này'}
+                  {editingId ? 'Lưu cập nhật' : 'Lưu sản phẩm'}
                 </button>
                 {editingId && (
                   <button
@@ -2509,87 +2688,87 @@
                       setEditingId(null);
                       setForm({ name: '', cost_price: '', selling_price: '', stock: '', low_stock_threshold: '10' });
                     }}
-                    className="min-h-[46px] px-5 py-2.5 border-2 border-slate-300 bg-slate-100 text-slate-900 rounded-xl text-sm sm:text-base font-bold"
+                    className="min-h-[50px] px-5 py-2.5 border-2 border-slate-300 bg-slate-100 text-slate-900 rounded-2xl text-base font-bold"
                   >
-                    Hủy sửa
+                    Hủy bỏ
                   </button>
                 )}
               </div>
             </form>
           </div>
 
-          {/* Ô TÌM KIẾM NHANH & DANH SÁCH HÀNG HÓA */}
-          <div className="bg-white p-4 sm:p-5 rounded-2xl border-2 border-blue-100 shadow-sm space-y-3">
+          {/* DANH SÁCH HÀNG HÓA */}
+          <div className="bg-white p-4 sm:p-5 rounded-2xl border-2 border-slate-200 shadow-sm space-y-3.5">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
-              <h2 className="text-base sm:text-lg font-extrabold text-slate-900">Danh sách hàng ({products.length})</h2>
+              <h2 className="text-lg font-extrabold text-slate-900">Danh mục hàng hóa ({products.length})</h2>
               <input
                 value={search}
                 onChange={e => setSearch(e.target.value)}
-                placeholder="🔍 Tìm tên hàng..."
-                className="w-full sm:w-64 min-h-[42px] px-3.5 py-2 border-2 border-slate-300 rounded-xl text-base focus:outline-none focus:border-blue-700"
+                placeholder="Tìm tên sản phẩm..."
+                className="w-full sm:w-64 min-h-[46px] px-4 py-2 border-2 border-slate-300 rounded-2xl text-base focus:outline-none focus:border-blue-700"
               />
             </div>
 
             {filteredProducts.length === 0 ? (
-              <div className="text-center py-6 text-sm sm:text-base text-slate-600">
-                {products.length === 0 ? 'Bạn chưa thêm món hàng nào.' : 'Không tìm thấy món hàng nào phù hợp.'}
+              <div className="text-center py-6 text-base text-slate-600">
+                {products.length === 0 ? 'Chưa có sản phẩm nào trong kho.' : 'Không tìm thấy sản phẩm phù hợp.'}
               </div>
             ) : (
-              <div className="space-y-2.5">
+              <div className="space-y-3">
                 {filteredProducts.map(p => (
                   <div
                     key={p.id}
-                    className={`p-3.5 rounded-2xl border-2 space-y-2.5 ${
-                      p.isSellingAtLoss || p.isLowStock ? 'bg-rose-50/70 border-rose-300' : 'bg-blue-50/40 border-blue-100'
+                    className={`p-4 rounded-2xl border-2 space-y-3 ${
+                      p.isSellingAtLoss || p.isLowStock ? 'bg-red-50/60 border-red-300' : 'bg-slate-50/70 border-slate-200'
                     }`}
                   >
                     <div className="flex flex-wrap items-start justify-between gap-2">
                       <div>
-                        <div className="text-base sm:text-lg font-extrabold text-slate-900">{p.name}</div>
+                        <div className="text-lg font-extrabold text-slate-900">{p.name}</div>
                         {p.isSellingAtLoss ? (
-                          <div className="text-xs sm:text-sm font-extrabold text-rose-700 mt-0.5">
-                            ⚠️ Giá bán thấp hơn giá nhập (Lỗ {formatTien(p.cost_price - p.selling_price)}/món)
+                          <div className="text-sm font-extrabold text-red-700 mt-0.5">
+                            Giá bán thấp hơn giá nhập (Lỗ {formatTien(p.cost_price - p.selling_price)}/sản phẩm)
                           </div>
                         ) : (
-                          <div className="text-xs sm:text-sm font-bold text-emerald-700 mt-0.5">
-                            Bán 100đ lãi {p.profitPer100}đ
+                          <div className="text-sm font-bold text-emerald-700 mt-0.5">
+                            Lợi nhuận {formatTien(p.unitProfit)} / sản phẩm
                           </div>
                         )}
                       </div>
-                      <span className={`px-2.5 py-1 rounded-lg text-xs sm:text-sm font-extrabold ${
-                        p.isLowStock ? 'bg-rose-700 text-white' : 'bg-white border border-blue-200 text-slate-900'
+                      <span className={`px-3 py-1 rounded-xl text-sm font-extrabold ${
+                        p.isLowStock ? 'bg-red-600 text-white' : 'bg-white border border-slate-300 text-slate-900'
                       }`}>
-                        Còn {p.stock}
+                        Tồn: {p.stock}
                       </span>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-2.5 text-sm">
-                      <div className="bg-white p-2.5 rounded-xl border border-slate-200">
-                        <div className="text-xs text-slate-600">Giá nhập</div>
-                        <div className="text-sm sm:text-base font-extrabold text-slate-900">{formatTien(p.cost_price)}</div>
+                    <div className="grid grid-cols-2 gap-3 text-base">
+                      <div className="bg-white p-3 rounded-xl border border-slate-200">
+                        <div className="text-xs sm:text-sm text-slate-600">Giá nhập</div>
+                        <div className="text-base font-extrabold text-slate-900">{formatTien(p.cost_price)}</div>
                       </div>
-                      <div className="bg-white p-2.5 rounded-xl border border-slate-200">
-                        <div className="text-xs text-slate-600">Giá bán</div>
-                        <div className={`text-sm sm:text-base font-extrabold ${p.isSellingAtLoss ? 'text-rose-700' : 'text-blue-700'}`}>
+                      <div className="bg-white p-3 rounded-xl border border-slate-200">
+                        <div className="text-xs sm:text-sm text-slate-600">Giá bán</div>
+                        <div className={`text-base font-extrabold ${p.isSellingAtLoss ? 'text-red-600' : 'text-blue-700'}`}>
                           {formatTien(p.selling_price)}
                         </div>
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-2.5">
+                    <div className="grid grid-cols-2 gap-3">
                       <button
                         type="button"
                         onClick={() => startEdit(p)}
-                        className="min-h-[42px] px-3 py-1.5 rounded-xl bg-white border-2 border-blue-300 text-blue-800 text-sm font-extrabold hover:bg-blue-50"
+                        className="min-h-[46px] px-4 py-2 rounded-xl bg-white border-2 border-blue-300 text-blue-800 text-base font-extrabold hover:bg-blue-50"
                       >
-                        ✏️ Sửa
+                        Chỉnh sửa
                       </button>
                       <button
                         type="button"
                         onClick={() => setDeleteTarget(p)}
-                        className="min-h-[42px] px-3 py-1.5 rounded-xl bg-white border-2 border-rose-300 text-rose-700 text-sm font-extrabold hover:bg-rose-50"
+                        className="min-h-[46px] px-4 py-2 rounded-xl bg-white border-2 border-red-300 text-red-700 text-base font-extrabold hover:bg-red-50"
                       >
-                        🗑️ Xóa
+                        Xóa bỏ
                       </button>
                     </div>
                   </div>
@@ -2600,10 +2779,10 @@
 
           <ConfirmModal
             open={Boolean(deleteTarget)}
-            title="Bạn muốn xóa món này?"
-            message={deleteTarget ? `Xóa "${deleteTarget.name}" khỏi danh sách hàng hóa?` : ''}
-            confirmLabel="Có, xóa đi"
-            cancelLabel="Không, giữ lại"
+            title="Xác nhận xóa sản phẩm"
+            message={deleteTarget ? `Quý khách chắc chắn muốn xóa "${deleteTarget.name}" khỏi danh mục?` : ''}
+            confirmLabel="Xóa sản phẩm"
+            cancelLabel="Giữ lại"
             danger={true}
             onConfirm={async () => {
               const target = deleteTarget;
@@ -2617,8 +2796,8 @@
             open={Boolean(pendingConfirm)}
             title={pendingConfirm?.title || ''}
             message={pendingConfirm?.message || ''}
-            confirmLabel="Đúng, lưu luôn"
-            cancelLabel="Nhập lại"
+            confirmLabel="Xác nhận lưu"
+            cancelLabel="Kiểm tra lại"
             danger={Boolean(pendingConfirm?.danger)}
             onConfirm={async () => {
               const payload = pendingConfirm?.payload;
@@ -2632,15 +2811,15 @@
     }
 
     // ==========================================
-    // 4. TRANG THU CHI (6 NÚT GỌN + CHỌN NHANH TIỀN)
+    // 4. TRANG THU CHI
     // ==========================================
     const FINANCE_CHOICES = [
       { id: 'inventory', label: 'Nhập hàng', icon: '📦', type: 'inventory_purchase', category: 'Nhập hàng về kho' },
       { id: 'expense_electricity', label: 'Điện nước', icon: '⚡', type: 'expense', category: 'Tiền điện nước' },
-      { id: 'expense_rent', label: 'Thuê nhà', icon: '🏠', type: 'expense', category: 'Thuê mặt bằng' },
-      { id: 'expense_ship', label: 'Tiền ship', icon: '🚚', type: 'expense', category: 'Phí giao hàng' },
-      { id: 'expense_other', label: 'Chi khác', icon: '📝', type: 'expense', category: 'Chi phí khác' },
-      { id: 'income_other', label: 'Thu thêm', icon: '💵', type: 'income', category: 'Thu khác' },
+      { id: 'expense_rent', label: 'Thuê mặt bằng', icon: '🏠', type: 'expense', category: 'Thuê mặt bằng' },
+      { id: 'expense_ship', label: 'Vận chuyển', icon: '🚚', type: 'expense', category: 'Phí giao hàng' },
+      { id: 'expense_other', label: 'Chi phí khác', icon: '📝', type: 'expense', category: 'Chi phí khác' },
+      { id: 'income_other', label: 'Khoản thu khác', icon: '💵', type: 'income', category: 'Thu khác' },
     ];
 
     const QUICK_AMOUNTS = [50000, 100000, 200000, 500000];
@@ -2697,7 +2876,7 @@
         if (saving) return;
         const num = parseDigits(amount);
         if (num <= 0) {
-          alert('Bạn hãy nhập số tiền lớn hơn 0 nhé.');
+          alert('Vui lòng nhập số tiền lớn hơn 0.');
           return;
         }
         if (isUnusuallyLarge(num)) {
@@ -2708,33 +2887,33 @@
       };
 
       return (
-        <div className="h-full flex flex-col min-h-0 gap-2.5">
-          <div className="grid grid-cols-2 gap-2 bg-white p-1.5 rounded-2xl border-2 border-blue-100 shrink-0">
+        <div className="h-full flex flex-col min-h-0 gap-3">
+          <div className="grid grid-cols-2 gap-2 bg-white p-1.5 rounded-2xl border-2 border-slate-200 shrink-0">
             <button
               type="button"
               onClick={() => setSubTab('add')}
-              className={`min-h-[42px] rounded-xl text-sm sm:text-base font-extrabold transition ${
+              className={`min-h-[48px] rounded-xl text-base font-extrabold transition ${
                 subTab === 'add' ? 'bg-blue-700 text-white shadow-sm' : 'text-slate-700 hover:bg-blue-50'
               }`}
             >
-              ➕ Ghi khoản mới
+              Ghi khoản mới
             </button>
             <button
               type="button"
               onClick={() => setSubTab('history')}
-              className={`min-h-[42px] rounded-xl text-sm sm:text-base font-extrabold transition ${
+              className={`min-h-[48px] rounded-xl text-base font-extrabold transition ${
                 subTab === 'history' ? 'bg-blue-700 text-white shadow-sm' : 'text-slate-700 hover:bg-blue-50'
               }`}
             >
-              📖 Đã ghi ({expenses.length})
+              Lịch sử ({expenses.length})
             </button>
           </div>
 
           {subTab === 'add' && (
-            <form onSubmit={handleSubmit} className="flex-1 min-h-0 overflow-y-auto scrollbar-thin bg-white p-4 sm:p-5 rounded-2xl border-2 border-blue-100 shadow-sm space-y-3.5">
+            <form onSubmit={handleSubmit} className="flex-1 min-h-0 overflow-y-auto scrollbar-thin bg-white p-4 sm:p-5 rounded-2xl border-2 border-slate-200 shadow-sm space-y-4">
               <div>
-                <h2 className="text-sm sm:text-base font-extrabold text-slate-900 mb-2">1. Chọn loại khoản tiền</h2>
-                <div className="grid grid-cols-3 gap-2 sm:gap-2.5">
+                <h2 className="text-base sm:text-lg font-extrabold text-slate-900 mb-2.5">1. Chọn hạng mục</h2>
+                <div className="grid grid-cols-3 gap-2.5">
                   {FINANCE_CHOICES.map(choice => {
                     const isSelected = selectedId === choice.id;
                     return (
@@ -2742,42 +2921,42 @@
                         key={choice.id}
                         type="button"
                         onClick={() => setSelectedId(choice.id)}
-                        className={`min-h-[62px] p-2 rounded-xl border-2 flex flex-col items-center justify-center gap-1 text-center transition ${
+                        className={`min-h-[72px] p-2.5 rounded-2xl border-2 flex flex-col items-center justify-center gap-1.5 text-center transition ${
                           isSelected
                             ? 'border-blue-700 bg-blue-700 text-white shadow-md'
                             : 'border-slate-300 bg-white text-slate-900 hover:border-blue-400'
                         }`}
                       >
-                        <span className="text-lg sm:text-xl leading-none">{choice.icon}</span>
+                        <span className="text-xl leading-none">{choice.icon}</span>
                         <span className="text-xs sm:text-sm font-extrabold leading-tight">{choice.label}</span>
                       </button>
                     );
                   })}
                 </div>
-                <div className="mt-2 text-xs sm:text-sm font-medium text-slate-700">
+                <div className="mt-2.5 text-sm sm:text-base font-medium text-slate-700">
                   {activeChoice.type === 'inventory_purchase'
-                    ? '💡 Tiền nhập hàng chỉ trừ vào tiền mặt, không trừ vào tiền lãi bán hàng.'
+                    ? 'Tiền nhập hàng chỉ giảm tiền mặt hiện có, không tính vào chi phí lỗ của đơn bán.'
                     : activeChoice.type === 'income'
-                    ? '💡 Khoản thu thêm này sẽ được cộng vào tiền lãi.'
-                    : '💡 Khoản chi này sẽ được trừ khi tính tiền lãi.'}
+                    ? 'Khoản thu này sẽ được cộng trực tiếp vào lợi nhuận tháng.'
+                    : 'Khoản chi này sẽ được khấu trừ khi tính lợi nhuận thực tế.'}
                 </div>
               </div>
 
               <div>
-                <h2 className="text-sm sm:text-base font-extrabold text-slate-900 mb-2">2. Nhập số tiền</h2>
+                <h2 className="text-base sm:text-lg font-extrabold text-slate-900 mb-2">2. Nhập số tiền</h2>
                 <MoneyInput
                   required
                   placeholder="Ví dụ: 100.000"
                   value={amount}
                   onChange={setAmount}
                 />
-                <div className="grid grid-cols-4 gap-1.5 sm:gap-2.5 mt-2">
+                <div className="grid grid-cols-4 gap-2 mt-2.5">
                   {QUICK_AMOUNTS.map(val => (
                     <button
                       key={val}
                       type="button"
                       onClick={() => setAmount(String(val))}
-                      className="min-h-[38px] px-1.5 py-1.5 rounded-xl bg-blue-50 border border-blue-200 text-blue-800 text-xs sm:text-sm font-extrabold hover:bg-blue-100"
+                      className="min-h-[44px] px-2 py-1.5 rounded-xl bg-blue-50 border border-blue-200 text-blue-800 text-sm font-extrabold hover:bg-blue-100"
                     >
                       {val.toLocaleString('vi-VN')}
                     </button>
@@ -2785,33 +2964,33 @@
                 </div>
               </div>
 
-              <div className="rounded-xl border border-blue-200 bg-blue-50/50 overflow-hidden">
+              <div className="rounded-2xl border border-slate-200 bg-slate-50 overflow-hidden">
                 <button
                   type="button"
                   onClick={() => setShowOptions(!showOptions)}
-                  className="w-full min-h-[40px] px-3.5 py-2 flex items-center justify-between text-xs sm:text-sm font-bold text-blue-800"
+                  className="w-full min-h-[46px] px-4 py-2 flex items-center justify-between text-sm sm:text-base font-bold text-blue-800"
                 >
-                  <span>⚙️ Tùy chọn (Đổi ngày, ghi chú)</span>
+                  <span>Thông tin thêm (Ngày ghi, ghi chú)</span>
                   <span>{showOptions ? '▲' : '▼'}</span>
                 </button>
                 {showOptions && (
-                  <div className="p-3 pt-1.5 border-t border-blue-100 space-y-2.5">
+                  <div className="p-4 pt-2 border-t border-slate-200 space-y-3">
                     <div>
-                      <label className="block text-xs font-bold text-slate-800 mb-1">Ngày ghi</label>
+                      <label className="block text-sm font-bold text-slate-800 mb-1">Ngày phát sinh</label>
                       <input
                         type="date"
                         value={expenseDate}
                         onChange={e => setExpenseDate(e.target.value)}
-                        className="w-full min-h-[42px] px-3 py-1.5 border-2 border-slate-300 rounded-xl text-base bg-white"
+                        className="w-full min-h-[46px] px-3.5 py-2 border-2 border-slate-300 rounded-xl text-base bg-white"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-slate-800 mb-1">Ghi chú thêm (không bắt buộc)</label>
+                      <label className="block text-sm font-bold text-slate-800 mb-1">Ghi chú (không bắt buộc)</label>
                       <input
                         value={note}
                         onChange={e => setNote(e.target.value)}
-                        placeholder="Ví dụ: Trả tiền điện tháng này"
-                        className="w-full min-h-[42px] px-3 py-1.5 border-2 border-slate-300 rounded-xl text-base bg-white"
+                        placeholder="Ví dụ: Thanh toán hóa đơn điện tháng này"
+                        className="w-full min-h-[46px] px-3.5 py-2 border-2 border-slate-300 rounded-xl text-base bg-white"
                       />
                     </div>
                   </div>
@@ -2821,7 +3000,7 @@
               <button
                 type="submit"
                 disabled={saving}
-                className="w-full min-h-[46px] py-2.5 px-5 bg-blue-700 hover:bg-blue-800 text-white rounded-xl text-sm sm:text-base font-extrabold shadow-md disabled:opacity-50"
+                className="w-full min-h-[52px] py-3 px-5 bg-blue-700 hover:bg-blue-800 text-white rounded-2xl text-base sm:text-lg font-extrabold shadow-md disabled:opacity-50"
               >
                 {saving ? 'Đang lưu...' : `Lưu khoản ${activeChoice.label.toLowerCase()}`}
               </button>
@@ -2829,34 +3008,34 @@
           )}
 
           {subTab === 'history' && (
-            <div className="flex-1 min-h-0 overflow-y-auto scrollbar-thin space-y-2.5 pr-0.5">
-              <div className="bg-white p-3.5 rounded-2xl border-2 border-blue-100 flex flex-wrap items-center justify-between gap-2 text-sm sm:text-base">
-                <span>Tháng này lãi: <strong className="text-emerald-700">{formatTien(analytics.thisM.netProfit)}</strong></span>
-                <span>Tiền mặt còn: <strong className="text-blue-700">{formatTien(analytics.thisM.cashFlow)}</strong></span>
+            <div className="flex-1 min-h-0 overflow-y-auto scrollbar-thin space-y-3 pr-0.5">
+              <div className="bg-white p-4 rounded-2xl border-2 border-slate-200 flex flex-wrap items-center justify-between gap-2 text-base">
+                <span>Lợi nhuận tháng: <strong className="text-emerald-700">{formatTien(analytics.thisM.netProfit)}</strong></span>
+                <span>Tiền mặt thực có: <strong className="text-blue-700">{formatTien(analytics.thisM.cashFlow)}</strong></span>
               </div>
 
               {expenses.length === 0 ? (
-                <div className="bg-white p-6 rounded-2xl border-2 border-blue-100 text-center text-sm sm:text-base text-slate-600">
-                  Chưa có khoản thu chi nào được ghi.
+                <div className="bg-white p-6 rounded-2xl border-2 border-slate-200 text-center text-base text-slate-600">
+                  Chưa có khoản thu chi nào được ghi nhận.
                 </div>
               ) : (
-                <div className="space-y-2">
+                <div className="space-y-2.5">
                   {expenses.map(e => (
-                    <div key={e.id} className="bg-white p-3.5 rounded-2xl border-2 border-blue-100 shadow-sm flex items-center justify-between gap-2.5">
+                    <div key={e.id} className="bg-white p-4 rounded-2xl border-2 border-slate-200 shadow-sm flex items-center justify-between gap-3">
                       <div className="min-w-0">
-                        <div className="text-sm sm:text-base font-extrabold text-slate-900">{e.category}</div>
-                        <div className="text-xs sm:text-sm text-slate-600">
+                        <div className="text-base font-extrabold text-slate-900">{e.category}</div>
+                        <div className="text-sm text-slate-600">
                           {e.expense_date}{e.note ? ` • ${e.note}` : ''}
                         </div>
                       </div>
-                      <div className="flex items-center gap-2 shrink-0">
-                        <span className={`text-sm sm:text-base font-extrabold ${e.type === 'income' ? 'text-emerald-700' : 'text-rose-700'}`}>
+                      <div className="flex items-center gap-2.5 shrink-0">
+                        <span className={`text-base font-extrabold ${e.type === 'income' ? 'text-emerald-700' : 'text-red-600'}`}>
                           {e.type === 'income' ? '+' : '-'}{formatTien(e.amount)}
                         </span>
                         <button
                           type="button"
                           onClick={() => setDeleteTx(e)}
-                          className="min-h-[38px] px-2.5 rounded-xl border border-rose-200 text-rose-700 text-xs sm:text-sm font-bold hover:bg-rose-50"
+                          className="min-h-[42px] px-3 rounded-xl border border-red-200 text-red-700 text-sm font-bold hover:bg-red-50"
                         >
                           Xóa
                         </button>
@@ -2870,9 +3049,9 @@
 
           <ConfirmModal
             open={confirmBigAmount !== null}
-            title="Kiểm tra lại số tiền"
-            message={confirmBigAmount !== null ? `Bạn nhập ${formatTien(confirmBigAmount)}, đúng không?` : ''}
-            confirmLabel="Đúng, lưu luôn"
+            title="Xác nhận số tiền lớn"
+            message={confirmBigAmount !== null ? `Quý khách đã nhập ${formatTien(confirmBigAmount)}. Số tiền này đã chính xác chưa?` : ''}
+            confirmLabel="Chính xác, lưu ngay"
             cancelLabel="Nhập lại"
             onConfirm={async () => {
               const num = confirmBigAmount;
@@ -2884,9 +3063,9 @@
 
           <ConfirmModal
             open={Boolean(deleteTx)}
-            title="Xóa khoản này?"
-            message={deleteTx ? `Bạn muốn xóa "${deleteTx.category} (${formatTien(deleteTx.amount)})"?` : ''}
-            confirmLabel="Có, xóa đi"
+            title="Xác nhận xóa giao dịch"
+            message={deleteTx ? `Quý khách muốn xóa "${deleteTx.category} (${formatTien(deleteTx.amount)})"?` : ''}
+            confirmLabel="Xóa giao dịch"
             cancelLabel="Giữ lại"
             danger={true}
             onConfirm={async () => {
@@ -2901,17 +3080,17 @@
     }
 
     // ==========================================
-    // 4B. TRANG NGÂN HÀNG (PHÂN LOẠI GIAO DỊCH SEPAY)
+    // 4B. TRANG NGÂN HÀNG
     // ==========================================
     const BANK_BTN_IN = [
-      { action: 'sale', label: 'Bán hàng', icon: '🛒' },
+      { action: 'sale', label: 'Tiền bán hàng', icon: '🛒' },
       { action: 'income_other', label: 'Thu khác', icon: '💵' },
     ];
     const BANK_BTN_OUT = [
       { action: 'inventory', label: 'Nhập hàng', icon: '📦' },
       { action: 'electricity', label: 'Điện nước', icon: '⚡' },
-      { action: 'rent', label: 'Thuê nhà', icon: '🏠' },
-      { action: 'ship', label: 'Tiền ship', icon: '🚚' },
+      { action: 'rent', label: 'Mặt bằng', icon: '🏠' },
+      { action: 'ship', label: 'Vận chuyển', icon: '🚚' },
       { action: 'expense_other', label: 'Chi khác', icon: '📝' },
     ];
 
@@ -2959,7 +3138,7 @@
         setSaving(true);
         const { data, error } = await sb.rpc('start_bank_link', { p_account: acc, p_bank: bank });
         setSaving(false);
-        if (error) { alert(error.message || 'Chưa tạo được mã, bạn thử lại nhé.'); return; }
+        if (error) { alert(error.message || 'Không thể tạo mã xác minh. Vui lòng thử lại.'); return; }
         setClaim({ code: data.code, account_number: acc });
       };
 
@@ -2969,28 +3148,27 @@
 
       if (claim) {
         return (
-          <div className="bg-white p-3.5 rounded-2xl border-2 border-amber-300 space-y-2.5 shrink-0">
-            <div className="text-sm sm:text-base font-extrabold text-slate-900">
-              🔐 Xác minh tài khoản {claim.account_number}
+          <div className="bg-white p-4 rounded-2xl border-2 border-amber-300 space-y-3 shrink-0">
+            <div className="text-base font-extrabold text-slate-900">
+              Xác minh tài khoản {claim.account_number}
             </div>
-            <div className="text-xs sm:text-sm text-slate-700 leading-relaxed">
-              Mở app ngân hàng, chuyển <strong>1.000đ từ chính tài khoản này</strong> sang tài khoản nào cũng được
-              (kể cả tài khoản của bạn). Nội dung chuyển khoản chỉ ghi đúng mã sau:
+            <div className="text-sm sm:text-base text-slate-700 leading-relaxed">
+              Vui lòng chuyển <strong>1.000đ từ chính tài khoản này</strong> sang tài khoản bất kỳ với nội dung chuyển khoản chỉ ghi đúng mã dưới đây:
             </div>
             <button
               type="button"
               onClick={copyCode}
-              className="w-full min-h-[52px] rounded-xl bg-amber-50 border-2 border-amber-300 text-2xl font-extrabold tracking-widest text-amber-800"
+              className="w-full min-h-[56px] rounded-xl bg-amber-50 border-2 border-amber-300 text-2xl font-extrabold tracking-widest text-amber-800"
             >
               {claim.code}
             </button>
-            <div className="text-xs font-bold text-slate-600 text-center">
-              {copied ? '✅ Đã chép mã' : 'Chạm vào mã để chép'} • ⏳ Đang chờ ngân hàng báo về...
+            <div className="text-sm font-bold text-slate-600 text-center">
+              {copied ? 'Đã sao chép mã' : 'Chạm vào mã để sao chép'} • Đang chờ ngân hàng xác nhận...
             </div>
             <button
               type="button"
               onClick={() => setClaim(null)}
-              className="w-full min-h-[40px] rounded-xl border-2 border-slate-300 bg-slate-100 text-slate-800 text-xs sm:text-sm font-bold"
+              className="w-full min-h-[44px] rounded-xl border-2 border-slate-300 bg-slate-100 text-slate-800 text-sm sm:text-base font-bold"
             >
               ← Đổi số tài khoản khác
             </button>
@@ -2999,26 +3177,26 @@
       }
 
       return (
-        <form onSubmit={start} className="bg-white p-3.5 rounded-2xl border-2 border-blue-200 space-y-2.5 shrink-0">
-          <div className="text-sm sm:text-base font-extrabold text-slate-900">🏦 Liên kết tài khoản ngân hàng</div>
+        <form onSubmit={start} className="bg-white p-4 rounded-2xl border-2 border-blue-200 space-y-3 shrink-0">
+          <div className="text-base font-extrabold text-slate-900">Liên kết tài khoản ngân hàng</div>
           <input
             required
             inputMode="numeric"
             value={acc}
             onChange={e => setAcc(e.target.value.replace(/\D/g, ''))}
-            placeholder="Số tài khoản"
-            className="w-full min-h-[44px] px-3.5 py-2 border-2 border-slate-300 rounded-xl text-base font-bold"
+            placeholder="Số tài khoản ngân hàng"
+            className="w-full min-h-[48px] px-4 py-2 border-2 border-slate-300 rounded-2xl text-base font-bold"
           />
           <input
             value={bank}
             onChange={e => setBank(e.target.value)}
             placeholder="Tên ngân hàng (ví dụ: MBBank)"
-            className="w-full min-h-[44px] px-3.5 py-2 border-2 border-slate-300 rounded-xl text-base"
+            className="w-full min-h-[48px] px-4 py-2 border-2 border-slate-300 rounded-2xl text-base"
           />
           <button
             type="submit"
             disabled={saving}
-            className="w-full min-h-[46px] bg-blue-700 hover:bg-blue-800 text-white rounded-xl text-sm sm:text-base font-extrabold disabled:opacity-50"
+            className="w-full min-h-[48px] bg-blue-700 hover:bg-blue-800 text-white rounded-2xl text-base font-extrabold disabled:opacity-50"
           >
             {saving ? 'Đang tạo mã...' : 'Lấy mã xác minh'}
           </button>
@@ -3045,48 +3223,48 @@
       };
 
       const doneLabel = (t) => {
-        if (t.status === 'matched_order') return '✅ Đã thu cho đơn hàng';
-        if (t.status === 'ignored') return '🚫 Đã bỏ qua';
-        if (t.status === 'recorded') return `✅ ${t.category || 'Đã ghi tự động'}`;
-        return `✅ ${t.category || 'Đã phân loại'}`;
+        if (t.status === 'matched_order') return 'Đã đối soát đơn hàng';
+        if (t.status === 'ignored') return 'Đã bỏ qua';
+        if (t.status === 'recorded') return `${t.category || 'Đã ghi nhận tự động'}`;
+        return `${t.category || 'Đã phân loại'}`;
       };
 
       return (
-        <div className="h-full flex flex-col min-h-0 gap-2.5">
+        <div className="h-full flex flex-col min-h-0 gap-3">
           <BankLinkBox />
 
-          <div className="grid grid-cols-2 gap-2 bg-white p-1.5 rounded-2xl border-2 border-blue-100 shrink-0">
+          <div className="grid grid-cols-2 gap-2 bg-white p-1.5 rounded-2xl border-2 border-slate-200 shrink-0">
             <button type="button" onClick={() => setTab('pending')}
-              className={`min-h-[42px] rounded-xl text-sm sm:text-base font-extrabold transition ${tab === 'pending' ? 'bg-blue-700 text-white shadow-sm' : 'text-slate-700 hover:bg-blue-50'}`}>
-              🔔 Chờ phân loại ({pending.length})
+              className={`min-h-[48px] rounded-xl text-base font-extrabold transition ${tab === 'pending' ? 'bg-blue-700 text-white shadow-sm' : 'text-slate-700 hover:bg-blue-50'}`}>
+              Chờ phân loại ({pending.length})
             </button>
             <button type="button" onClick={() => setTab('done')}
-              className={`min-h-[42px] rounded-xl text-sm sm:text-base font-extrabold transition ${tab === 'done' ? 'bg-blue-700 text-white shadow-sm' : 'text-slate-700 hover:bg-blue-50'}`}>
-              📖 Đã xử lý ({done.length})
+              className={`min-h-[48px] rounded-xl text-base font-extrabold transition ${tab === 'done' ? 'bg-blue-700 text-white shadow-sm' : 'text-slate-700 hover:bg-blue-50'}`}>
+              Đã xử lý ({done.length})
             </button>
           </div>
 
-          <div className="flex-1 min-h-0 overflow-y-auto scrollbar-thin space-y-2.5 pr-0.5">
+          <div className="flex-1 min-h-0 overflow-y-auto scrollbar-thin space-y-3 pr-0.5">
             {list.length === 0 ? (
-              <div className="bg-white rounded-2xl p-6 border-2 border-blue-100 text-center text-sm sm:text-base text-slate-600">
-                {tab === 'pending' ? '🎉 Không còn giao dịch nào cần phân loại.' : 'Chưa có giao dịch nào.'}
+              <div className="bg-white rounded-2xl p-6 border-2 border-slate-200 text-center text-base text-slate-600">
+                {tab === 'pending' ? 'Hiện không còn giao dịch nào chờ phân loại.' : 'Chưa có giao dịch nào.'}
               </div>
             ) : list.map(t => {
               const isIn = t.direction === 'in';
               const matchedOrder = t.linked_order_id ? orders.find(o => o.id === t.linked_order_id) : null;
               const buttons = isIn ? BANK_BTN_IN : BANK_BTN_OUT;
               return (
-                <div key={t.id} className={`bg-white rounded-2xl p-3.5 border-2 shadow-sm space-y-2.5 ${isIn ? 'border-emerald-300' : 'border-rose-300'}`}>
+                <div key={t.id} className={`bg-white rounded-2xl p-4 border-2 shadow-sm space-y-3 ${isIn ? 'border-emerald-300' : 'border-red-300'}`}>
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
-                      <div className="text-xs sm:text-sm font-bold text-slate-600">
-                        {isIn ? '💰 Tiền vào' : '💸 Tiền ra'} • {fmtTime(t.occurred_at)}
+                      <div className="text-sm font-bold text-slate-600">
+                        {isIn ? 'Tiền vào' : 'Tiền ra'} • {fmtTime(t.occurred_at)}
                       </div>
-                      <div className="text-xs sm:text-sm text-slate-700 mt-0.5 break-words">
-                        {t.content || '(không có nội dung)'}
+                      <div className="text-sm sm:text-base text-slate-800 mt-0.5 break-words">
+                        {t.content || '(Không có nội dung chuyển khoản)'}
                       </div>
                     </div>
-                    <div className={`text-lg sm:text-xl font-extrabold shrink-0 ${isIn ? 'text-emerald-700' : 'text-rose-700'}`}>
+                    <div className={`text-xl font-black shrink-0 ${isIn ? 'text-emerald-700' : 'text-red-600'}`}>
                       {isIn ? '+' : '-'}{formatTien(t.amount)}
                     </div>
                   </div>
@@ -3095,32 +3273,32 @@
                     <>
                       {isIn && matchedOrder && (
                         <button type="button" disabled={busyId === t.id} onClick={() => act(t.id, 'order')}
-                          className="w-full min-h-[46px] rounded-xl bg-amber-100 border-2 border-amber-300 text-amber-800 text-sm font-extrabold disabled:opacity-50">
-                          🧾 Khách trả cho đơn "{matchedOrder.customer_name || 'Khách lẻ'}" (không tính thêm doanh thu)
+                          className="w-full min-h-[50px] rounded-xl bg-amber-100 border-2 border-amber-300 text-amber-900 text-sm sm:text-base font-extrabold disabled:opacity-50 px-3">
+                          Khách thanh toán cho đơn "{matchedOrder.customer_name || 'Khách lẻ'}"
                         </button>
                       )}
                       <div className="grid grid-cols-3 gap-2">
                         {buttons.map(b => (
                           <button key={b.action} type="button" disabled={busyId === t.id} onClick={() => act(t.id, b.action)}
-                            className="min-h-[56px] p-1.5 rounded-xl border-2 border-blue-300 bg-blue-50 text-blue-900 flex flex-col items-center justify-center gap-0.5 hover:bg-blue-100 disabled:opacity-50">
-                            <span className="text-lg leading-none">{b.icon}</span>
+                            className="min-h-[64px] p-2 rounded-xl border-2 border-blue-200 bg-blue-50 text-blue-900 flex flex-col items-center justify-center gap-1 hover:bg-blue-100 disabled:opacity-50">
+                            <span className="text-xl leading-none">{b.icon}</span>
                             <span className="text-xs sm:text-sm font-extrabold leading-tight">{b.label}</span>
                           </button>
                         ))}
                         <button type="button" disabled={busyId === t.id} onClick={() => act(t.id, 'ignore')}
-                          className="min-h-[56px] p-1.5 rounded-xl border-2 border-slate-300 bg-slate-100 text-slate-800 flex flex-col items-center justify-center gap-0.5 disabled:opacity-50">
-                          <span className="text-lg leading-none">🚫</span>
+                          className="min-h-[64px] p-2 rounded-xl border-2 border-slate-300 bg-slate-100 text-slate-800 flex flex-col items-center justify-center gap-1 disabled:opacity-50">
+                          <span className="text-xl leading-none">🚫</span>
                           <span className="text-xs sm:text-sm font-extrabold leading-tight">Bỏ qua</span>
                         </button>
                       </div>
                     </>
                   ) : (
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-xs sm:text-sm font-bold text-slate-700">{doneLabel(t)}</span>
+                      <span className="text-sm sm:text-base font-bold text-slate-700">{doneLabel(t)}</span>
                       {t.status !== 'recorded' && (
                         <button type="button" onClick={() => onUnclassify(t.id)}
-                          className="min-h-[38px] px-3 rounded-xl border border-amber-300 bg-amber-50 text-amber-800 text-xs sm:text-sm font-bold">
-                          ↩️ Hoàn tác
+                          className="min-h-[42px] px-3.5 rounded-xl border border-amber-300 bg-amber-50 text-amber-800 text-sm font-bold">
+                          Hoàn tác
                         </button>
                       )}
                     </div>
@@ -3134,14 +3312,14 @@
     }
 
     // ==========================================
-    // 5. TRANG HỎI AI (CHỈ CUỘN TIN NHẮN, Ô HỎI GHIM ĐÁY)
+    // 5. TRANG TRỢ LÝ AI
     // ==========================================
     function AIIntelligenceView({ analytics }) {
       const { todayStats, thisM, lastM, lowStockProducts, lowMarginProducts } = analytics;
       const [messages, setMessages] = useState([
         {
           role: 'ai',
-          text: `Chào bạn, tôi đã xem sổ tháng ${thisM.monthKey} của cửa hàng bạn. Hôm nay bạn lãi ${formatTien(todayStats.netProfit)} và tháng này đang lãi ${formatTien(thisM.netProfit)}. Việc cần làm: Hãy bấm một câu hỏi bên dưới để tôi trả lời ngay cho bạn.`
+          text: `Kính chào quý khách. Số liệu tháng ${thisM.monthKey} cho thấy lợi nhuận hôm nay đạt ${formatTien(todayStats.netProfit)} và lợi nhuận tích lũy tháng này đạt ${formatTien(thisM.netProfit)}. Quý khách có thể chọn nhanh một câu hỏi gợi ý bên dưới để xem phân tích chi tiết.`
         }
       ]);
       const [input, setInput] = useState('');
@@ -3175,31 +3353,31 @@
         const lower = q.toLowerCase();
 
         if (/^(xin )?chào|^hello|^hi\b/.test(lower)) {
-          return 'Chào bạn, tôi là trợ lý giúp xem tiền lãi và hàng hóa cho cửa hàng. Bạn có thể hỏi về tiền lãi tháng này, món sắp hết hoặc tiền mặt còn lại. Việc cần làm: Bấm chọn một câu hỏi gợi ý bên dưới nhé.';
+          return 'Kính chào quý khách. Tôi là trợ lý phân tích kinh doanh của cửa hàng. Quý khách có thể hỏi về tình hình lợi nhuận, lượng hàng sắp hết hoặc dòng tiền mặt hiện có.';
         }
 
         if (lower.includes('tiền mặt') || lower.includes('trong ví') || lower.includes('trong két') || lower.includes('khác')) {
-          return `Tháng này bạn lãi ${formatTien(thisM.netProfit)}, nhưng tiền mặt thực còn ${formatTien(thisM.cashFlow)}. Lý do là bạn đã chi ${formatTien(thisM.inventoryCashOut)} tiền mặt để nhập hàng về kho, số hàng này chưa bán hết nên chưa trừ vào tiền lãi. Việc cần làm: Kiểm tra lại hàng đã nhập trong mục Hàng hóa để đẩy bán sớm thu tiền mặt về.`;
+          return `Tháng này lợi nhuận đạt ${formatTien(thisM.netProfit)}, trong khi tiền mặt thực có là ${formatTien(thisM.cashFlow)}. Nguyên nhân là cửa hàng đã chi ${formatTien(thisM.inventoryCashOut)} để nhập thêm hàng vào kho; lượng hàng này chưa bán ra nên chưa tính vào chi phí lỗ. Đề xuất: Quý khách theo dõi nhóm hàng mới nhập trong mục Hàng hóa để đẩy nhanh vòng quay tiền mặt.`;
         }
 
         if (lower.includes('tồn') || lower.includes('hết hàng') || lower.includes('nhập thêm') || lower.includes('sắp hết')) {
           if (lowStockProducts.length === 0) {
-            return 'Tất cả mặt hàng trong kho của bạn hiện đều đang còn đủ bán. Bạn chưa cần nhập thêm gấp hôm nay. Việc cần làm: Tiếp tục ghi đơn mỗi khi bán để hệ thống tự đếm hàng còn lại.';
+            return 'Toàn bộ sản phẩm trong kho hiện đều ở mức an toàn, chưa có mặt hàng nào cần nhập gấp trong hôm nay.';
           }
           const topNames = lowStockProducts.slice(0, 3).map(p => `${p.name} (còn ${p.stock})`).join(', ');
-          return `Hiện có ${lowStockProducts.length} món sắp hết hàng, gồm: ${topNames}. Nếu không nhập sớm sẽ dễ bị lỡ khách mua. Việc cần làm: Mở mục Hàng hóa để xem lại và nhập thêm các món này.`;
+          return `Hiện có ${lowStockProducts.length} mặt hàng dưới mức tồn kho tối thiểu, gồm: ${topNames}. Đề xuất: Quý khách mở mục Hàng hóa để lên kế hoạch nhập bổ sung kịp thời, tránh gián đoạn bán hàng.`;
         }
 
         if (lower.includes('lãi') || lower.includes('lời') || lower.includes('thay đổi') || lower.includes('tăng') || lower.includes('giảm')) {
           const diff = thisM.netProfit - lastM.netProfit;
-          const direction = diff >= 0 ? `nhiều hơn tháng trước ${formatTien(diff)}` : `ít hơn tháng trước ${formatTien(Math.abs(diff))}`;
+          const direction = diff >= 0 ? `cao hơn tháng trước ${formatTien(diff)}` : `thấp hơn tháng trước ${formatTien(Math.abs(diff))}`;
           const thinNote = lowMarginProducts.length > 0
-            ? `Ngoài ra có ${lowMarginProducts[0].name} đang lãi khá mỏng (bán 100đ lãi ${lowMarginProducts[0].profitPer100}đ).`
-            : `Chi phí cửa hàng tháng này là ${formatTien(thisM.opex)}.`;
-          return `Tháng này cửa hàng bạn bán được ${formatTien(thisM.revenue)} và lãi ${formatTien(thisM.netProfit)}, ${direction}. ${thinNote} Việc cần làm: Xem lại các khoản chi trong mục Thu chi để cắt bớt khoản chưa cần thiết.`;
+            ? `Đáng chú ý, sản phẩm ${lowMarginProducts[0].name} đang có mức lãi khá mỏng.`
+            : `Tổng chi phí vận hành tháng này là ${formatTien(thisM.opex)}.`;
+          return `Tháng này cửa hàng đạt doanh thu ${formatTien(thisM.revenue)} và lợi nhuận ${formatTien(thisM.netProfit)}, ${direction}. ${thinNote} Đề xuất: Quý khách rà soát lại các khoản chi trong mục Thu chi để tối ưu lợi nhuận.`;
         }
 
-        return `Tháng này bạn bán được ${formatTien(thisM.revenue)}, lãi thực tế ${formatTien(thisM.netProfit)} và còn ${formatTien(thisM.cashFlow)} tiền mặt. Hiện có ${lowStockProducts.length} món đang sắp hết trong kho. Việc cần làm: Vào mục Bán hàng hoặc Thu chi để cập nhật đầy đủ số liệu hôm nay.`;
+        return `Tổng hợp tháng này: Doanh thu ${formatTien(thisM.revenue)}, lợi nhuận thực tế ${formatTien(thisM.netProfit)} và tiền mặt còn ${formatTien(thisM.cashFlow)}. Hiện có ${lowStockProducts.length} mặt hàng sắp hết trong kho.`;
       };
 
       const sendMessage = async (text) => {
@@ -3215,7 +3393,7 @@
           try {
             const { data, error } = await sb.functions.invoke('ai-advisor', {
               body: {
-                question: `${q} (Hãy trả lời tối đa 3 câu ngắn gọn bằng tiếng Việt đơn giản cho người lớn tuổi, không dùng ký hiệu phần trăm hay từ chuyên môn, và kết thúc bằng 1 việc cần làm cụ thể.)`,
+                question: `${q} (Trả lời tối đa 3 câu súc tích, lịch sự, dễ hiểu cho người lớn tuổi, tránh thuật ngữ chuyên môn phức tạp, kết thúc bằng 1 gợi ý hành động cụ thể.)`,
                 context: {
                   todayStats,
                   thisM,
@@ -3246,15 +3424,15 @@
       };
 
       const quickQuestions = [
-        'Vì sao tiền lãi tháng này thay đổi?',
-        'Món nào sắp hết hàng?',
-        'Tại sao tiền mặt khác với tiền lãi?'
+        'Vì sao lợi nhuận tháng này thay đổi?',
+        'Những mặt hàng nào sắp hết?',
+        'Vì sao tiền mặt khác với lợi nhuận?'
       ];
 
       return (
         <div className="h-full flex flex-col min-h-0">
-          <div className="flex-1 min-h-0 bg-white rounded-2xl border-2 border-blue-100 shadow-sm flex flex-col overflow-hidden">
-            <div ref={chatContainerRef} className="flex-1 min-h-0 overflow-y-auto p-3 sm:p-4 space-y-3 scrollbar-thin">
+          <div className="flex-1 min-h-0 bg-white rounded-2xl border-2 border-slate-200 shadow-sm flex flex-col overflow-hidden">
+            <div ref={chatContainerRef} className="flex-1 min-h-0 overflow-y-auto p-4 space-y-3.5 scrollbar-thin">
               {messages.map((m, idx) => {
                 const isLast = idx === messages.length - 1;
                 return (
@@ -3263,7 +3441,7 @@
                     ref={isLast ? lastMsgRef : null}
                     className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}
                   >
-                    <div className={`max-w-[92%] sm:max-w-[85%] rounded-2xl px-3.5 py-2.5 text-sm sm:text-base leading-relaxed whitespace-pre-line ${
+                    <div className={`max-w-[92%] sm:max-w-[85%] rounded-2xl px-4 py-3 text-base leading-relaxed whitespace-pre-line ${
                       m.role === 'user'
                         ? 'bg-blue-700 text-white font-bold shadow-sm'
                         : 'bg-blue-50 text-slate-900 border border-blue-200'
@@ -3275,41 +3453,41 @@
               })}
               {thinking && (
                 <div className="flex justify-start">
-                  <div className="rounded-2xl px-3.5 py-2 text-sm sm:text-base font-bold bg-blue-50 text-blue-800 border border-blue-200">
-                    ⏳ Đang xem lại sổ giúp bạn...
+                  <div className="rounded-2xl px-4 py-2.5 text-base font-bold bg-blue-50 text-blue-800 border border-blue-200">
+                    Đang phân tích dữ liệu cửa hàng...
                   </div>
                 </div>
               )}
             </div>
 
-            <div className="shrink-0 p-2.5 sm:p-3 border-t border-blue-100 bg-blue-50/50 space-y-1.5">
-              <div className="text-xs font-extrabold text-slate-800">Bấm nhanh câu hỏi:</div>
-              <div className="flex flex-col sm:flex-row flex-wrap gap-1.5">
+            <div className="shrink-0 p-3 border-t border-slate-200 bg-slate-50 space-y-2">
+              <div className="text-sm font-extrabold text-slate-800">Câu hỏi gợi ý:</div>
+              <div className="flex flex-col sm:flex-row flex-wrap gap-2">
                 {quickQuestions.map((q, i) => (
                   <button
                     key={i}
                     type="button"
                     onClick={() => sendMessage(q)}
                     disabled={thinking}
-                    className="text-left px-3 py-1.5 rounded-xl bg-white text-blue-900 border border-blue-300 hover:bg-blue-50 text-xs sm:text-sm font-bold transition disabled:opacity-50"
+                    className="text-left px-3.5 py-2 rounded-xl bg-white text-blue-900 border border-blue-300 hover:bg-blue-50 text-sm sm:text-base font-bold transition disabled:opacity-50"
                   >
-                    💬 {q}
+                    {q}
                   </button>
                 ))}
               </div>
             </div>
 
-            <form onSubmit={e => { e.preventDefault(); sendMessage(); }} className="shrink-0 p-2.5 sm:p-3 border-t border-blue-100 flex gap-2 bg-white">
+            <form onSubmit={e => { e.preventDefault(); sendMessage(); }} className="shrink-0 p-3 border-t border-slate-200 flex gap-2 bg-white">
               <input
                 value={input}
                 onChange={e => setInput(e.target.value)}
-                placeholder="Gõ câu hỏi của bạn..."
-                className="flex-1 min-w-0 min-h-[42px] px-3 py-1.5 border-2 border-slate-300 rounded-xl text-base focus:outline-none focus:border-blue-700"
+                placeholder="Nhập câu hỏi tại đây..."
+                className="flex-1 min-w-0 min-h-[48px] px-4 py-2 border-2 border-slate-300 rounded-2xl text-base focus:outline-none focus:border-blue-700"
               />
               <button
                 type="submit"
                 disabled={thinking}
-                className="min-h-[42px] px-4 py-1.5 bg-blue-700 hover:bg-blue-800 text-white rounded-xl text-sm sm:text-base font-extrabold shrink-0 disabled:opacity-50"
+                className="min-h-[48px] px-5 py-2 brand-gradient-btn text-white rounded-2xl text-base font-extrabold shrink-0 disabled:opacity-50"
               >
                 Gửi
               </button>
