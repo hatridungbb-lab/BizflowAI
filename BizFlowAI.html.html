@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>BizFlow AI - Quản Lý Bán Hàng & Lợi Nhuận</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23ef4444'/%3E%3Cstop offset='55%25' stop-color='%237c3aed'/%3E%3Cstop offset='100%25' stop-color='%232563eb'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='white'/%3E%3Cpath d='M16 50V14h18c9 0 14 4.5 14 11.5 0 4.5-2.5 7.5-6.5 8.8 5 1.3 8 4.8 8 10 0 7.2-5.8 11.7-15 11.7H16z' fill='url(%23g)'/%3E%3Cpath d='M36 28l16-12-3 12-4-4-11 7z' fill='%23ef4444'/%3E%3C/svg%3E" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 100'%3E%3Cdefs%3E%3ClinearGradient id='g1' x1='10' y1='10' x2='95' y2='85' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0%25' stop-color='%23ff2a00'/%3E%3Cstop offset='50%25' stop-color='%237c3aed'/%3E%3Cstop offset='100%25' stop-color='%230066ff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='120' height='100' rx='20' fill='white'/%3E%3Cpath d='M23 70 L36 16 H78 C95 16 102 25 99 39 C97 47 90 52 80 56 L31 90 H14 C17 75 28 65 55 52 C68 46 78 41 79 34 C80 30 76 28 69 28 H48 L39 58 Z' fill='url(%23g1)'/%3E%3Cpath d='M43 90 L47 75 H55 L51 90 Z' fill='%23ef4444'/%3E%3Cpath d='M54 90 L59 68 H67 L62 90 Z' fill='%238b5cf6'/%3E%3Cpath d='M65 90 L72 60 H80 L73 90 Z' fill='%230284c7'/%3E%3Cpath d='M76 90 L83 62 C93 58 103 66 101 77 C99 86 91 90 82 90 Z' fill='%230066ff'/%3E%3Cpath d='M68 58 C84 53 96 45 107 34 L100 32 L117 24 L112 42 L109 37 C98 48 84 56 68 58 Z' fill='%23dc2626'/%3E%3C/svg%3E" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = { darkMode: 'class' };
@@ -577,84 +577,87 @@
     }
 
     // ==========================================
-    // LOGO BIZFLOW AI (ĐỒNG BỘ THEO ẢNH MẪU ĐỎ - TÍM - XANH)
+    // LOGO BIZFLOW AI (VECTOR SẮC NÉT, KHÔNG VỠ HÌNH)
     // ==========================================
     function BizFlowLogo({ size = 'md', showTagline = false }) {
       const uid = React.useId().replace(/:/g, '');
-      const mainGrad = `bfMain-${uid}`;
-      const bar1 = `bfBar1-${uid}`;
-      const bar2 = `bfBar2-${uid}`;
-      const bar3 = `bfBar3-${uid}`;
-      const aiGrad = `bfAi-${uid}`;
+      const topArchGrad = `bfTop-${uid}`;
+      const ribbonGrad = `bfRib-${uid}`;
+      const bar1Grad = `bfB1-${uid}`;
+      const bar2Grad = `bfB2-${uid}`;
+      const bar3Grad = `bfB3-${uid}`;
+      const rightBowlGrad = `bfBowl-${uid}`;
+      const arrowGrad = `bfArr-${uid}`;
 
-      const iconSizes = { sm: 'w-9 h-8', md: 'w-11 h-10', lg: 'w-14 h-12' };
+      const iconSizes = { sm: 'w-10 h-8', md: 'w-12 h-9', lg: 'w-16 h-12' };
       const textSizes = { sm: 'text-lg sm:text-xl', md: 'text-xl sm:text-2xl', lg: 'text-2xl sm:text-3xl' };
 
       return (
         <div className="flex items-center gap-2.5 select-none min-w-0">
-          <svg viewBox="0 0 140 115" className={`${iconSizes[size]} shrink-0 drop-shadow-sm`} fill="none">
+          <svg viewBox="0 0 155 110" className={`${iconSizes[size]} shrink-0`} fill="none">
             <defs>
-              <linearGradient id={mainGrad} x1="18" y1="12" x2="112" y2="102" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" stopColor="#ef4444" />
-                <stop offset="45%" stopColor="#9333ea" />
+              <linearGradient id={topArchGrad} x1="25" y1="15" x2="108" y2="55" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stopColor="#ff2200" />
+                <stop offset="45%" stopColor="#e11d48" />
+                <stop offset="78%" stopColor="#4f46e5" />
                 <stop offset="100%" stopColor="#0284c7" />
               </linearGradient>
-              <linearGradient id={bar1} x1="0" y1="100" x2="0" y2="68" gradientUnits="userSpaceOnUse">
+              <linearGradient id={ribbonGrad} x1="15" y1="100" x2="105" y2="42" gradientUnits="userSpaceOnUse">
                 <stop offset="0%" stopColor="#dc2626" />
-                <stop offset="100%" stopColor="#f87171" />
+                <stop offset="42%" stopColor="#c026d3" />
+                <stop offset="78%" stopColor="#2563eb" />
+                <stop offset="100%" stopColor="#0284c7" />
               </linearGradient>
-              <linearGradient id={bar2} x1="0" y1="100" x2="0" y2="56" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" stopColor="#7c3aed" />
-                <stop offset="100%" stopColor="#3b82f6" />
+              <linearGradient id={bar1Grad} x1="48" y1="100" x2="58" y2="75" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stopColor="#b91c1c" />
+                <stop offset="100%" stopColor="#ff3b1f" />
               </linearGradient>
-              <linearGradient id={bar3} x1="0" y1="100" x2="0" y2="45" gradientUnits="userSpaceOnUse">
+              <linearGradient id={bar2Grad} x1="60" y1="100" x2="71" y2="66" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stopColor="#3730a3" />
+                <stop offset="100%" stopColor="#a855f7" />
+              </linearGradient>
+              <linearGradient id={bar3Grad} x1="72" y1="100" x2="84" y2="57" gradientUnits="userSpaceOnUse">
                 <stop offset="0%" stopColor="#1d4ed8" />
                 <stop offset="100%" stopColor="#38bdf8" />
               </linearGradient>
-              <linearGradient id={aiGrad} x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#ef4444" />
-                <stop offset="55%" stopColor="#7c3aed" />
-                <stop offset="100%" stopColor="#0ea5e9" />
+              <linearGradient id={rightBowlGrad} x1="85" y1="95" x2="120" y2="58" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stopColor="#0284c7" />
+                <stop offset="100%" stopColor="#1d4ed8" />
+              </linearGradient>
+              <linearGradient id={arrowGrad} x1="72" y1="58" x2="138" y2="22" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stopColor="#b91c1c" />
+                <stop offset="100%" stopColor="#ff1e00" />
               </linearGradient>
             </defs>
 
-            {/* Khối chữ B chuyển sắc Đỏ -> Tím -> Xanh */}
+            {/* 1. Phần chân trái và vòm trên chữ B */}
             <path
-              d="M36 12 H82 C102 12 112 22 110 37 C108 46 101 53 91 56 C105 60 112 71 109 85 C106 100 92 106 72 106 H24 L36 12 Z M56 29 L52 46 H77 C85 46 90 42 91 37 C92 32 87 29 79 29 H56 Z"
-              fill={`url(#${mainGrad})`}
+              d="M23 70 L39 14 H86 C105 14 112 26 108 42 C104 54 90 58 76 62 C88 50 93 40 91 34 C89 29 84 27 75 27 H54 L44 55 C34 61 28 66 23 70 Z"
+              fill={`url(#${topArchGrad})`}
             />
 
-            {/* Khoảng cắt trắng tạo đường lượn & nền cho 3 cột */}
+            {/* 2. Dải lượn chéo từ đáy trái vắt lên nối với vòm trên */}
             <path
-              d="M16 92 C36 58 64 46 96 42 C72 58 58 76 54 106 H18 Z"
-              fill="#ffffff"
-              fillOpacity="0.96"
-            />
-            <path
-              d="M46 66 C66 56 84 62 84 82 C84 95 75 103 60 106 H42 Z"
-              fill="#ffffff"
-              fillOpacity="0.96"
+              d="M14 100 C18 76 34 62 60 51 C76 44 88 39 91 32 C95 28 106 32 106 43 C105 53 92 59 68 68 C48 76 39 86 35 100 H14 Z"
+              fill={`url(#${ribbonGrad})`}
             />
 
-            {/* 3 cột biểu đồ tăng trưởng (Đỏ - Tím - Xanh) */}
-            <rect x="44" y="74" width="11" height="28" rx="2" fill={`url(#${bar1})`} />
-            <rect x="60" y="62" width="11" height="40" rx="2" fill={`url(#${bar2})`} />
-            <rect x="76" y="49" width="11" height="53" rx="2" fill={`url(#${bar3})`} />
+            {/* 3. Ba cột biểu đồ tăng trưởng (nghiêng đồng bộ) */}
+            <path d="M44 100 L49 79 H60 L55 100 Z" fill={`url(#${bar1Grad})`} />
+            <path d="M58 100 L64 70 H75 L69 100 Z" fill={`url(#${bar2Grad})`} />
+            <path d="M72 100 L80 61 H91 L83 100 Z" fill={`url(#${bar3Grad})`} />
 
-            {/* Phần bụng dưới bên phải của chữ B */}
+            {/* 4. Phần bụng dưới bên phải của chữ B */}
             <path
-              d="M91 56 C104 60 110 70 108 83 C106 96 96 104 82 106 L87 56 Z"
-              fill="#0284c7"
+              d="M86 100 L95 62 C98 59 104 56 108 55 C120 59 124 72 119 85 C115 95 104 100 92 100 H86 Z"
+              fill={`url(#${rightBowlGrad})`}
             />
 
-            {/* Mũi tên đỏ vươn lên */}
+            {/* 5. Mũi tên đỏ vươn lên */}
             <path
-              d="M58 56 C80 51 98 41 114 24"
-              stroke="#dc2626"
-              strokeWidth="8"
-              strokeLinecap="round"
+              d="M74 60 C92 54 108 44 123 30 L115 26 L139 20 L133 44 L128 36 C113 49 95 58 74 60 Z"
+              fill={`url(#${arrowGrad})`}
             />
-            <path d="M101 20 L125 14 L119 38 Z" fill="#dc2626" />
           </svg>
 
           <div className="min-w-0">
@@ -836,7 +839,7 @@
           console.error('Lỗi gửi OTP:', error);
           const msg = (error.message || '').toLowerCase();
           if (!isRegister && (msg.includes('signups not allowed') || msg.includes('not found') || msg.includes('user'))) {
-            return { error: 'Số điện thoại này chưa được đăng ký. Vui lòng chọn mục "Tạo tài khoản mới".' };
+            return { error: 'Số điện thoại này chưa được đăng ký. Vui lòng chọn mục "Tạo tài khoản".' };
           }
           if (msg.includes('rate') || msg.includes('limit') || msg.includes('seconds')) {
             return { error: 'Mã xác nhận vừa được gửi. Vui lòng chờ ít phút trước khi yêu cầu lại.' };
@@ -967,7 +970,7 @@
     }
 
     // ==========================================
-    // MÀN HÌNH ĐĂNG NHẬP & TẠO TÀI KHOẢN (CÓ CHỌN GÓI CƠ BẢN / GÓI AI)
+    // MÀN HÌNH ĐĂNG NHẬP & TẠO TÀI KHOẢN
     // ==========================================
     function AuthPage({ onSendOtp, onVerifyOtp, onQuickDemo, demoLoading, theme, onToggleTheme }) {
       const [mode, setMode] = useState('login');
@@ -1138,7 +1141,6 @@
                           />
                         </div>
 
-                        {/* CHỌN GÓI CƠ BẢN HOẶC GÓI AI KHI TẠO TÀI KHOẢN */}
                         <div>
                           <label className="block text-sm sm:text-base font-bold text-slate-800 mb-1.5">
                             Chọn gói sử dụng
@@ -1960,7 +1962,7 @@
     }
 
     // ==========================================
-    // 1. TRANG CHỦ (TỐI GIẢN, CHỮ TO, CÓ NÂNG CẤP AI CHO GÓI FREE)
+    // 1. TRANG CHỦ
     // ==========================================
     function DashboardView({ analytics, setActiveTab, onOpenSpend, productsCount, ordersCount, user, hasAI, onOpenUpgrade }) {
       const { todayStats, thisM, lastM, lowStockProducts } = analytics;
@@ -2000,7 +2002,6 @@
 
       return (
         <div className="h-full overflow-y-auto scrollbar-thin space-y-4 pr-0.5">
-          {/* LỢI NHUẬN HÔM NAY */}
           <section className={`rounded-3xl p-5 sm:p-6 border-2 shadow-sm bg-white ${
             isTodayProfit ? 'border-emerald-300' : 'border-red-300'
           }`}>
@@ -2016,7 +2017,6 @@
             </div>
           </section>
 
-          {/* THẺ NÂNG CẤP GÓI AI DÀNH RIÊNG CHO GÓI CƠ BẢN (FREE) */}
           {!hasAI && !user.is_demo && (
             <section className="bg-white rounded-2xl p-4 sm:p-5 border-2 border-red-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div className="space-y-0.5">
@@ -2037,7 +2037,6 @@
             </section>
           )}
 
-          {/* CÁC NÚT THAO TÁC CHÍNH TO RÕ */}
           <section className={`grid ${hasAI ? 'grid-cols-3' : 'grid-cols-2'} gap-3`}>
             <button
               onClick={() => setActiveTab('orders')}
@@ -2066,7 +2065,6 @@
             )}
           </section>
 
-          {/* CẢNH BÁO TỒN KHO */}
           <section className="bg-white rounded-2xl p-4 sm:p-5 border-2 border-slate-200 shadow-sm space-y-2.5">
             <div className="flex items-center justify-between gap-2">
               <h2 className="text-lg font-extrabold text-slate-900">Hàng cần lưu ý</h2>
@@ -2099,7 +2097,6 @@
             )}
           </section>
 
-          {/* BÁO CÁO TỔNG HỢP THU GỌN */}
           <section className="bg-white rounded-2xl border-2 border-slate-200 shadow-sm overflow-hidden">
             <button
               type="button"
@@ -2389,7 +2386,6 @@
                     </div>
                   </div>
 
-                  {/* GIỎ HÀNG GHIM ĐÁY */}
                   <div className="shrink-0 bg-white border-2 border-blue-700 rounded-2xl p-3 sm:p-3.5 shadow-lg space-y-2.5">
                     {cart.length === 0 ? (
                       <div className="text-center text-base font-bold text-slate-600 py-1.5">
@@ -2592,7 +2588,6 @@
 
       return (
         <div ref={scrollRef} className="h-full overflow-y-auto scrollbar-thin space-y-4 pr-0.5">
-          {/* FORM THÊM / SỬA HÀNG HÓA */}
           <div className="bg-white p-4 sm:p-5 rounded-2xl border-2 border-slate-200 shadow-sm">
             <h2 className="text-lg font-extrabold text-slate-900 mb-3.5">
               {editingId ? 'Cập nhật thông tin sản phẩm' : 'Thêm sản phẩm mới'}
@@ -2697,7 +2692,6 @@
             </form>
           </div>
 
-          {/* DANH SÁCH HÀNG HÓA */}
           <div className="bg-white p-4 sm:p-5 rounded-2xl border-2 border-slate-200 shadow-sm space-y-3.5">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
               <h2 className="text-lg font-extrabold text-slate-900">Danh mục hàng hóa ({products.length})</h2>
